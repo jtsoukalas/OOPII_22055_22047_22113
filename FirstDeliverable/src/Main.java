@@ -1,4 +1,4 @@
-package com.orestis_package;
+package FirstDeliverable;
 
 public class Main {
 
