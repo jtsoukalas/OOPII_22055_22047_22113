@@ -3,7 +3,7 @@ package com.orestis_package;
 public abstract class Calculations {
 
     public static float normaliseFeature(float term, int mode) {
-        //mode defines the type of normalisation
+        //mode defines the type of normalisation: 0 for Wiki, 1 for Weather and anything else for Clouds.
         int min, max;
 
         if (mode == 0) {       //wiki normalisation
@@ -13,7 +13,7 @@ public abstract class Calculations {
             if (mode == 1) {       //weather normalisation
                 min = 184;
                 max = 331;
-            } else {
+            } else {                //clouds normalisation
                 min = 0;
                 max = 100;
             }
@@ -21,7 +21,7 @@ public abstract class Calculations {
         return (term - min) / (max - min);
     }
 
-    private static double geodesicDistance(double lat1, double lon1, double lat2, double lon2) {
+    private static double geodesicDistance(double lat1, double lon1, double lat2, double lon2) {        //Code form: https://www.geodatasource.com/developers/java
         if ((lat1 == lat2) && (lon1 == lon2)) {
             return 0;
         }
@@ -37,7 +37,7 @@ public abstract class Calculations {
 
 
     public static double normaliseGeodesicDistance(double distance){
-        //double maxDistance = geodesicDistance
-        return distance;         //geodesic distance Athens Sydney
+        double maxDistance=1;           //= geodesicDistance athens-sydney
+        return distance/maxDistance;    //null div exeption
     }
 }
