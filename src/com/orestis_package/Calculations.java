@@ -2,7 +2,7 @@ package com.orestis_package;
 
 public abstract class Calculations {
 
-    public static float normaliseFeature(float term, int mode) {
+    public static float normaliseFeature(float term, int mode) {    //term==API data
         //mode defines the type of normalisation
         int min, max;
 
@@ -21,7 +21,7 @@ public abstract class Calculations {
         return (term - min) / (max - min);
     }
 
-    private static double geodesicDistance(double lat1, double lon1, double lat2, double lon2) {
+    private static double geodesicDistance(double lat1, double lon1, double lat2, double lon2) {   // lat==API coordinates
         if ((lat1 == lat2) && (lon1 == lon2)) {
             return 0;
         }
