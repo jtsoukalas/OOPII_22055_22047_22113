@@ -1,5 +1,5 @@
 package com.orestis_package;
 
-public class PerceptronElderTraveler implements PerceptronTraveler {
+public class PerceptronElderTraveler implements PerceptronTravelerInterface {
 
 }
