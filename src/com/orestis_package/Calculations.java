@@ -2,8 +2,8 @@ package com.orestis_package;
 
 public abstract class Calculations {
 
-    public static float normaliseFeature(float term, int mode) {
-        //mode defines the type of normalisation: 0 for Wiki, 1 for Weather and anything else for Clouds.
+    public static float normaliseFeature(float term, int mode) {    //term==API data
+        //mode defines the type of normalisation
         int min, max;
 
         if (mode == 0) {       //wiki normalisation
@@ -21,7 +21,7 @@ public abstract class Calculations {
         return (term - min) / (max - min);
     }
 
-    private static double geodesicDistance(double lat1, double lon1, double lat2, double lon2) {        //Code form: https://www.geodatasource.com/developers/java
+    private static double geodesicDistance(double lat1, double lon1, double lat2, double lon2) {        //lat==API coordinates  Code form: https://www.geodatasource.com/developers/java
         if ((lat1 == lat2) && (lon1 == lon2)) {
             return 0;
         }
