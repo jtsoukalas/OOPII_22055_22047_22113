@@ -1,5 +1,10 @@
 
+<<<<<<< HEAD
+.idea/uiDesigner.xml
+.idea/runConfigurations.xml
+=======
 *.xml
 *.iml
 .idea/misc.xml
 *.class
+>>>>>>> bf0166d88ba8176dedaf2c569b1584ad6a9de352
