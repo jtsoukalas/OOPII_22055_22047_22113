@@ -6,24 +6,39 @@ import java.util.Random;
 
 public class Control {
 
-    private City CitiesLibrary[];
+    private City citiesLibrary[];
 
-    public void dummyData() {
+    public void makeDummyData() {
         int cityAmount = 15;
         Random rand = new Random();
 
-        CitiesLibrary = new City[cityAmount];
+        citiesLibrary = new City[cityAmount];
+        String CityNames[] = new String[]{"Athens", "London", "Brussels", "Madrid", "New York", "Paris", "Berlin",
+                                            "Stockholm", "Tokyo", "Rio", "Denver", "Rome", "Naples", "Constantinople", "Moscow"};
 
-        String CityNames[] = new String[]{"Athens", "London", "Brussels", "Madrid", "New York", "Paris", "Berlin", "Stockholm", "Tokyo", "Rio", "Denver", "Rome", "Naples", "Constantinople", "Moscow"};
-
-        for (int i = 0; i < cityAmount; i++)
-
-            CitiesLibrary[i] = new City(new float[]{(float) rand.nextInt(10), (float) rand.nextInt(10), (float) rand.nextInt(10), (float) rand.nextInt(10),
-                    (float) rand.nextInt(10), (float) rand.nextInt(10), (float) rand.nextInt(10), rand.nextFloat() + rand.nextInt(146) + 184, rand.nextFloat() + rand.nextInt(99),
-                    rand.nextFloat() + rand.nextInt(9522)}, CityNames[i]);       //in miles
-
-
+        for (int i = 0; i < cityAmount; i++) {
+            citiesLibrary[i] = new City(new float[]{(float) rand.nextInt(10), (float) rand.nextInt(10),
+                                                    (float) rand.nextInt(10), (float) rand.nextInt(10),
+                                                    (float) rand.nextInt(10), (float) rand.nextInt(10),
+                                                    (float) rand.nextInt(10), rand.nextFloat() + rand.nextInt(146) + 184,
+                                                    rand.nextFloat() + rand.nextInt(99),
+                                                    rand.nextFloat() + rand.nextInt(9522)}, CityNames[i]);       //in miles
+        }
     }
 
+    public City[] getCitiesLibrary() {
+        return citiesLibrary;
+    }
 
+    public void setCitiesLibrary(City[] citiesLibrary) {
+        citiesLibrary = citiesLibrary;
+    }
+
+    public String cityLibraryToString(){
+        String rtrn="";
+        for(int i = 0; i < citiesLibrary.length; i++){
+            rtrn+= citiesLibrary[i].toString() +"\n";
+        }
+        return rtrn;
+    }
 }

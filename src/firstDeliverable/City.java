@@ -1,10 +1,9 @@
 package firstDeliverable;
 
 import java.lang.reflect.Array;
+import java.util.Arrays;
 
 public class City {
-
-
     private float features[];
     private String name;
 
@@ -28,5 +27,11 @@ public class City {
 
     public void setName(String name) {
         this.name = name;
+    }
+
+    @Override
+    public String toString() {
+        return name +
+                "\t" + Arrays.toString(features);
     }
 }
