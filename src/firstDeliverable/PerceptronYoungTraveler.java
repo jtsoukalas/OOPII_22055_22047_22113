@@ -1,6 +1,4 @@
-package com.orestis_package;
-
-import java.util.ArrayList;
+package firstDeliverable;
 
 public class PerceptronYoungTraveler extends PerceptronTraveler implements PerceptronTravelerInterface {
 
