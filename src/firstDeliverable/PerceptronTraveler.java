@@ -2,16 +2,14 @@ package firstDeliverable;
 
 import java.util.ArrayList;
 
-public class PerceptronTraveler {
+public abstract class PerceptronTraveler {
 
     public ArrayList recommend(City data) {
         //add code
-
         return null;            //temporarily return
     }
 
     public ArrayList recommend(City data, boolean uppercase) {
-
         ArrayList recommendation = recommend(data);
 
         if (uppercase) {

@@ -1,4 +1,4 @@
 package firstDeliverable;
 
-public class PerceptronMiddleTraveler implements PerceptronTravelerInterface {
+public class PerceptronMiddleTraveler extends PerceptronTraveler{
 }
