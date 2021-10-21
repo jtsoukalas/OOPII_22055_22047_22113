@@ -20,9 +20,10 @@ public class Control {
             citiesLibrary[i] = new City(new float[]{(float) rand.nextInt(10), (float) rand.nextInt(10),
                                                     (float) rand.nextInt(10), (float) rand.nextInt(10),
                                                     (float) rand.nextInt(10), (float) rand.nextInt(10),
-                                                    (float) rand.nextInt(10), rand.nextFloat() + rand.nextInt(146) + 184,
-                                                    rand.nextFloat() + rand.nextInt(99),
-                                                    rand.nextFloat() + rand.nextInt(9522)}, CityNames[i]);       //in miles
+                                                    (float) rand.nextInt(10),
+                                                    rand.nextFloat() + rand.nextInt(146) + 184,                  //Temperature in Kelvin
+                                                    rand.nextFloat() + rand.nextInt(99),                         //Weather Condition
+                                                    rand.nextFloat() + rand.nextInt(9522)}, CityNames[i]);       //geodesic distance in miles
         }
     }
 
@@ -35,10 +36,10 @@ public class Control {
     }
 
     public String cityLibraryToString(){
-        String rtrn="";
+        String returnCityCatalogue="";
         for(int i = 0; i < citiesLibrary.length; i++){
-            rtrn+= citiesLibrary[i].toString() +"\n";
+            returnCityCatalogue+= citiesLibrary[i].toString() +"\n";
         }
-        return rtrn;
+        return returnCityCatalogue;
     }
 }

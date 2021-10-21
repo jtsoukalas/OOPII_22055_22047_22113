@@ -6,11 +6,11 @@ public class Main {
 
     public static void main(String[] args) {
         // Test control.dummyData
-        Control crl = new Control();
-        crl.makeDummyData();
+        Control control = new Control();
+        control.makeDummyData();
 
         System.out.println("Printing dummy data:");
-        System.out.println(crl.cityLibraryToString());
+        System.out.println(control.cityLibraryToString());
     }
 
 }

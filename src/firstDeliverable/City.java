@@ -32,6 +32,6 @@ public class City {
     @Override
     public String toString() {
         return name +
-                "\t" + Arrays.toString(features);
+                "\t\t\t\t" + Arrays.toString(features);
     }
 }
