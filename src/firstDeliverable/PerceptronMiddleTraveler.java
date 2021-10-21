@@ -1,4 +1,4 @@
-package com.orestis_package;
+package firstDeliverable;
 
 public class PerceptronMiddleTraveler implements PerceptronTravelerInterface {
 }
