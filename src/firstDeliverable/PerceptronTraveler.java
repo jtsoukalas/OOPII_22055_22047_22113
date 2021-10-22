@@ -1,8 +1,10 @@
 package firstDeliverable;
 
+import java.lang.reflect.Array;
 import java.util.ArrayList;
 
 public abstract class PerceptronTraveler {
+    private float weightsBias[] = new float[]{0F, 0F, 0F, 0F, 0F, 0F, 0F, 0F, 0F, 0F};
 
     public ArrayList recommend(City data) {
         //add code
@@ -18,6 +20,20 @@ public abstract class PerceptronTraveler {
             }
         }
         return recommendation;
+    }
+
+    /*public Array summation (City citiesLibrary[]){
+        City calc[] = new City[15];
+        float bias[] =getWeightsBias();
+
+        for (int i = 0; i < citiesLibrary.length; i++) {
+            calc[i]= citiesLibrary. * bias[i];
+
+        }
+    }*/
+
+    public float[] getWeightsBias() {
+        return weightsBias;
     }
 }
 
