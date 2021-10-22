@@ -22,15 +22,21 @@ public abstract class PerceptronTraveler {
         return recommendation;
     }
 
-    /*public Array summation (City citiesLibrary[]){
-        City calc[] = new City[15];
-        float bias[] =getWeightsBias();
+    public boolean[] retrieveCompatibleCities(City citiesLibrary[]) {
+        boolean approvedCities[] = new boolean[citiesLibrary.length];
 
-        for (int i = 0; i < citiesLibrary.length; i++) {
-            calc[i]= citiesLibrary. * bias[i];
-
+        for (int cityCounter = 0; cityCounter < approvedCities.length; cityCounter++) {
+            float sum=0;
+            for (int featureCounter = 0; featureCounter < 10; featureCounter++) {
+                sum+=citiesLibrary[cityCounter].getFeatures()[featureCounter]*weightsBias[featureCounter];
+            }
+            //bias
+            approvedCities[cityCounter]=sum>0?true:false;
         }
-    }*/
+        //!!!   BIAS   !!!!!
+
+        return approvedCities;
+    }
 
     public float[] getWeightsBias() {
         return weightsBias;
