@@ -24,8 +24,11 @@ public abstract class PerceptronTraveler {
         for (int cityCounter = 0; cityCounter < compatibleCities.length; cityCounter++) {
             recommend += compatibleCities[cityCounter] ? citiesLibrary[cityCounter].getName()+", " : "";
         }
-
-        return recommend.substring(0,recommend.length()-2);
+        try {
+            return recommend.substring(0, recommend.length() - 2);
+        } catch (StringIndexOutOfBoundsException e) {
+            return null;
+        }
     }
 
     public String recommend(boolean[] compatibleCities, City[] citiesLibrary, boolean uppercase) {

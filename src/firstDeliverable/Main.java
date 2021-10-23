@@ -9,10 +9,16 @@ public class Main {
         Control control = new Control();
         control.makeDummyData();
 
-        System.out.println("Printing dummy data:");
-        System.out.println(control.cityLibraryToString());
+        System.out.println("-Start printing dummy data-\n"+control.cityLibraryToString()+"-End printing dummy data-\n");
 
-        //Testing runPerceptron + recomend + retrieveCompatibleCities
-        System.out.println(control.runPerceptron(16));
+        //Testing runPerceptron + recommend + retrieveCompatibleCities
+        System.out.println("-Start printing dummy recommendation-");
+        String temp;
+        if ((temp = control.runPerceptron(16))!=null){
+            System.out.println(temp);
+        } else {
+            System.out.println("There are no recommendations at the time.");
+        }
+        System.out.println("-End printing dummy recommendation-\n");
     }
 }
