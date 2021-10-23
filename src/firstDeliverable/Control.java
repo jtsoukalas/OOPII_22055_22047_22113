@@ -7,6 +7,9 @@ import java.util.Random;
 public class Control {
 
     private City citiesLibrary[];
+    private PerceptronYoungTraveler youngPerceptron = new PerceptronYoungTraveler();
+    private PerceptronMiddleTraveler middlePerceptron = new PerceptronMiddleTraveler();
+    private PerceptronElderTraveler elderPerceptron = new PerceptronElderTraveler();
 
     public void makeDummyData() {
         int cityAmount = 15;
@@ -27,12 +30,28 @@ public class Control {
         }
     }
 
-    public City[] getCitiesLibrary() {
-        return citiesLibrary;
-    }
+    public String runPerceptron (int age){
+        //Check data?
 
-    public void setCitiesLibrary(City[] citiesLibrary) {
-        citiesLibrary = citiesLibrary;
+        //Choose suitable perceptron
+        PerceptronTraveler casePerceptron;
+
+        if (age >15 && age<25){     //Young traveller
+            casePerceptron = youngPerceptron;
+        } else {
+            if(age>=25 && age <60){     //Middle traveller
+                casePerceptron=middlePerceptron;
+            } else {
+                if(age>=60 && age<155){     //Elder traveller
+                    casePerceptron=elderPerceptron;
+              } else {
+                    return null;
+                }
+            }
+        }
+
+        //Running perceptron
+        return casePerceptron.recommend(youngPerceptron.retrieveCompatibleCities(citiesLibrary), citiesLibrary);
     }
 
     public String cityLibraryToString(){
@@ -41,5 +60,14 @@ public class Control {
             returnCityCatalogue+= citiesLibrary[i].toString() +"\n";
         }
         return returnCityCatalogue;
+    }
+
+
+    public City[] getCitiesLibrary() {
+        return citiesLibrary;
+    }
+
+    public void setCitiesLibrary(City[] citiesLibrary) {
+        citiesLibrary = citiesLibrary;
     }
 }

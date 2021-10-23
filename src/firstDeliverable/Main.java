@@ -11,6 +11,8 @@ public class Main {
 
         System.out.println("Printing dummy data:");
         System.out.println(control.cityLibraryToString());
-    }
 
+        //Testing runPerceptron + recomend + retrieveCompatibleCities
+        System.out.println(control.runPerceptron(16));
+    }
 }
