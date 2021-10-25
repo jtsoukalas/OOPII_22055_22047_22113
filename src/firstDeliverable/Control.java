@@ -1,6 +1,7 @@
 package firstDeliverable;
 
 import java.lang.reflect.Array;
+import java.util.ArrayList;
 import java.util.Random;
 
 
@@ -30,7 +31,7 @@ public class Control {
         }
     }
 
-    public String runPerceptron (int age){
+    public ArrayList runPerceptron (int age){
         //Check data?
 
         //Choose suitable perceptron

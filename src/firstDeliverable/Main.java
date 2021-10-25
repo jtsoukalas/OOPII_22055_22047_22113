@@ -1,5 +1,6 @@
 package firstDeliverable;
 
+import java.util.ArrayList;
 import java.util.Arrays;
 
 public class Main {
@@ -13,7 +14,7 @@ public class Main {
 
         //Testing runPerceptron + recommend + retrieveCompatibleCities
         System.out.println("-Start printing dummy recommendation-");
-        String temp;
+        ArrayList temp;
         if ((temp = control.runPerceptron(16))!=null){
             System.out.println(temp);
         } else {

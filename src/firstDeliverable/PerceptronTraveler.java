@@ -2,6 +2,8 @@ package firstDeliverable;
 
 import java.lang.reflect.Array;
 import java.util.ArrayList;
+import java.util.List;
+import java.util.Locale;
 
 public abstract class PerceptronTraveler {
 
@@ -19,23 +21,29 @@ public abstract class PerceptronTraveler {
         return weightsBias;
     }
 
-    public String recommend(boolean[] compatibleCities, City[] citiesLibrary) {
-        String recommend = "";
+    public ArrayList recommend(boolean[] compatibleCities, City[] citiesLibrary) {
+        ArrayList recommendations = new ArrayList();
         for (int cityCounter = 0; cityCounter < compatibleCities.length; cityCounter++) {
-            recommend += compatibleCities[cityCounter] ? citiesLibrary[cityCounter].getName()+", " : "";
+            if (compatibleCities[cityCounter]) {
+                recommendations.add(citiesLibrary[cityCounter].getName());
+            }
         }
-        try {
-            return recommend.substring(0, recommend.length() - 2);
-        } catch (StringIndexOutOfBoundsException e) {
-            return null;
-        }
+        return recommendations;
+
     }
 
-    public String recommend(boolean[] compatibleCities, City[] citiesLibrary, boolean uppercase) {
-        String recommendation = recommend(compatibleCities, citiesLibrary);
+    public ArrayList recommend(boolean[] compatibleCities, City[] citiesLibrary, boolean uppercase) {
+        ArrayList recommendation = recommend(compatibleCities, citiesLibrary);
 
-        return  uppercase? recommendation.toUpperCase():recommendation;
+        for (int cityCounter = 0; cityCounter < compatibleCities.length; cityCounter++) {
+
+            String city = recommendation.get(cityCounter).toString().toUpperCase(Locale.ROOT);
+            recommendation.set(cityCounter, city);
+        }
+        return recommendation;
     }
+
+
 
     public boolean[] retrieveCompatibleCities(City citiesLibrary[]) {
         boolean approvedCities[] = new boolean[citiesLibrary.length];
