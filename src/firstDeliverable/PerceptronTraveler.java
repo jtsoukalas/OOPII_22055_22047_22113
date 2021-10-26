@@ -21,7 +21,7 @@ public abstract class PerceptronTraveler {
         return weightsBias;
     }
 
-    public ArrayList recommend(boolean[] compatibleCities, City[] citiesLibrary) {
+    public ArrayList<String> recommend(boolean[] compatibleCities, City[] citiesLibrary) {
         ArrayList recommendations = new ArrayList();
         for (int cityCounter = 0; cityCounter < compatibleCities.length; cityCounter++) {
             if (compatibleCities[cityCounter]) {
@@ -32,7 +32,7 @@ public abstract class PerceptronTraveler {
 
     }
 
-    public ArrayList recommend(boolean[] compatibleCities, City[] citiesLibrary, boolean uppercase) {
+    public ArrayList<String> recommend(boolean[] compatibleCities, City[] citiesLibrary, boolean uppercase) {
         ArrayList recommendation = recommend(compatibleCities, citiesLibrary);
 
         for (int cityCounter = 0; cityCounter < compatibleCities.length; cityCounter++) {
@@ -40,9 +40,11 @@ public abstract class PerceptronTraveler {
             String city = recommendation.get(cityCounter).toString().toUpperCase(Locale.ROOT);
             recommendation.set(cityCounter, city);
         }
+
+
+        //recommendation.replaceAll(String::toUpperCase);       !!!!!!!!!!!!!!!
         return recommendation;
     }
-
 
 
     public boolean[] retrieveCompatibleCities(City citiesLibrary[]) {
