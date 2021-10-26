@@ -21,5 +21,7 @@ public class Main {
             System.out.println("There are no recommendations at the time.");
         }
         System.out.println("-End printing dummy recommendation-\n");
+        System.out.println("\n\n"+control.retrieveName(City.unifiedDistRec(new PerceptronElderTraveler(),control.getCitiesLibrary())));
+
     }
 }

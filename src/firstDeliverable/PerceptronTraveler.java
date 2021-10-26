@@ -21,24 +21,24 @@ public abstract class PerceptronTraveler {
         return weightsBias;
     }
 
-    public ArrayList<String> recommend(boolean[] compatibleCities, City[] citiesLibrary) {
+    public ArrayList<City> recommend(boolean[] compatibleCities, City[] citiesLibrary) {
         ArrayList recommendations = new ArrayList();
         for (int cityCounter = 0; cityCounter < compatibleCities.length; cityCounter++) {
             if (compatibleCities[cityCounter]) {
-                recommendations.add(citiesLibrary[cityCounter].getName());
+                recommendations.add(citiesLibrary[cityCounter]);
             }
         }
         return recommendations;
-
     }
 
-    public ArrayList<String> recommend(boolean[] compatibleCities, City[] citiesLibrary, boolean uppercase) {
+    public ArrayList<City> recommend(boolean[] compatibleCities, City[] citiesLibrary, boolean uppercase) {
         ArrayList recommendation = recommend(compatibleCities, citiesLibrary);
 
         for (int cityCounter = 0; cityCounter < compatibleCities.length; cityCounter++) {
 
-            String city = recommendation.get(cityCounter).toString().toUpperCase(Locale.ROOT);
-            recommendation.set(cityCounter, city);
+            City tempCity=citiesLibrary[cityCounter];
+            tempCity.setName(tempCity.getName().toUpperCase());
+            recommendation.set(cityCounter, tempCity);
         }
 
 

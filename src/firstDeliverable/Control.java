@@ -29,6 +29,7 @@ public class Control {
                                                     rand.nextFloat() + rand.nextInt(99),                         //Weather Condition
                                                     rand.nextFloat() + rand.nextInt(9522)}, CityNames[i]);       //geodesic distance in miles
         }
+
     }
 
     public ArrayList runPerceptron (int age){
@@ -71,4 +72,10 @@ public class Control {
     public void setCitiesLibrary(City[] citiesLibrary) {
         citiesLibrary = citiesLibrary;
     }
+
+    public String retrieveName(City city){
+        return city.getName();
+    }
+
+
 }
