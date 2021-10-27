@@ -7,17 +7,17 @@ import java.util.Random;
 
 public class Control {
 
-    private City citiesLibrary[];
-    private PerceptronYoungTraveler youngPerceptron = new PerceptronYoungTraveler();
-    private PerceptronMiddleTraveler middlePerceptron = new PerceptronMiddleTraveler();
-    private PerceptronElderTraveler elderPerceptron = new PerceptronElderTraveler();
+    private City[] citiesLibrary;
+    private final PerceptronYoungTraveler youngPerceptron = new PerceptronYoungTraveler();
+    private final PerceptronMiddleTraveler middlePerceptron = new PerceptronMiddleTraveler();
+    private final PerceptronElderTraveler elderPerceptron = new PerceptronElderTraveler();
 
     public void makeDummyData() {
         int cityAmount = 15;
         Random rand = new Random();
 
         citiesLibrary = new City[cityAmount];
-        String CityNames[] = new String[]{"Athens", "London", "Brussels", "Madrid", "New York", "Paris", "Berlin",
+        String[] CityNames = new String[]{"Athens", "London", "Brussels", "Madrid", "New York", "Paris", "Berlin",
                                             "Stockholm", "Tokyo", "Rio", "Denver", "Rome", "Naples", "Constantinople", "Moscow"};
 
         for (int i = 0; i < cityAmount; i++) {
@@ -32,7 +32,7 @@ public class Control {
 
     }
 
-    public ArrayList runPerceptron (int age){
+    public ArrayList<City> runPerceptron (int age){
         //Check data?
 
         //Choose suitable perceptron
@@ -42,26 +42,25 @@ public class Control {
             casePerceptron = youngPerceptron;
         } else {
             if(age>=25 && age <60){     //Middle traveller
-                casePerceptron=middlePerceptron;
+                casePerceptron = middlePerceptron;
             } else {
                 if(age>=60 && age<155){     //Elder traveller
-                    casePerceptron=elderPerceptron;
+                    casePerceptron = elderPerceptron;
               } else {
                     return null;
                 }
             }
         }
-
         //Running perceptron
         return casePerceptron.recommend(youngPerceptron.retrieveCompatibleCities(citiesLibrary), citiesLibrary);
     }
 
     public String cityLibraryToString(){
-        String returnCityCatalogue="";
-        for(int i = 0; i < citiesLibrary.length; i++){
-            returnCityCatalogue+= citiesLibrary[i].toString() +"\n";
+        StringBuilder returnCityCatalogue= new StringBuilder();
+        for (City city : citiesLibrary) {
+            returnCityCatalogue.append(city.toString()).append("\n");
         }
-        return returnCityCatalogue;
+        return returnCityCatalogue.toString();
     }
 
 
@@ -70,11 +69,15 @@ public class Control {
     }
 
     public void setCitiesLibrary(City[] citiesLibrary) {
-        citiesLibrary = citiesLibrary;
+        this.citiesLibrary = citiesLibrary;
     }
 
     public String retrieveName(City city){
-        return city.getName();
+        try{
+            return city.getName();
+        } catch (NullPointerException e) {
+            return null;
+        }
     }
 
 

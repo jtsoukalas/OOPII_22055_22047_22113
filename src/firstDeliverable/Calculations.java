@@ -38,6 +38,6 @@ public abstract class Calculations {
 
     public static double normaliseGeodesicDistance(double distance){
         double maxDistance=1;           //= geodesicDistance athens-sydney
-        return distance/maxDistance;    //null div exeption
+        return distance/maxDistance;    //null div exception
     }
 }

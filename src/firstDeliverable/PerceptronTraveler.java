@@ -5,16 +5,22 @@ import java.util.ArrayList;
 import java.util.List;
 import java.util.Locale;
 
-public abstract class PerceptronTraveler {
+public abstract class PerceptronTraveler /*implements PerceptronTravelerInterface*/{
 
-    // 1.cafe,restaurant 2.sea, 3.museums, 4.wellness center, 5.stadium,
-    // 6.bar/club, 7.parks,playgrounds, 8.temperature, 9.weather(how cloudy), 10.distance
-    // Convention of weightBias: min = 0 max = 3
+    /* Perceptron's weightBisas fields:
+     * 0.cafe,restaurant 1.sea, 2.museums, 3.wellness center, 4.stadium,
+     * 5.bar/club, 6.parks,playgrounds, 7.temperature, 8.weather(how cloudy), 9.distance
+     * Range = [-1,1] -> [Less significant, Most significant]
+     */
 
-    private float weightsBias[];
+    private final float[] weightsBias;
 
     public PerceptronTraveler(float[] weightsBias) {
         this.weightsBias = weightsBias;
+    }
+
+    public PerceptronTraveler(float cafeRestaurant, float sea, float museum, float wellnessCenter, float stadium, float barClub, float parksPlaygrounds, float temperature, float weather, float distance) {
+        this.weightsBias = new float[]{cafeRestaurant,  sea,  museum,  wellnessCenter,  stadium,  barClub,  parksPlaygrounds,  temperature,  weather,  distance};
     }
 
     public float[] getWeightsBias() {
@@ -22,7 +28,7 @@ public abstract class PerceptronTraveler {
     }
 
     public ArrayList<City> recommend(boolean[] compatibleCities, City[] citiesLibrary) {
-        ArrayList recommendations = new ArrayList();
+        ArrayList<City> recommendations = new ArrayList<>();
         for (int cityCounter = 0; cityCounter < compatibleCities.length; cityCounter++) {
             if (compatibleCities[cityCounter]) {
                 recommendations.add(citiesLibrary[cityCounter]);
@@ -32,30 +38,30 @@ public abstract class PerceptronTraveler {
     }
 
     public ArrayList<City> recommend(boolean[] compatibleCities, City[] citiesLibrary, boolean uppercase) {
-        ArrayList recommendation = recommend(compatibleCities, citiesLibrary);
+        ArrayList<City> recommendation = recommend(compatibleCities, citiesLibrary);
 
-        for (int cityCounter = 0; cityCounter < compatibleCities.length; cityCounter++) {
-
-            City tempCity=citiesLibrary[cityCounter];
-            tempCity.setName(tempCity.getName().toUpperCase());
-            recommendation.set(cityCounter, tempCity);
+        if (uppercase){
+            for (int cityCounter = 0; cityCounter < compatibleCities.length; cityCounter++) {
+                City tempCity=citiesLibrary[cityCounter];
+                tempCity.setName(tempCity.getName().toUpperCase());
+                recommendation.set(cityCounter, tempCity);
+            }
         }
-
 
         //recommendation.replaceAll(String::toUpperCase);       !!!!!!!!!!!!!!!
         return recommendation;
     }
 
 
-    public boolean[] retrieveCompatibleCities(City citiesLibrary[]) {
-        boolean approvedCities[] = new boolean[citiesLibrary.length];
+    public boolean[] retrieveCompatibleCities(City[] citiesLibrary) {
+        boolean[] approvedCities = new boolean[citiesLibrary.length];
 
         for (int cityCounter = 0; cityCounter < approvedCities.length; cityCounter++) {
             float sum = 0;
             for (int featureCounter = 0; featureCounter < 10; featureCounter++) {
                 sum += citiesLibrary[cityCounter].getFeatures()[featureCounter] * weightsBias[featureCounter];
             }
-            approvedCities[cityCounter] = sum > 1000 ? true : false;                //Temp change to sum>0.
+            approvedCities[cityCounter] = sum > 1000;                //Temp change to sum>0.
         }
         //!!!   BIAS missing   !!!!!
         return approvedCities;

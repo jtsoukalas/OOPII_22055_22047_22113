@@ -1,11 +1,10 @@
 package firstDeliverable;
 
-import java.lang.reflect.Array;
 import java.util.Arrays;
 import java.util.ArrayList;
 
 public class City {
-    private float features[];
+    private float[] features;
     private String name;
 
     public City(float[] features, String name) {
