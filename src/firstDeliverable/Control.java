@@ -1,6 +1,5 @@
 package firstDeliverable;
 
-import java.lang.reflect.Array;
 import java.util.ArrayList;
 import java.util.Random;
 
@@ -29,7 +28,9 @@ public class Control {
                                                     rand.nextFloat() + rand.nextInt(99),                         //Weather Condition
                                                     rand.nextFloat() + rand.nextInt(9522)}, CityNames[i]);       //geodesic distance in miles
         }
-
+        for (int citiesCounter=0; citiesCounter<cityAmount; citiesCounter++){
+            citiesLibrary[citiesCounter].normaliseFeature();
+        }
     }
 
     public ArrayList<City> runPerceptron (int age){
@@ -44,7 +45,7 @@ public class Control {
             if(age>=25 && age <60){     //Middle traveller
                 casePerceptron = middlePerceptron;
             } else {
-                if(age>=60 && age<105){     //Elder traveller
+                if(age>=60 && age<115){     //Elder traveller
                     casePerceptron = elderPerceptron;
               } else {
                     return null;

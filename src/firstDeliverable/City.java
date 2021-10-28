@@ -35,7 +35,7 @@ public class City {
                 "\t\t\t\t" + Arrays.toString(features);
     }
 
-    public static City unifiedDistRec(PerceptronTraveler perceptron,City[] citiesLibrary){
+    public static City unifiedDistRec(PerceptronTraveler perceptron, City[] citiesLibrary) {
 
         //Εχω τα recommendations απο το perceptron
         //Εχω τα citiesLibrary για να καλεσω τη recommend απο το perceptron
@@ -52,8 +52,52 @@ public class City {
                 }
             }
             return min;
-        }catch(Exception e) {
+        } catch (Exception e) {
             return null;
         }
     }
+
+    public float normaliseFeature(float term, int mode) {    //term==API data
+        //mode defines the type of normalisation
+        double min, max;
+
+        if (mode == 0) {       //wiki normalisation
+            min = 0;
+            max = 10;
+        } else {
+            if (mode == 1) {       //weather normalisation
+                min = 184;
+                max = 331;
+            } else {
+                if (mode == 2) {  //clouds normalisation
+                    min = 0;
+                    max = 100;
+                } else {
+                    min = 0;
+                    max = 9523.1;      //geodesicDistance athens-sydney
+                }
+            }
+        }
+        return (float) ((term - min) / (max - min));
+    }
+
+    public void normaliseFeature() {
+        for (int featureCounter = 0; featureCounter < 10; featureCounter++) {
+            if (featureCounter < 7) {                   //wiki normalisation
+                features[featureCounter] = normaliseFeature(features[featureCounter], 0);
+            } else {
+                if (featureCounter == 7) {              //weather normalisation
+                    features[featureCounter] = normaliseFeature(features[featureCounter], 1);
+                } else {
+                    if (featureCounter == 8) {          //clouds normalisation
+                        features[featureCounter] = normaliseFeature(features[featureCounter], 2);
+                    } else {                            //distance normalisation
+                        features[featureCounter] = normaliseFeature(features[featureCounter], 3);
+                    }
+                }
+            }
+        }
+    }
+
 }
+
