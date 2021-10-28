@@ -44,7 +44,7 @@ public class Control {
             if(age>=25 && age <60){     //Middle traveller
                 casePerceptron = middlePerceptron;
             } else {
-                if(age>=60 && age<155){     //Elder traveller
+                if(age>=60 && age<105){     //Elder traveller
                     casePerceptron = elderPerceptron;
               } else {
                     return null;
