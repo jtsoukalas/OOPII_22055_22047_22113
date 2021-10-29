@@ -1,5 +1,10 @@
 package firstDeliverable;
 
+import firstDeliverable.perceptrons.PerceptronElderTraveler;
+import firstDeliverable.perceptrons.PerceptronMiddleTraveler;
+import firstDeliverable.perceptrons.PerceptronTraveler;
+import firstDeliverable.perceptrons.PerceptronYoungTraveler;
+
 import java.util.ArrayList;
 import java.util.Random;
 
@@ -81,5 +86,15 @@ public class Control {
         }
     }
 
+    public PerceptronYoungTraveler getYoungPerceptron() {
+        return youngPerceptron;
+    }
 
+    public PerceptronMiddleTraveler getMiddlePerceptron() {
+        return middlePerceptron;
+    }
+
+    public PerceptronElderTraveler getElderPerceptron() {
+        return elderPerceptron;
+    }
 }

@@ -1,4 +1,6 @@
-package firstDeliverable;
+package firstDeliverable.perceptrons;
+
+import firstDeliverable.City;
 
 import java.lang.reflect.Array;
 import java.util.ArrayList;

@@ -1,5 +1,7 @@
 package firstDeliverable;
 
+import firstDeliverable.perceptrons.PerceptronTraveler;
+
 import java.util.Arrays;
 import java.util.ArrayList;
 
@@ -58,7 +60,7 @@ public class City {
     }
 
     public float normaliseFeature(float term, int mode) {    //term==API data
-        //mode defines the type of normalisation
+        //mode defines the type of normalisation 0==Wiki, 1==Weather, 2==Clouds, 3==GeodesicDistance
         double min, max;
 
         if (mode == 0) {       //wiki normalisation
@@ -73,8 +75,12 @@ public class City {
                     min = 0;
                     max = 100;
                 } else {
-                    min = 0;
-                    max = 9523.1;      //geodesicDistance athens-sydney
+                    if (mode == 3) { //geodesticDistance
+                        min = 0;
+                        max = 9523.1;      //geodesicDistance athens-sydney
+                    } else {
+                        return 0;
+                    }
                 }
             }
         }

@@ -1,4 +1,6 @@
-package firstDeliverable;
+package firstDeliverable.perceptrons;
+
+import firstDeliverable.perceptrons.PerceptronTraveler;
 
 public class PerceptronYoungTraveler extends PerceptronTraveler {
     public PerceptronYoungTraveler() {

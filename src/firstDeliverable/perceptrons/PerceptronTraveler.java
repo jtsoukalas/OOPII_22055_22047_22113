@@ -1,4 +1,6 @@
-package firstDeliverable;
+package firstDeliverable.perceptrons;
+
+import firstDeliverable.City;
 
 import java.util.ArrayList;
 
@@ -18,8 +20,11 @@ public abstract class PerceptronTraveler /*implements PerceptronTravelerInterfac
         this.bias = bias;
     }
 
-    public PerceptronTraveler(float cafeRestaurant, float sea, float museum, float wellnessCenter, float stadium, float barClub, float parksPlaygrounds, float temperature, float weather, float distance, int bias) {
-        this(new float[]{cafeRestaurant, sea, museum, wellnessCenter, stadium, barClub, parksPlaygrounds, temperature, weather, distance}, bias);
+    public PerceptronTraveler(float cafeRestaurant, float sea, float museum, float wellnessCenter,
+                              float stadium, float barClub, float parksPlaygrounds, float temperature,
+                              float weather, float distance, int bias) {
+        this(new float[]{cafeRestaurant, sea, museum, wellnessCenter, stadium,
+                barClub, parksPlaygrounds, temperature, weather, distance}, bias);
     }
 
     public float[] getWeightsBias() {
