@@ -3,8 +3,10 @@ package firstDeliverable.openData;
 import java.io.IOException;
 import java.net.URL;
 import com.fasterxml.jackson.databind.ObjectMapper;
-import weather.OpenWeatherMap;
-import wikipedia.MediaWiki;
+import firstDeliverable.openWeather.OpenWeatherMap;
+import firstDeliverable.openData.MediaWiki;
+import firstDeliverable.openWeather.OpenWeatherMap;
+
 
 /**City description and weather information using OpenData with Jackson JSON processor.
 * @since 29-2-2020
