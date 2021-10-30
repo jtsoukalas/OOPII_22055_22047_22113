@@ -29,7 +29,7 @@ public class OpenData {
 
  
 public static void main(String[] args) throws IOException {
-	String appid ="";
+	String appid ="4abb3288d8abfd8b3b72670196c0175f";
 	RetrieveData("Rome","it",appid);	
 	RetrieveData("Athens","gr",appid);
 	RetrieveData("Corfu","gr",appid);	
