@@ -4,8 +4,7 @@ import java.io.IOException;
 import java.net.URL;
 import com.fasterxml.jackson.databind.ObjectMapper;
 import firstDeliverable.openWeather.OpenWeatherMap;
-import firstDeliverable.openData.MediaWiki;
-import firstDeliverable.openWeather.OpenWeatherMap;
+
 
 
 /**City description and weather information using OpenData with Jackson JSON processor.
