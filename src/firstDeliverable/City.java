@@ -1,18 +1,29 @@
 package firstDeliverable;
 
+import firstDeliverable.openWeather.Weather;
 import firstDeliverable.perceptrons.PerceptronTraveler;
 
+import java.awt.font.TextMeasurer;
 import java.util.Arrays;
 import java.util.ArrayList;
 
 public class City {
     private float[] features;
     private String name;
+    private String countryName;
 
-    public City(float[] features, String name) {
+    public City(float[] features, String name, String countryName) {
 
         this.features = features;
         this.name = name;
+        this.countryName = countryName;
+    }
+
+    //Retrieving data from the OpenWeatherMap API  features[8-10]
+    public City(String name, float temperature, float geodesicDist) {
+
+        this.name = name;
+        this.features = new float[]{0F,0F,0F,0F,0F,0F,0F, temperature, 0F, geodesicDist};
     }
 
     public float[] getFeatures() {
@@ -29,6 +40,14 @@ public class City {
 
     public void setName(String name) {
         this.name = name;
+    }
+
+    public String getCountryName() {
+        return countryName;
+    }
+
+    public void setCountryName(String countryName) {
+        this.countryName = countryName;
     }
 
     @Override
@@ -87,6 +106,34 @@ public class City {
         return (float) ((term - min) / (max - min));
     }
 
+    public static double normaliseFeature(double term, int mode) {    //term==API data
+        //mode defines the type of normalisation 0==Wiki, 1==Weather, 2==Clouds, 3==GeodesicDistance
+        double min, max;
+
+        if (mode == 0) {       //wiki normalisation
+            min = 0;
+            max = 10;
+        } else {
+            if (mode == 1) {       //weather normalisation
+                min = 184;
+                max = 331;
+            } else {
+                if (mode == 2) {  //clouds normalisation
+                    min = 0;
+                    max = 100;
+                } else {
+                    if (mode == 3) { //geodesticDistance
+                        min = 0;
+                        max = 9523.1;      //geodesicDistance athens-sydney
+                    } else {
+                        return 0;
+                    }
+                }
+            }
+        }
+        return  (term - min) / (max - min);
+    }
+
     public void normaliseFeature() {
         for (int featureCounter = 0; featureCounter < 10; featureCounter++) {
             if (featureCounter < 7) {                   //wiki normalisation
@@ -105,5 +152,22 @@ public class City {
         }
     }
 
+    public static double geodesicDistance(double lat1, double lon1, double lat2, double lon2) {        //lat==API coordinates  Code form: https://www.geodatasource.com/developers/java
+        if ((lat1 == lat2) && (lon1 == lon2)) {
+            return 0;
+        }
+        else {
+            double theta = lon1 - lon2;
+            double dist = Math.sin(Math.toRadians(lat1)) * Math.sin(Math.toRadians(lat2)) + Math.cos(Math.toRadians(lat1)) * Math.cos(Math.toRadians(lat2)) * Math.cos(Math.toRadians(theta));
+            dist = Math.acos(dist);
+            dist = Math.toDegrees(dist);
+            dist = dist * 60 * 1.1515;
+            return (dist);
+        }
+    }
+
+
 }
+
+
 

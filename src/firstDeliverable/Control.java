@@ -21,17 +21,20 @@ public class Control {
         Random rand = new Random();
 
         citiesLibrary = new City[cityAmount];
-        String[] CityNames = new String[]{"Athens", "London", "Brussels", "Madrid", "New York", "Paris", "Berlin",
+        String[] cityNames = new String[]{"Athens", "London", "Brussels", "Madrid", "New York", "Paris", "Berlin",
                                             "Stockholm", "Tokyo", "Rio", "Denver", "Rome", "Naples", "Constantinople", "Moscow"};
+
+        String[] countryNames = new String[]{"GR", "UK", "BE", "ES", "US", "FR", "DE",
+                "SE", "JP", "BR", "US", "IT", "IT", "TR", "RU"};
 
         for (int i = 0; i < cityAmount; i++) {
             citiesLibrary[i] = new City(new float[]{(float) rand.nextInt(10), (float) rand.nextInt(10),
                                                     (float) rand.nextInt(10), (float) rand.nextInt(10),
                                                     (float) rand.nextInt(10), (float) rand.nextInt(10),
                                                     (float) rand.nextInt(10),
-                                                    rand.nextFloat() + rand.nextInt(146) + 184,                  //Temperature in Kelvin
-                                                    rand.nextFloat() + rand.nextInt(99),                         //Weather Condition
-                                                    rand.nextFloat() + rand.nextInt(9522)}, CityNames[i]);       //geodesic distance in miles
+                                                    rand.nextFloat() + rand.nextInt(146) + 184,                                    //Temperature in Kelvin
+                                                    rand.nextFloat() + rand.nextInt(99),                                          //Weather Condition
+                                                    rand.nextFloat() + rand.nextInt(9522)}, cityNames[i], countryNames[i]);       //geodesic distance in miles
         }
         for (int citiesCounter=0; citiesCounter<cityAmount; citiesCounter++){
             citiesLibrary[citiesCounter].normaliseFeature();
