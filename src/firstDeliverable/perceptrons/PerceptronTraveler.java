@@ -4,7 +4,7 @@ import firstDeliverable.City;
 
 import java.util.ArrayList;
 
-public abstract class PerceptronTraveler /*implements PerceptronTravelerInterface*/ {
+public abstract class PerceptronTraveler implements PerceptronTravelerInterface {
 
     /* Perceptron's weightBisas fields:
      * 0.cafe,restaurant 1.sea, 2.museums, 3.wellness center, 4.stadium,

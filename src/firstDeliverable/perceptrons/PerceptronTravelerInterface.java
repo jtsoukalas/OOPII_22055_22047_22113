@@ -2,14 +2,13 @@ package firstDeliverable.perceptrons;
 
 import firstDeliverable.City;
 
-import java.lang.reflect.Array;
 import java.util.ArrayList;
 
 public interface PerceptronTravelerInterface {
 
-    String recommend(boolean[] compatibleCities, City[] citiesLibrary);
+    ArrayList<City> recommend(boolean[] compatibleCities, City[] citiesLibrary);
 
-    String recommend(boolean[] compatibleCities, City[] citiesLibrary, boolean uppercase);
+    ArrayList<City> recommend(boolean[] compatibleCities, City[] citiesLibrary, boolean uppercase);
 
     boolean[] retrieveCompatibleCities(City[] citiesLibrary);
 
