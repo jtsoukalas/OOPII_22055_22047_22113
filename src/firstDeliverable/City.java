@@ -1,9 +1,12 @@
 package firstDeliverable;
 
+import firstDeliverable.openWeather.OpenWeatherMap;
 import firstDeliverable.openWeather.Weather;
 import firstDeliverable.perceptrons.PerceptronTraveler;
+import firstDeliverable.openData.OpenData;
 
 import java.awt.font.TextMeasurer;
+import java.io.IOException;
 import java.util.Arrays;
 import java.util.ArrayList;
 
@@ -166,6 +169,16 @@ public class City {
         }
     }
 
+    public static void setWeatherData(City[] citiesLibrary) throws IOException {
+        OpenWeatherMap tempWeatherObj;
+        for (int citiesCounter=0; citiesCounter<citiesLibrary.length; citiesCounter++){
+            tempWeatherObj=OpenData.retrieveWeatherData(citiesLibrary[citiesCounter].name, citiesLibrary[citiesCounter].countryName);
+            float [] tempFeature = citiesLibrary[citiesCounter].getFeatures();
+            tempFeature[7] = (float) normaliseFeature(tempWeatherObj.getMain().getTemp(),1);
+            tempFeature[9] = (float) normaliseFeature(geodesicDistance(37.983810,23.727539, tempWeatherObj.getCoord().getLat(), tempWeatherObj.getCoord().getLon()), 3);
+            citiesLibrary[citiesCounter].setFeatures(tempFeature);
+        }
+    }
 
 }
 

@@ -63,7 +63,7 @@ public class Main {
     }
 
     @JsonProperty("temp")
-    public Double getTemp() {
+    public double getTemp() {
         return temp;
     }
 

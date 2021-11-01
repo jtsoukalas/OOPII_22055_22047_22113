@@ -1,14 +1,16 @@
 package firstDeliverable;
 
+import java.io.IOException;
 import java.util.ArrayList;
 
 public class Main {
 
-    public static void main(String[] args) {
+    public static void main(String[] args) throws IOException {
         Control control = new Control();
 
         // Testing control.dummyData
         control.makeDummyData();
+        City.setWeatherData(control.getCitiesLibrary());
         System.out.println("-Start printing dummy data-\n"
                 +control.cityLibraryToString()
                 +"-End printing dummy data-\n");

@@ -16,16 +16,16 @@ public class Control {
     private final PerceptronMiddleTraveler middlePerceptron = new PerceptronMiddleTraveler();
     private final PerceptronElderTraveler elderPerceptron = new PerceptronElderTraveler();
 
+    private static final String[] cityNames = new String[]{"Athens", "London", "Brussels", "Madrid", "New York", "Paris", "Berlin",
+            "Stockholm", "Tokyo", "Rio", "Denver", "Rome", "Naples", "Milan", "Moscow"};
+    private static final String[] countryNames = new String[]{"GR", "UK", "BE", "ES", "US", "FR", "DE",
+            "SE", "JP", "BR", "US", "IT", "IT", "IT", "RU"};
+
     public void makeDummyData() {
         int cityAmount = 15;
         Random rand = new Random();
 
         citiesLibrary = new City[cityAmount];
-        String[] cityNames = new String[]{"Athens", "London", "Brussels", "Madrid", "New York", "Paris", "Berlin",
-                                            "Stockholm", "Tokyo", "Rio", "Denver", "Rome", "Naples", "Constantinople", "Moscow"};
-
-        String[] countryNames = new String[]{"GR", "UK", "BE", "ES", "US", "FR", "DE",
-                "SE", "JP", "BR", "US", "IT", "IT", "TR", "RU"};
 
         for (int i = 0; i < cityAmount; i++) {
             citiesLibrary[i] = new City(new float[]{(float) rand.nextInt(10), (float) rand.nextInt(10),
@@ -100,4 +100,8 @@ public class Control {
     public PerceptronElderTraveler getElderPerceptron() {
         return elderPerceptron;
     }
+
+    /*public Control(String ) {
+        this.citiesLibrary = citiesLibrary;
+    }*/
 }
