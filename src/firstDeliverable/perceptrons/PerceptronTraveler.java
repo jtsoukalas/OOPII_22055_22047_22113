@@ -11,7 +11,7 @@ public abstract class PerceptronTraveler implements PerceptronTravelerInterface 
      * 5.bar/club, 6.parks,playgrounds, 7.temperature, 8.weather(how cloudy), 9.distance
      * Range = [-1,1] -> [Less significant, Most significant]
      */
-
+    //TODO Review weights and biases
     private final float[] weightsBias;
     private final int bias;
 
@@ -31,39 +31,39 @@ public abstract class PerceptronTraveler implements PerceptronTravelerInterface 
         return weightsBias;
     }
 
-    public ArrayList<City> recommend(boolean[] compatibleCities, City[] citiesLibrary) {
+    public ArrayList<City> recommend(boolean[] compatibleCities, ArrayList<City>citiesLibrary) {
         ArrayList<City> recommendations = new ArrayList<>();
         for (int cityCounter = 0; cityCounter < compatibleCities.length; cityCounter++) {
-            if (compatibleCities[cityCounter]) {
-                recommendations.add(citiesLibrary[cityCounter]);
+            if (compatibleCities[cityCounter] && citiesLibrary.get(cityCounter).getFeatures()[9]!=0) {
+                recommendations.add(citiesLibrary.get(cityCounter));
             }
         }
         return recommendations;
     }
 
-    public ArrayList<City> recommend(boolean[] compatibleCities, City[] citiesLibrary, boolean uppercase) {
+    public ArrayList<City> recommend(boolean[] compatibleCities, ArrayList<City> citiesLibrary, boolean uppercase) {
         ArrayList<City> recommendation = recommend(compatibleCities, citiesLibrary);
 
         if (uppercase) {
             for (int cityCounter = 0; cityCounter < compatibleCities.length; cityCounter++) {
-                City tempCity = citiesLibrary[cityCounter];
+                City tempCity = citiesLibrary.get(cityCounter);
                 tempCity.setName(tempCity.getName().toUpperCase());
                 recommendation.set(cityCounter, tempCity);
             }
         }
 
-        //recommendation.replaceAll(String::toUpperCase);       !!!!!!!!!!!!!!!
+        //recommendation.replaceAll(String::toUpperCase);
         return recommendation;
     }
 
 
-    public boolean[] retrieveCompatibleCities(City[] citiesLibrary) {
-        boolean[] approvedCities = new boolean[citiesLibrary.length];
+    public boolean[] retrieveCompatibleCities(ArrayList<City> citiesLibrary) {
+        boolean[] approvedCities = new boolean[citiesLibrary.size()];
 
         for (int cityCounter = 0; cityCounter < approvedCities.length; cityCounter++) {
             float sum = 0;
             for (int featureCounter = 0; featureCounter < 10; featureCounter++) {
-                sum += citiesLibrary[cityCounter].getFeatures()[featureCounter] * weightsBias[featureCounter];
+                sum += citiesLibrary.get(cityCounter).getFeatures()[featureCounter] * weightsBias[featureCounter];
             }
             sum += bias;
             approvedCities[cityCounter] = sum > 0;
@@ -71,7 +71,3 @@ public abstract class PerceptronTraveler implements PerceptronTravelerInterface 
         return approvedCities;
     }
 }
-
-
-/* Για καθε πολη κανω: rec=features[] * weightBias[]
-                       Η καταλληλη πολη (το recommendation ) ειναι η πολη με το μεγαλυτερο αποτελεσμα(rec)*/

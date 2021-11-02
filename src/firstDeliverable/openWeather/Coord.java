@@ -43,7 +43,7 @@ public class Coord {
     }
 
     @JsonProperty("lon")
-    public Double getLon() {
+    public double getLon() {
         return lon;
     }
 
@@ -53,7 +53,7 @@ public class Coord {
     }
 
     @JsonProperty("lat")
-    public Double getLat() {
+    public double getLat() {
         return lat;
     }
 
