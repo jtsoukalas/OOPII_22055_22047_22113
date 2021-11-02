@@ -1,5 +1,8 @@
 package firstDeliverable;
 
+import com.fasterxml.jackson.databind.ObjectMapper;
+import firstDeliverable.openData.CountWords;
+import firstDeliverable.openData.MediaWiki;
 import firstDeliverable.openWeather.OpenWeatherMap;
 import firstDeliverable.openWeather.Weather;
 import firstDeliverable.perceptrons.PerceptronTraveler;
@@ -11,6 +14,8 @@ import java.util.Arrays;
 import java.util.ArrayList;
 
 public class City {
+    private static final String[] wikiFeatures = new String[] {"cafe","sea", "museums", "wellness center", "stadium", "bar", "park"};
+
     private float[] features;
     private String name;
     private String countryName;
@@ -81,7 +86,7 @@ public class City {
         }
     }
 
-    public float normaliseFeature(float term, int mode) {    //term==API data
+    public static float normaliseFeature(float term, int mode) {    //term==API data
         //mode defines the type of normalisation 0==Wiki, 1==Weather, 2==Clouds, 3==GeodesicDistance
         double min, max;
 
@@ -171,13 +176,36 @@ public class City {
 
     public static void setWeatherData(City[] citiesLibrary) throws IOException {
         OpenWeatherMap tempWeatherObj;
-        for (int citiesCounter=0; citiesCounter<citiesLibrary.length; citiesCounter++){
-            tempWeatherObj=OpenData.retrieveWeatherData(citiesLibrary[citiesCounter].name, citiesLibrary[citiesCounter].countryName);
-            float [] tempFeature = citiesLibrary[citiesCounter].getFeatures();
-            tempFeature[7] = (float) normaliseFeature(tempWeatherObj.getMain().getTemp(),1);
-            tempFeature[9] = (float) normaliseFeature(geodesicDistance(37.983810,23.727539, tempWeatherObj.getCoord().getLat(), tempWeatherObj.getCoord().getLon()), 3);
-            citiesLibrary[citiesCounter].setFeatures(tempFeature);
+        for (City city : citiesLibrary) {
+            tempWeatherObj = OpenData.retrieveWeatherData(city.name, city.countryName);
+            float[] tempFeatures = city.getFeatures();
+            tempFeatures[7] = (float) normaliseFeature(tempWeatherObj.getMain().getTemp(), 1);
+            tempFeatures[9] = (float) normaliseFeature(geodesicDistance(37.9795, 23.7162, tempWeatherObj.getCoord().getLat(), tempWeatherObj.getCoord().getLon()), 3);
+            city.setFeatures(tempFeatures);
+            //System.out.println("Object City:"+citiesLibrary[citiesCounter].getName()+"\ttemp: "+tempWeatherObj.getMain().getTemp() + "\tgeod: "+geodesicDistance(37.983810,23.727539, tempWeatherObj.getCoord().getLat(), tempWeatherObj.getCoord().getLon()));
         }
+    }
+
+    public static void setWikiData(City[] citiesLibrary) throws IOException {
+        for (City city : citiesLibrary) {
+            float[] tempFeatures = city.getFeatures();
+            int[] tempWikiFeatures = calcWikiFeatures(city.getName(), city.getCountryName());
+            //Normalise and copy wiki features to city's features
+            for (int featureCounter = 0; featureCounter < wikiFeatures.length; featureCounter++) {
+                tempFeatures[featureCounter] = normaliseFeature((float) tempWikiFeatures[featureCounter], 0);
+            }
+            city.setFeatures(tempFeatures);
+        }
+    }
+
+    public static int[] calcWikiFeatures (String city, String country) throws IOException {
+        MediaWiki wikiObj = OpenData.retrieveWikiData(city,country);
+        int[] tempFeature= new int[wikiFeatures.length];
+        //Count criteria for city's article
+        for (int featureCounter = 0; featureCounter < wikiFeatures.length; featureCounter++){
+            tempFeature[featureCounter]= CountWords.countCriterionfCity(wikiObj.toString(),wikiFeatures[featureCounter]);
+        }
+        return tempFeature;
     }
 
 }

@@ -16,9 +16,9 @@ public class Control {
     private final PerceptronMiddleTraveler middlePerceptron = new PerceptronMiddleTraveler();
     private final PerceptronElderTraveler elderPerceptron = new PerceptronElderTraveler();
 
-    private static final String[] cityNames = new String[]{"Athens", "London", "Brussels", "Madrid", "New York", "Paris", "Berlin",
+    private static final String[] cityNames = new String[]{"Athens", "London", "Brussels", "Madrid", "Helsinki", "Paris", "Berlin",
             "Stockholm", "Tokyo", "Rio", "Denver", "Rome", "Naples", "Milan", "Moscow"};
-    private static final String[] countryNames = new String[]{"GR", "UK", "BE", "ES", "US", "FR", "DE",
+    private static final String[] countryNames = new String[]{"GR", "UK", "BE", "ES", "FI", "FR", "DE",
             "SE", "JP", "BR", "US", "IT", "IT", "IT", "RU"};
 
     public void makeDummyData() {
