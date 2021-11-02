@@ -1,9 +1,6 @@
 package firstDeliverable;
 
-import com.fasterxml.jackson.databind.ObjectMapper;
-import firstDeliverable.openData.OpenData;
-import firstDeliverable.openWeather.OpenWeatherMap;
-import firstDeliverable.openWeather.Sys;
+
 
 import java.io.IOException;
 import java.util.ArrayList;

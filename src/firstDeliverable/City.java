@@ -1,20 +1,17 @@
 package firstDeliverable;
 
-import com.fasterxml.jackson.databind.ObjectMapper;
 import firstDeliverable.openData.CountWords;
 import firstDeliverable.openData.MediaWiki;
 import firstDeliverable.openWeather.OpenWeatherMap;
-import firstDeliverable.openWeather.Weather;
 import firstDeliverable.perceptrons.PerceptronTraveler;
 import firstDeliverable.openData.OpenData;
 
-import java.awt.font.TextMeasurer;
 import java.io.IOException;
 import java.util.Arrays;
 import java.util.ArrayList;
 
 public class City {
-    private static final String[] wikiFeatures = new String[] {"cafe","sea", "museums", "wellness center", "stadium", "bar", "park"};
+    private static final String[] wikiFeatures = new String[]{"cafe", "sea", "museums", "wellness center", "stadium", "bar", "park"};
 
     private float[] features;
     private String name;
@@ -25,13 +22,6 @@ public class City {
         this.features = features;
         this.name = name;
         this.countryName = countryName;
-    }
-
-    //Retrieving data from the OpenWeatherMap API  features[8-10]
-    public City(String name, float temperature, float geodesicDist) {
-
-        this.name = name;
-        this.features = new float[]{0F,0F,0F,0F,0F,0F,0F, temperature, 0F, geodesicDist};
     }
 
     public float[] getFeatures() {
@@ -139,7 +129,7 @@ public class City {
                 }
             }
         }
-        return  (term - min) / (max - min);
+        return (term - min) / (max - min);
     }
 
     public void normaliseFeature() {
@@ -163,8 +153,7 @@ public class City {
     public static double geodesicDistance(double lat1, double lon1, double lat2, double lon2) {        //lat==API coordinates  Code form: https://www.geodatasource.com/developers/java
         if ((lat1 == lat2) && (lon1 == lon2)) {
             return 0;
-        }
-        else {
+        } else {
             double theta = lon1 - lon2;
             double dist = Math.sin(Math.toRadians(lat1)) * Math.sin(Math.toRadians(lat2)) + Math.cos(Math.toRadians(lat1)) * Math.cos(Math.toRadians(lat2)) * Math.cos(Math.toRadians(theta));
             dist = Math.acos(dist);
@@ -198,12 +187,12 @@ public class City {
         }
     }
 
-    public static int[] calcWikiFeatures (String city, String country) throws IOException {
-        MediaWiki wikiObj = OpenData.retrieveWikiData(city,country);
-        int[] tempFeature= new int[wikiFeatures.length];
+    public static int[] calcWikiFeatures(String city, String country) throws IOException {
+        MediaWiki wikiObj = OpenData.retrieveWikiData(city, country);
+        int[] tempFeature = new int[wikiFeatures.length];
         //Count criteria for city's article
-        for (int featureCounter = 0; featureCounter < wikiFeatures.length; featureCounter++){
-            tempFeature[featureCounter]= CountWords.countCriterionfCity(wikiObj.toString(),wikiFeatures[featureCounter]);
+        for (int featureCounter = 0; featureCounter < wikiFeatures.length; featureCounter++) {
+            tempFeature[featureCounter] = CountWords.countCriterionfCity(wikiObj.toString(), wikiFeatures[featureCounter]);
         }
         return tempFeature;
     }
