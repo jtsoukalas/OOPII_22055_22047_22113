@@ -4,6 +4,7 @@ import java.io.IOException;
 import java.net.URL;
 
 import com.fasterxml.jackson.databind.ObjectMapper;
+import firstDeliverable.City;
 import firstDeliverable.openWeather.OpenWeatherMap;
 
 
@@ -45,5 +46,12 @@ public class OpenData {
         //System.out.println(city + " Wikipedia article: " + mediaWiki_obj.getQuery().getPages().get(0).getExtract());
     }
 
+
+    /*public static void main(String[] args) throws IOException {
+        RetrieveData("Rome", "it");
+        RetrieveData("Athens", "gr");
+        RetrieveData("Corfu", "gr");
+        RetrieveData("Berlin", "de");
+    }*/
 
 }
