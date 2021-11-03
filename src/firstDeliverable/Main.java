@@ -1,14 +1,18 @@
 package firstDeliverable;
 
+import firstDeliverable.exception.NoRecommendationException;
+import firstDeliverable.exception.StopRunningException;
+
 import java.util.ArrayList;
 
 public class Main {
 
     public static void main(String[] args) throws Exception {
-        Control control = new Control();
-        control.initNameCitiesLibrary();
+        try {
+            Control control = new Control();
+            control.initNameCitiesLibrary();
 
-        // Testing setWeatherData
+        /*// Testing setWeatherData
         City.setWeatherData(control.getCitiesLibrary());
         System.out.println("-Start printing data with OpenWeatherData-\n"
                 +control.cityLibraryToString()
@@ -18,23 +22,25 @@ public class Main {
         City.setWikiData(control.getCitiesLibrary());
         System.out.println("-Start printing data with OpenWikiData-\n"
                 +control.cityLibraryToString()
-                +"-End printing data-\n");
+                +"-End printing data-\n");*/
 
-        //Testing runPerceptron + recommend + retrieveCompatibleCities
-        System.out.println("-Start printing recommendation-");
-        ArrayList<City> compatibleCities;
-        if ((compatibleCities = control.runPerceptron(100))!=null){
-            for (City compatibleCity : compatibleCities) {
-                System.out.print(compatibleCity.getName()+"\t");
+            System.out.println("Please enter traveler's age");
+            int age = control.readAge();
+            try {
+                System.out.println(Control.recommendationToString(control.runPerceptron(age)));
+            } catch (NoRecommendationException e) {
+                System.err.println(e.getMessage());
             }
-        } else {
-            System.out.println("There are no recommendations at the time.");
-        }
-        System.out.println("\n-End printing dummy recommendation-\n");
 
-        //Testing unifiedDistRec
-        System.out.println("-Start printing the closest city-\n"
-                +control.retrieveName(City.unifiedDistRec(control.getYoungPerceptron(),control.getCitiesLibrary()))
-                +"\n-End printing the closest city-");
+            //Testing unifiedDistRec
+            System.out.println("-Start printing the closest city-\n"
+                    + control.retrieveName(City.unifiedDistRec(control.getYoungPerceptron(), control.getCitiesLibrary()))
+                    + "\n-End printing the closest city-");
+
+        } catch (StopRunningException e) {
+            System.err.println("The program stop running. Please come back later.");
+            throw new Exception(e);     //For debugging reasons only
+            //System.exit(-1);
+        }
     }
 }
