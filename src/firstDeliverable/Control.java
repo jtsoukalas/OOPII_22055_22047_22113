@@ -28,9 +28,9 @@ public class Control {
 
     public void initNameCitiesLibrary() {
         int cityAmount = 15;
-        String[] cityNames = new String[]{"Athens", "kkk", "Brussels", "Madrid", "Helsinki", "Paris", "Berlin",
+        String[] cityNames = new String[]{"Athens", "London", "Brussels", "Madrid", "Helsinki", "Paris", "Berlin",
                 "Stockholm", "Tokyo", "Rio", "Denver", "Rome", "Naples", "Milan", "Moscow"};
-        String[] countryNames = new String[]{"GR", "KKK", "BE", "ES", "FI", "FR", "DE",
+        String[] countryNames = new String[]{"GR", "UK", "BE", "ES", "FI", "FR", "DE",
                 "SE", "JP", "BR", "US", "IT", "IT", "IT", "RU"};
 
         citiesLibrary = new ArrayList<>();

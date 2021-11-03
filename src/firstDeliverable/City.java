@@ -1,5 +1,6 @@
 package firstDeliverable;
 
+import firstDeliverable.exception.NoRecommendationException;
 import firstDeliverable.openData.CountWords;
 import firstDeliverable.openData.MediaWiki;
 import firstDeliverable.openWeather.OpenWeatherMap;
@@ -70,7 +71,7 @@ public class City {
     public static City unifiedDistRec(PerceptronTraveler perceptron, ArrayList<City> citiesLibrary) throws Exception {
         ArrayList<City> citiesToCompare = perceptron.recommend(perceptron.retrieveCompatibleCities(citiesLibrary), citiesLibrary);
         if (citiesToCompare.size()==0){
-            throw new Exception();              //TODO custom exception if there is no recommendation
+            throw new NoRecommendationException();              //TODO custom exception if there is no recommendation
         }
         City min = new City("MaxDistance", 0, MAX_DISTANCE);
         for (City city : citiesToCompare) {
