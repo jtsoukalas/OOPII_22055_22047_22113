@@ -6,7 +6,7 @@ import java.util.ArrayList;
 
 public abstract class PerceptronTraveler implements PerceptronTravelerInterface {
 
-    /* Perceptron's weightBisas fields:
+    /* Perceptron's weightBias fields:
      * 0.cafe 1.sea, 2.museums, 3.wellness center, 4.stadium,
      * 5.bar/club, 6.parks,playgrounds, 7.temperature, 8.weather(how cloudy), 9.distance
      * Range = [-1,1] -> [Less significant, Most significant]

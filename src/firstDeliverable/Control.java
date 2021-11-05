@@ -63,7 +63,7 @@ public class Control {
         //Update Wiki and Weather data
         try {
             if (!wikiDataDownloaded) {
-                initNameCitiesLibrary();
+                initNameCitiesLibrary();                                //possibly not not needed
                 City.setWikiData(getCitiesLibrary());
                 wikiDataDownloaded = true;
             }
