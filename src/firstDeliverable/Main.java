@@ -10,21 +10,10 @@ public class Main {
             Control control = new Control("Athens", "GR");
             control.initNameCitiesLibrary();
 
-        /*// Testing setWeatherData
-        City.setWeatherData(control.getCitiesLibrary());
-        System.out.println("-Start printing data with OpenWeatherData-\n"
-                +control.cityLibraryToString()
-                +"-End printing data-\n");
-
-        // Testing setWikiData
-        City.setWikiData(control.getCitiesLibrary());
-        System.out.println("-Start printing data with OpenWikiData-\n"
-                +control.cityLibraryToString()
-                +"-End printing data-\n");*/
 
             do {
                 System.out.println("Please enter traveler's age:");
-                int age = control.readAge();
+                int age = Input.readAge();
                 try {
                     System.out.println(Control.recommendationToString(control.runPerceptron(age)));
                 } catch (NoRecommendationException e) {
@@ -32,7 +21,7 @@ public class Main {
                 }
 
                 System.out.println("Do you want to run for another traveler? (true/false)");
-            } while (control.readBoolean());
+            } while (Input.readBoolean());
 
             //Testing unifiedDistRec
             System.out.println("-Start printing the closest city-\n"
@@ -40,7 +29,7 @@ public class Main {
                     + "\n-End printing the closest city-");
 
         } catch (StopRunningException e) {
-            System.err.println("The program stop running. Please come back later.");
+            System.err.println("The program stopped running. Please come back later.");
             throw new Exception(e);     //For debugging reasons only
             //System.exit(-1);
         }

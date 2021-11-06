@@ -11,6 +11,7 @@ import firstDeliverable.perceptrons.PerceptronYoungTraveler;
 
 import java.io.FileNotFoundException;
 import java.io.IOException;
+import java.time.LocalDateTime;
 import java.util.ArrayList;
 import java.util.InputMismatchException;
 import java.util.Random;
@@ -25,7 +26,40 @@ public class Control {
     private final PerceptronElderTraveler elderPerceptron = new PerceptronElderTraveler();
 
     private static boolean wikiDataDownloaded = false;
+    private static LocalDateTime weatherDataDownloadTime;
     public static float officeLon, officeLat;
+
+
+    public Control(String officeCity, String officeCountry) throws IOException {
+        OpenWeatherMap tempWeatherObj = OpenData.retrieveWeatherData(officeCity, officeCountry);
+        Control.officeLat = (float) tempWeatherObj.getCoord().getLat();
+        Control.officeLon = (float) tempWeatherObj.getCoord().getLon();
+    }
+
+    public Control() {
+        String officeCity, officeCountry;
+        Scanner input = new Scanner(System.in);
+        boolean retry;
+
+        System.out.println("Welcome to the session!");
+        do {
+            retry = false;
+            System.out.println("Please enter your current location (city):");
+            officeCity = input.next();
+            System.out.println("Please enter the country's ISO:");
+            officeCountry = input.next();
+            try {
+                new Control(officeCity, officeCountry);
+            } catch (FileNotFoundException e) {
+                System.err.println("Error! There is no such city at " + officeCountry + ". Please try again.");
+                retry = true;
+            } catch (IOException e2) {
+                System.err.println("Error! Please check your internet connection and try again.");
+                retry = true;
+            }
+        } while (retry);
+    }
+
 
     public void initNameCitiesLibrary() {
         int cityAmount = 15;
@@ -64,10 +98,22 @@ public class Control {
         //Update Wiki and Weather data
         try {
             if (!wikiDataDownloaded) {
-                initNameCitiesLibrary();                                //possibly not not needed
+                initNameCitiesLibrary();
                 City.setWikiData(getCitiesLibrary());
                 wikiDataDownloaded = true;
             }
+
+            if(weatherDataDownloadTime == null){
+                City.setWeatherData(getCitiesLibrary());
+                weatherDataDownloadTime = LocalDateTime.now();
+            }else{
+                if (weatherDataDownloadTime.plusHours(1L).isBefore(LocalDateTime.now())){
+                    City.setWeatherData(getCitiesLibrary());
+                    weatherDataDownloadTime = LocalDateTime.now();
+                }
+            }
+
+
             City.setWeatherData(getCitiesLibrary());
         } catch (FileNotFoundException e) {
             System.err.println("Error! Can not download data form the internet. Please try again later.");
@@ -94,10 +140,10 @@ public class Control {
             }
         }
         //Run perceptron
-        System.out.println(cityLibraryToString());  //FIXME 4 debugging
         return casePerceptron.recommend(casePerceptron.retrieveCompatibleCities(citiesLibrary), citiesLibrary);
     }
 
+    /*
     public String cityLibraryToString() {
         StringBuilder returnCityCatalogue = new StringBuilder();
         for (City city : citiesLibrary) {
@@ -105,6 +151,8 @@ public class Control {
         }
         return returnCityCatalogue.toString();
     }
+    */
+
 
     public static String recommendationToString(ArrayList<City> compatibleCities) throws NoRecommendationException {
         if (compatibleCities.isEmpty()) {
@@ -144,67 +192,4 @@ public class Control {
         return elderPerceptron;
     }
 
-
-    public Control() {
-        String officeCity, officeCountry;
-        Scanner input = new Scanner(System.in);
-        boolean retry;
-
-        System.out.println("Welcome to the session!");
-        do {
-            retry = false;
-            System.out.println("Please enter your current location (city):");
-            officeCity = input.next();
-            System.out.println("Please enter the country's ISO:");
-            officeCountry = input.next();
-            try {
-                new Control(officeCity, officeCountry);
-            } catch (FileNotFoundException e) {
-                System.err.println("Error! There is no such city at " + officeCountry + ". Please try again.");
-                retry = true;
-            } catch (IOException e2) {
-                System.err.println("Error! Please check your internet connection and try again.");
-                retry = true;
-            }
-        } while (retry);
-    }
-
-    public Control(String officeCity, String officeCountry) throws IOException {
-        OpenWeatherMap tempWeatherObj = OpenData.retrieveWeatherData(officeCity, officeCountry);
-        Control.officeLat = (float) tempWeatherObj.getCoord().getLat();
-        Control.officeLon = (float) tempWeatherObj.getCoord().getLon();
-    }
-
-    public int readAge() {
-        boolean retry;
-        int age;
-
-        do {
-            age = Input.readInt("Be careful age should be integer");
-            retry = false;
-            if (age < 15 || age > 115) {
-                System.err.println("Error! The program accepts ages from 15 to 115. Please try again.");
-                retry = true;
-            }
-        } while (retry);
-        return age;
-    }
-
-    public boolean readBoolean() {
-        boolean retry;
-        boolean answer = false;
-
-        Scanner scanner = new Scanner(System.in);
-        do {
-            try {
-                answer = scanner.nextBoolean();
-                retry = false;
-            } catch (InputMismatchException e) {
-                System.err.println("Be careful true or false needed. Please try again: ");
-                scanner.next();
-                retry = true;
-            }
-        } while (retry);
-        return answer;
-    }
 }

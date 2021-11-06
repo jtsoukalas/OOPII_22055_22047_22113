@@ -51,7 +51,6 @@ public abstract class PerceptronTraveler implements PerceptronTravelerInterface 
                 recommendation.set(cityCounter, tempCity);
             }
         }
-
         //recommendation.replaceAll(String::toUpperCase);
         return recommendation;
     }
