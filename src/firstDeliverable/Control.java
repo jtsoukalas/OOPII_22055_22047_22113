@@ -12,6 +12,7 @@ import firstDeliverable.perceptrons.PerceptronYoungTraveler;
 import java.io.FileNotFoundException;
 import java.io.IOException;
 import java.util.ArrayList;
+import java.util.InputMismatchException;
 import java.util.Random;
 import java.util.Scanner;
 
@@ -93,7 +94,8 @@ public class Control {
             }
         }
         //Run perceptron
-        return casePerceptron.recommend(youngPerceptron.retrieveCompatibleCities(citiesLibrary), citiesLibrary);
+        System.out.println(cityLibraryToString());  //FIXME 4 debugging
+        return casePerceptron.recommend(casePerceptron.retrieveCompatibleCities(citiesLibrary), citiesLibrary);
     }
 
     public String cityLibraryToString() {
@@ -104,16 +106,17 @@ public class Control {
         return returnCityCatalogue.toString();
     }
 
-    public static String recommendationToString (ArrayList<City> compatibleCities ) throws NoRecommendationException {
-        StringBuilder recommendation = new StringBuilder();
-        try {
-            for (City compatibleCity : compatibleCities) {
-                recommendation.append(compatibleCity.getName()).append("\t");
-            }
-            return recommendation.toString();
-        } catch (NullPointerException e) {
+    public static String recommendationToString(ArrayList<City> compatibleCities) throws NoRecommendationException {
+        if (compatibleCities.isEmpty()) {
             throw new NoRecommendationException();
         }
+
+        StringBuilder recommendation = new StringBuilder();
+
+        for (City compatibleCity : compatibleCities) {
+            recommendation.append(compatibleCity.getName()).append("\t");
+        }
+        return recommendation.toString();
     }
 
     public ArrayList<City> getCitiesLibrary() {
@@ -141,10 +144,6 @@ public class Control {
         return elderPerceptron;
     }
 
-    public Control(float officeLon, float officeLat) {
-        Control.officeLon = officeLon;
-        Control.officeLat = officeLat;
-    }
 
     public Control() {
         String officeCity, officeCountry;
@@ -159,17 +158,21 @@ public class Control {
             System.out.println("Please enter the country's ISO:");
             officeCountry = input.next();
             try {
-                OpenWeatherMap tempWeatherObj = OpenData.retrieveWeatherData(officeCity, officeCountry);
-                Control.officeLat = (float) tempWeatherObj.getCoord().getLat();
-                Control.officeLon = (float) tempWeatherObj.getCoord().getLon();
+                new Control(officeCity, officeCountry);
             } catch (FileNotFoundException e) {
-                System.err.println("Error! There is no such country. Please try again.");
+                System.err.println("Error! There is no such city at " + officeCountry + ". Please try again.");
                 retry = true;
             } catch (IOException e2) {
                 System.err.println("Error! Please check your internet connection and try again.");
                 retry = true;
             }
         } while (retry);
+    }
+
+    public Control(String officeCity, String officeCountry) throws IOException {
+        OpenWeatherMap tempWeatherObj = OpenData.retrieveWeatherData(officeCity, officeCountry);
+        Control.officeLat = (float) tempWeatherObj.getCoord().getLat();
+        Control.officeLon = (float) tempWeatherObj.getCoord().getLon();
     }
 
     public int readAge() {
@@ -185,5 +188,23 @@ public class Control {
             }
         } while (retry);
         return age;
+    }
+
+    public boolean readBoolean() {
+        boolean retry;
+        boolean answer = false;
+
+        Scanner scanner = new Scanner(System.in);
+        do {
+            try {
+                answer = scanner.nextBoolean();
+                retry = false;
+            } catch (InputMismatchException e) {
+                System.err.println("Be careful true or false needed. Please try again: ");
+                scanner.next();
+                retry = true;
+            }
+        } while (retry);
+        return answer;
     }
 }

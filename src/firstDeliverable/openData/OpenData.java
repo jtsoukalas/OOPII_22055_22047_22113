@@ -1,5 +1,6 @@
 package firstDeliverable.openData;
 
+import java.io.FileNotFoundException;
 import java.io.IOException;
 import java.net.URL;
 
@@ -33,7 +34,7 @@ public class OpenData {
 
     }*/
 
-    public static OpenWeatherMap retrieveWeatherData(String city, String country) throws IOException{
+    public static OpenWeatherMap retrieveWeatherData(String city, String country) throws IOException {
         ObjectMapper mapper = new ObjectMapper();
         return mapper.readValue(new URL("http://api.openweathermap.org/data/2.5/weather?q=" + city + "," + country + "&APPID=" + appid + ""), OpenWeatherMap.class);
     }

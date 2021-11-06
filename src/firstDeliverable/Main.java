@@ -3,13 +3,11 @@ package firstDeliverable;
 import firstDeliverable.exception.NoRecommendationException;
 import firstDeliverable.exception.StopRunningException;
 
-import java.util.ArrayList;
-
 public class Main {
 
     public static void main(String[] args) throws Exception {
         try {
-            Control control = new Control();
+            Control control = new Control("Athens", "GR");
             control.initNameCitiesLibrary();
 
         /*// Testing setWeatherData
@@ -24,13 +22,17 @@ public class Main {
                 +control.cityLibraryToString()
                 +"-End printing data-\n");*/
 
-            System.out.println("Please enter traveler's age");
-            int age = control.readAge();
-            try {
-                System.out.println(Control.recommendationToString(control.runPerceptron(age)));
-            } catch (NoRecommendationException e) {
-                System.err.println(e.getMessage());
-            }
+            do {
+                System.out.println("Please enter traveler's age:");
+                int age = control.readAge();
+                try {
+                    System.out.println(Control.recommendationToString(control.runPerceptron(age)));
+                } catch (NoRecommendationException e) {
+                    System.err.println(e.getMessage());
+                }
+
+                System.out.println("Do you want to run for another traveler? (true/false)");
+            } while (control.readBoolean());
 
             //Testing unifiedDistRec
             System.out.println("-Start printing the closest city-\n"

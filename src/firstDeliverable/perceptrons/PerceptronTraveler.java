@@ -13,16 +13,16 @@ public abstract class PerceptronTraveler implements PerceptronTravelerInterface 
      */
     //TODO Review weights and biases
     private final float[] weightsBias;
-    private final int bias;
+    private final float bias;
 
-    public PerceptronTraveler(float[] weightsBias, int bias) {
+    public PerceptronTraveler(float[] weightsBias, float bias) {
         this.weightsBias = weightsBias;
         this.bias = bias;
     }
 
     public PerceptronTraveler(float cafeRestaurant, float sea, float museum, float wellnessCenter,
                               float stadium, float barClub, float parksPlaygrounds, float temperature,
-                              float weather, float distance, int bias) {
+                              float weather, float distance, float bias) {
         this(new float[]{cafeRestaurant, sea, museum, wellnessCenter, stadium,
                 barClub, parksPlaygrounds, temperature, weather, distance}, bias);
     }
