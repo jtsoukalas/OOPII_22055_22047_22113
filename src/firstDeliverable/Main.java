@@ -25,7 +25,7 @@ public class Main {
 
             //Testing unifiedDistRec
             System.out.println("-Start printing the closest city-\n"
-                    + control.retrieveName(City.unifiedDistRec(control.getYoungPerceptron(), control.getCitiesLibrary()))
+                    + control.retrieveName(City.unifiedDistRec(Control.getLastPerceptron(), control.getCitiesLibrary()))
                     + "\n-End printing the closest city-");
 
         } catch (StopRunningException e) {

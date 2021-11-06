@@ -12,7 +12,7 @@ import java.util.Arrays;
 import java.util.ArrayList;
 
 public class City {
-    private static final String[] wikiFeatures = new String[]{"cafe", "sea", "museums", "wellness center", "stadium", "bar", "park"};
+    private static final String[] wikiFeatures = new String[]{"cafe", "sea", "museums", "temple",adium", "bar", "park"};
     private static final float MAX_DISTANCE = 9517;             //Athens - Sydney distance
 
     private float[] features;
@@ -25,11 +25,9 @@ public class City {
         this.countryName = countryName;
     }
 
-    //Retrieving data from the OpenWeatherMap API  features[8-10]
-    public City(String name, float temperature, float geodesicDist) {
-
-        this.name = name;
-        this.features = new float[]{0F, 0F, 0F, 0F, 0F, 0F, 0F, temperature, 0F, geodesicDist};
+    //Retrieving data from the OpenWeatherMap API features[10]
+    public City(float geodesicDist) {
+        this.features = new float[]{0F, 0F, 0F, 0F, 0F, 0F, 0F, 0F, 0F, geodesicDist};
     }
 
     public City(String name, String countryName) {
@@ -73,9 +71,9 @@ public class City {
         if (citiesToCompare.isEmpty()){
             throw new NoRecommendationException();
         }
-        City min = new City("MaxDistance", 0, MAX_DISTANCE);
+        City min = new City(MAX_DISTANCE);
         for (City city : citiesToCompare) {
-            if (min.getFeatures()[9] > city.getFeatures()[9] || city.getFeatures()[9] != 0) {
+            if (min.getFeatures()[9] > city.getFeatures()[9] && city.getFeatures()[9] != 0) {
                 min = city;
             }
         }
@@ -155,7 +153,7 @@ public class City {
             //Setting normalised data at feature[] of city object
             tempFeatures[7] = normaliseFeature((float) tempWeatherObj.getMain().getTemp(), 1);
             tempFeatures[8] = normaliseFeature((float) tempWeatherObj.getClouds().getAll(), 2);
-            tempFeatures[9] = normaliseFeature((float) geodesicDistance(Control.officeLat, Control.officeLon, tempWeatherObj.getCoord().getLat(), tempWeatherObj.getCoord().getLon()), 3);
+            tempFeatures[9] = normaliseFeature((float) geodesicDistance(Control.getOfficeLat(), Control.getOfficeLon(), tempWeatherObj.getCoord().getLat(), tempWeatherObj.getCoord().getLon()), 3);
             city.setFeatures(tempFeatures);
         }
     }

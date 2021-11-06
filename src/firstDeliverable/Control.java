@@ -13,7 +13,6 @@ import java.io.FileNotFoundException;
 import java.io.IOException;
 import java.time.LocalDateTime;
 import java.util.ArrayList;
-import java.util.InputMismatchException;
 import java.util.Random;
 import java.util.Scanner;
 
@@ -24,10 +23,11 @@ public class Control {
     private final PerceptronYoungTraveler youngPerceptron = new PerceptronYoungTraveler();
     private final PerceptronMiddleTraveler middlePerceptron = new PerceptronMiddleTraveler();
     private final PerceptronElderTraveler elderPerceptron = new PerceptronElderTraveler();
+    private static PerceptronTraveler lastPerceptron;
 
     private static boolean wikiDataDownloaded = false;
     private static LocalDateTime weatherDataDownloadTime;
-    public static float officeLon, officeLat;
+    private static float officeLon, officeLat;
 
 
     public Control(String officeCity, String officeCountry) throws IOException {
@@ -139,6 +139,7 @@ public class Control {
                 }
             }
         }
+        lastPerceptron = casePerceptron;
         //Run perceptron
         return casePerceptron.recommend(casePerceptron.retrieveCompatibleCities(citiesLibrary), citiesLibrary);
     }
@@ -192,4 +193,15 @@ public class Control {
         return elderPerceptron;
     }
 
+    public static PerceptronTraveler getLastPerceptron() {
+        return lastPerceptron;
+    }
+
+    public static float getOfficeLon() {
+        return officeLon;
+    }
+
+    public static float getOfficeLat() {
+        return officeLat;
+    }
 }
