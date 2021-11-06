@@ -173,13 +173,6 @@ public class Control {
     }
 
 
-    public String retrieveName(City city) {
-        try {
-            return city.getName();
-        } catch (NullPointerException e) {
-            return null;
-        }
-    }
 
     public PerceptronYoungTraveler getYoungPerceptron() {
         return youngPerceptron;

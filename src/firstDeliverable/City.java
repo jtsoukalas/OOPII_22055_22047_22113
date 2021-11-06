@@ -12,12 +12,13 @@ import java.util.Arrays;
 import java.util.ArrayList;
 
 public class City {
-    private static final String[] wikiFeatures = new String[]{"cafe", "sea", "museums", "temple",adium", "bar", "park"};
+    private static final String[] wikiFeatures = new String[]{"cafe", "sea", "museum", "temple","stadium", "bar", "park"};
     private static final float MAX_DISTANCE = 9517;             //Athens - Sydney distance
 
     private float[] features;
     private String name;
     private String countryName;
+
 
     public City(float[] features, String name, String countryName) {
         this.features = features;
@@ -67,7 +68,8 @@ public class City {
     }
 
     public static City unifiedDistRec(PerceptronTraveler perceptron, ArrayList<City> citiesLibrary) throws Exception {
-        ArrayList<City> citiesToCompare = perceptron.recommend(perceptron.retrieveCompatibleCities(citiesLibrary), citiesLibrary);
+        ArrayList <City>citiesToCompare = perceptron.getLastRecommendation();
+
         if (citiesToCompare.isEmpty()){
             throw new NoRecommendationException();
         }

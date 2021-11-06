@@ -15,18 +15,16 @@ public class Main {
                 System.out.println("Please enter traveler's age:");
                 int age = Input.readAge();
                 try {
-                    System.out.println(Control.recommendationToString(control.runPerceptron(age)));
+                    System.out.println("Recommendations: " + Control.recommendationToString(control.runPerceptron(age)));
                 } catch (NoRecommendationException e) {
                     System.err.println(e.getMessage());
                 }
 
-                System.out.println("Do you want to run for another traveler? (true/false)");
+                System.out.println("Next traveler? (true/false)");
             } while (Input.readBoolean());
 
             //Testing unifiedDistRec
-            System.out.println("-Start printing the closest city-\n"
-                    + control.retrieveName(City.unifiedDistRec(Control.getLastPerceptron(), control.getCitiesLibrary()))
-                    + "\n-End printing the closest city-");
+            System.out.println("Closest City is: " + (City.unifiedDistRec(Control.getLastPerceptron(), control.getCitiesLibrary()).getName()));
 
         } catch (StopRunningException e) {
             System.err.println("The program stopped running. Please come back later.");
