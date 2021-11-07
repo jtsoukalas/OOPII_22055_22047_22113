@@ -24,7 +24,7 @@ public class Main {
             } while (Input.readBoolean());
 
             //Testing unifiedDistRec
-            System.out.println("Closest City is: " + (City.unifiedDistRec(Control.getLastPerceptron(), control.getCitiesLibrary()).getName()));
+            System.out.println("Closest City is: " + (City.unifiedDistRec(Control.getLastPerceptronUsed()).getName()));
 
         } catch (StopRunningException e) {
             System.err.println("The program stopped running. Please come back later.");

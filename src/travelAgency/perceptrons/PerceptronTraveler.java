@@ -1,6 +1,7 @@
 package travelAgency.perceptrons;
 
 import travelAgency.City;
+import travelAgency.exception.CitiesLibraryEmptyException;
 
 import java.util.ArrayList;
 
@@ -11,7 +12,7 @@ public abstract class PerceptronTraveler implements PerceptronTravelerInterface 
      * 5.bar, 6.park 7.temperature, 8.weather(how cloudy), 9.distance
      * Range = [-1,1] -> [Less significant, Most significant]
      */
-    //TODO Review weights and biases
+
     private final float[] weightsBias;
     private final float bias;
     private ArrayList<City> lastRecommendation;
@@ -27,47 +28,52 @@ public abstract class PerceptronTraveler implements PerceptronTravelerInterface 
         this(new float[]{cafe, sea, museum, temple, stadium, bar, park, temperature, weather, distance}, bias);
     }
 
-    public float[] getWeightsBias() {
-        return weightsBias;
-    }
-
+    //TODO We can combine recommend and retrieveCompatibleCities methods
+    //Returns an ArrayList with the cities that have a positive rate from the retrieveCompatibleCities method
     public ArrayList<City> recommend(boolean[] compatibleCities, ArrayList<City> citiesLibrary) {
-        ArrayList<City> recommendations = new ArrayList<>();
-        for (int cityCounter = 0; cityCounter < compatibleCities.length; cityCounter++) {
-            if (compatibleCities[cityCounter] && citiesLibrary.get(cityCounter).getFeatures()[9] != 0) {
-                recommendations.add(citiesLibrary.get(cityCounter));
+        ArrayList<City> recommendation = new ArrayList<>();
+        for (int cityIndex = 0; cityIndex < compatibleCities.length; cityIndex++) {
+            if (compatibleCities[cityIndex] && citiesLibrary.get(cityIndex).getFeatures()[9] != 0) {
+                recommendation.add(citiesLibrary.get(cityIndex));
             }
         }
-        lastRecommendation = recommendations;
-        return recommendations;
+        lastRecommendation = recommendation;
+        return recommendation;
     }
 
     public ArrayList<City> recommend(boolean[] compatibleCities, ArrayList<City> citiesLibrary, boolean uppercase) {
         ArrayList<City> recommendation = recommend(compatibleCities, citiesLibrary);
 
         if (uppercase) {
-            for (int cityCounter = 0; cityCounter < compatibleCities.length; cityCounter++) {
-                City tempCity = citiesLibrary.get(cityCounter);
+            for (int cityIndex = 0; cityIndex < compatibleCities.length; cityIndex++) {
+                City tempCity = citiesLibrary.get(cityIndex);
                 tempCity.setName(tempCity.getName().toUpperCase());
-                recommendation.set(cityCounter, tempCity);
+                recommendation.set(cityIndex, tempCity);
             }
         }
         return recommendation;
     }
 
+    //Calculates city's rate and returns the result of Heaviside step
+    public boolean[] retrieveCompatibleCities(ArrayList<City> citiesLibrary) throws CitiesLibraryEmptyException {
+        if (citiesLibrary.isEmpty()){
+            throw new CitiesLibraryEmptyException();
+        }
 
-    public boolean[] retrieveCompatibleCities(ArrayList<City> citiesLibrary) {
         boolean[] approvedCities = new boolean[citiesLibrary.size()];
-
-        for (int cityCounter = 0; cityCounter < approvedCities.length; cityCounter++) {
+        for (int cityIndex = 0; cityIndex < approvedCities.length; cityIndex++) {
             float sum = 0;
-            for (int featureCounter = 0; featureCounter < 10; featureCounter++) {
-                sum += citiesLibrary.get(cityCounter).getFeatures()[featureCounter] * weightsBias[featureCounter];
+            for (int featureIndex = 0; featureIndex < 10; featureIndex++) {
+                sum += citiesLibrary.get(cityIndex).getFeatures()[featureIndex] * weightsBias[featureIndex];
             }
             sum += bias;
-            approvedCities[cityCounter] = sum > 0;
+            approvedCities[cityIndex] = sum > 0;
         }
         return approvedCities;
+    }
+
+    public float[] getWeightsBias() {
+        return weightsBias;
     }
 
     public ArrayList<City> getLastRecommendation() {

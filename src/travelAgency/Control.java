@@ -1,5 +1,6 @@
 package travelAgency;
 
+import travelAgency.exception.CitiesLibraryEmptyException;
 import travelAgency.exception.NoRecommendationException;
 import travelAgency.exception.StopRunningException;
 import travelAgency.openData.OpenData;
@@ -23,10 +24,11 @@ public class Control {
     private final PerceptronYoungTraveler youngPerceptron = new PerceptronYoungTraveler();
     private final PerceptronMiddleTraveler middlePerceptron = new PerceptronMiddleTraveler();
     private final PerceptronElderTraveler elderPerceptron = new PerceptronElderTraveler();
-    private static PerceptronTraveler lastPerceptron;
+    private static PerceptronTraveler lastPerceptronUsed;
 
     private static boolean wikiDataDownloaded = false;
     private static LocalDateTime weatherDataDownloadTime;
+
     private static float officeLon, officeLat;
 
 
@@ -69,8 +71,8 @@ public class Control {
                 "SE", "JP", "BR", "US", "IT", "IT", "IT", "RU"};
 
         citiesLibrary = new ArrayList<>();
-        for (int citiesCounter = 0; citiesCounter < cityAmount; citiesCounter++) {
-            citiesLibrary.add(new City(cityNames[citiesCounter], countryNames[citiesCounter]));
+        for (int cityIndex = 0; cityIndex < cityAmount; cityIndex++) {
+            citiesLibrary.add(new City(cityNames[cityIndex], countryNames[cityIndex]));
         }
     }
 
@@ -80,8 +82,8 @@ public class Control {
 
         initNameCitiesLibrary();
         City tempCity;
-        for (int cityCounter = 0; cityCounter < cityAmount; cityCounter++) {
-            tempCity = citiesLibrary.remove(cityCounter);
+        for (int cityIndex = 0; cityIndex < cityAmount; cityIndex++) {
+            tempCity = citiesLibrary.remove(cityIndex);
             tempCity.setFeatures(new float[]{(float) rand.nextInt(10), (float) rand.nextInt(10),
                     (float) rand.nextInt(10), (float) rand.nextInt(10),
                     (float) rand.nextInt(10), (float) rand.nextInt(10),
@@ -94,38 +96,50 @@ public class Control {
         }
     }
 
-    public ArrayList<City> runPerceptron(int age) throws StopRunningException, IllegalArgumentException {   //FIXME
-        //Update Wiki and Weather data
+    public ArrayList<City> runPerceptron(int age) throws StopRunningException, IllegalArgumentException {
+        //Update Wiki and Weather data if needed
         try {
-            if (!wikiDataDownloaded) {
+            if (!wikiDataDownloaded) {                              //Downloads wiki data once
                 initNameCitiesLibrary();
                 City.setWikiData(getCitiesLibrary());
                 wikiDataDownloaded = true;
             }
 
-            if(weatherDataDownloadTime == null){
-                City.setWeatherData(getCitiesLibrary());
-                weatherDataDownloadTime = LocalDateTime.now();
-            }else{
-                if (weatherDataDownloadTime.plusHours(1L).isBefore(LocalDateTime.now())){
+            boolean downloadWeatherData = false;                    //Downloads weather data if 1 hour has elapsed since the last download
+            try {
+                if(weatherDataDownloadTime.plusHours(1).isBefore(LocalDateTime.now())){
+                    downloadWeatherData =true;
+                }
+            } catch (NullPointerException e){
+                    downloadWeatherData =true;
+            } finally{
+                if (downloadWeatherData){
                     City.setWeatherData(getCitiesLibrary());
                     weatherDataDownloadTime = LocalDateTime.now();
                 }
             }
-
-
-            City.setWeatherData(getCitiesLibrary());
+            /*if(weatherDataDownloadTime == null){
+                City.setWeatherData(getCitiesLibrary());
+                weatherDataDownloadTime = LocalDateTime.now();
+            }else{
+                if (weatherDataDownloadTime.plusHours(1).isBefore(LocalDateTime.now())){
+                    City.setWeatherData(getCitiesLibrary());
+                    weatherDataDownloadTime = LocalDateTime.now();
+                }
+            }*/
         } catch (FileNotFoundException e) {
             System.err.println("Error! Can not download data form the internet. Please try again later.");
             throw new StopRunningException(e);
-        } catch (IOException e2) {
+        } catch (IOException e) {
             System.err.println("Error! Please check your internet connection and try again.");
-            throw new StopRunningException(e2);
+            throw new StopRunningException(e);
+        } catch (CitiesLibraryEmptyException e) {
+            System.err.println(e.getMessage());
+            throw new StopRunningException(e);
         }
 
         //Choose suitable perceptron
         PerceptronTraveler casePerceptron;
-
         if (age >= 15 && age < 25) {             //Young traveller
             casePerceptron = youngPerceptron;
         } else {
@@ -139,12 +153,16 @@ public class Control {
                 }
             }
         }
-        lastPerceptron = casePerceptron;
+        lastPerceptronUsed = casePerceptron;
         //Run perceptron
-        return casePerceptron.recommend(casePerceptron.retrieveCompatibleCities(citiesLibrary), citiesLibrary);
+        try{
+            return casePerceptron.recommend(casePerceptron.retrieveCompatibleCities(citiesLibrary), citiesLibrary);
+        } catch (CitiesLibraryEmptyException e) {
+            System.err.println(e.getMessage());
+            throw new StopRunningException(e);
+        }
     }
 
-    /*
     public String cityLibraryToString() {
         StringBuilder returnCityCatalogue = new StringBuilder();
         for (City city : citiesLibrary) {
@@ -152,8 +170,6 @@ public class Control {
         }
         return returnCityCatalogue.toString();
     }
-    */
-
 
     public static String recommendationToString(ArrayList<City> compatibleCities) throws NoRecommendationException {
         if (compatibleCities.isEmpty()) {
@@ -161,7 +177,6 @@ public class Control {
         }
 
         StringBuilder recommendation = new StringBuilder();
-
         for (City compatibleCity : compatibleCities) {
             recommendation.append(compatibleCity.getName()).append("\t");
         }
@@ -172,22 +187,8 @@ public class Control {
         return citiesLibrary;
     }
 
-
-
-    public PerceptronYoungTraveler getYoungPerceptron() {
-        return youngPerceptron;
-    }
-
-    public PerceptronMiddleTraveler getMiddlePerceptron() {
-        return middlePerceptron;
-    }
-
-    public PerceptronElderTraveler getElderPerceptron() {
-        return elderPerceptron;
-    }
-
-    public static PerceptronTraveler getLastPerceptron() {
-        return lastPerceptron;
+    public static PerceptronTraveler getLastPerceptronUsed() {
+        return lastPerceptronUsed;
     }
 
     public static float getOfficeLon() {
