@@ -43,7 +43,7 @@ public class Control {
         Scanner input = new Scanner(System.in);
         boolean retry;
 
-        System.out.println("Welcome to the session!");
+        System.out.println("Welcome to the Travel Agency app!");
         do {
             retry = false;
             System.out.println("Please enter your current location (city):");
@@ -100,6 +100,7 @@ public class Control {
         //Update Wiki and Weather data if needed
         try {
             if (!wikiDataDownloaded) {                              //Downloads wiki data once
+                System.out.println("-Downloading data from the web, please wait-");
                 initNameCitiesLibrary();
                 City.setWikiData(getCitiesLibrary());
                 wikiDataDownloaded = true;
@@ -169,7 +170,7 @@ public class Control {
 
         StringBuilder recommendation = new StringBuilder();
         for (City compatibleCity : compatibleCities) {
-            recommendation.append(compatibleCity.getName()).append("\t");
+            recommendation.append(compatibleCity.getName()).append(" | ");
         }
         return recommendation.toString();
     }

@@ -7,9 +7,7 @@ public class Main {
 
     public static void main(String[] args) throws Exception {
         try {
-            Control control = new Control("Athens", "GR");
-            control.initNameCitiesLibrary();
-
+            Control control = new Control();
 
             do {
                 System.out.println("Please enter traveler's age:");
