@@ -118,15 +118,6 @@ public class Control {
                     weatherDataDownloadTime = LocalDateTime.now();
                 }
             }
-            /*if(weatherDataDownloadTime == null){
-                City.setWeatherData(getCitiesLibrary());
-                weatherDataDownloadTime = LocalDateTime.now();
-            }else{
-                if (weatherDataDownloadTime.plusHours(1).isBefore(LocalDateTime.now())){
-                    City.setWeatherData(getCitiesLibrary());
-                    weatherDataDownloadTime = LocalDateTime.now();
-                }
-            }*/
         } catch (FileNotFoundException e) {
             System.err.println("Error! Can not download data form the internet. Please try again later.");
             throw new StopRunningException(e);

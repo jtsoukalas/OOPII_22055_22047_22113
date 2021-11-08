@@ -52,8 +52,9 @@ public class City {
         return min;
     }
 
-    //Normalise specific feature (term). Mode defines the type of normalisation:
-    // 0==Wiki, 1==Weather, 2==Clouds, 3==GeodesicDistance
+    /* Normalise specific feature (term). Mode defines the type of normalisation:
+     * 0==Wiki, 1==Weather, 2==Clouds, 3==GeodesicDistance
+     */
     public static float normaliseFeature(float term, int mode) {
         float min, max;
 
