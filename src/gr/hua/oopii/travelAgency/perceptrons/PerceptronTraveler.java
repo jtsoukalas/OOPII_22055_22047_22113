@@ -28,7 +28,6 @@ public abstract class PerceptronTraveler implements PerceptronTravelerInterface 
         this(new float[]{cafe, sea, museum, temple, stadium, bar, park, temperature, weather, distance}, bias);
     }
 
-    //TODO We can combine recommend and retrieveCompatibleCities methods
     //Returns an ArrayList with the cities that have a positive rate from the retrieveCompatibleCities method
     public ArrayList<City> recommend(boolean[] compatibleCities, ArrayList<City> citiesLibrary) {
         ArrayList<City> recommendation = new ArrayList<>();
