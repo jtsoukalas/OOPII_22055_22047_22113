@@ -8,19 +8,20 @@ public abstract class Input {
     public static int readInt(String errorMessage){
         int answer=-1;
         boolean retry;
-        Scanner input = new Scanner (System.in);
+        Scanner scanner = new Scanner (System.in);
 
         do{
             try{
-                answer=input.nextInt();
+                answer= scanner.nextInt();
                 retry=false;
             } catch (Exception e){
                 System.err.print(errorMessage+"\nPlease try again:");
-                input.next();
+                scanner.next();
                 retry=true;
             }
         } while (retry);
 
+        scanner.close();
         return answer;
     }
 
@@ -39,6 +40,7 @@ public abstract class Input {
                 retry = true;
             }
         } while (retry);
+        scanner.close();
         return answer;
     }
 
