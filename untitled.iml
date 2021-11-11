@@ -26,6 +26,7 @@
           <root url="file://$MODULE_DIR$/../OpenData/jars" />
           <root url="jar://$USER_HOME$/.ideaLibSources/jackson-databind-2.9.8-sources.jar!/" />
           <root url="jar://$USER_HOME$/.ideaLibSources/jackson-core-2.9.8-sources.jar!/" />
+          <root url="jar://$USER_HOME$/.ideaLibSources/jackson-annotations-2.9.8-sources.jar!/" />
         </SOURCES>
         <jarDirectory url="file://$MODULE_DIR$/../OpenData/jars" recursive="false" />
         <jarDirectory url="file://$MODULE_DIR$/../OpenData/jars" recursive="false" type="SOURCES" />
@@ -75,6 +76,15 @@
         </SOURCES>
         <jarDirectory url="file://$USER_HOME$/Downloads/OOPII-master/OOPII-master/jars" recursive="false" />
         <jarDirectory url="file://$USER_HOME$/Downloads/OOPII-master/OOPII-master/jars" recursive="false" type="SOURCES" />
+      </library>
+    </orderEntry>
+    <orderEntry type="module-library">
+      <library>
+        <CLASSES>
+          <root url="jar://$USER_HOME$/Downloads/guava-13.0-rc1.jar!/" />
+        </CLASSES>
+        <JAVADOC />
+        <SOURCES />
       </library>
     </orderEntry>
   </component>
