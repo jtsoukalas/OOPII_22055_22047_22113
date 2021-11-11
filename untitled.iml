@@ -34,7 +34,7 @@
     <orderEntry type="module-library">
       <library>
         <CLASSES>
-          <root url="jar://$USER_HOME$/Downloads/WikiInAJar-0.8-20081128-bin/wiki.in.a.jar/wiki.in.a.jar!/" />
+          <root url="file://$USER_HOME$/Downloads/OpenData-master/OpenData-master/jars" />
         </CLASSES>
         <JAVADOC />
         <SOURCES />
@@ -47,7 +47,34 @@
           <root url="jar://$MAVEN_REPOSITORY$/org/hamcrest/hamcrest-core/1.3/hamcrest-core-1.3.jar!/" />
         </CLASSES>
         <JAVADOC />
-        <SOURCES />
+        <SOURCES>
+          <root url="file://$USER_HOME$/Downloads/OpenData-master/OpenData-master/jars" />
+        </SOURCES>
+        <jarDirectory url="file://$USER_HOME$/Downloads/OpenData-master/OpenData-master/jars" recursive="false" type="SOURCES" />
+      </library>
+    </orderEntry>
+    <orderEntry type="module-library">
+      <library>
+        <CLASSES>
+          <root url="file://$USER_HOME$/Downloads/OOPII-master/OOPII-master/jars" />
+        </CLASSES>
+        <JAVADOC>
+          <root url="file://$USER_HOME$/Downloads/OOPII-master/OOPII-master/jars/apache-log4j-1.2.17/site/apidocs" />
+        </JAVADOC>
+        <SOURCES>
+          <root url="file://$USER_HOME$/Downloads/OOPII-master/OOPII-master/jars" />
+          <root url="file://$USER_HOME$/Downloads/OOPII-master/OOPII-master/jars/apache-log4j-1.2.17" />
+          <root url="file://$USER_HOME$/Downloads/OOPII-master/OOPII-master/jars/apache-log4j-1.2.17/contribs/CekiGulcu" />
+          <root url="file://$USER_HOME$/Downloads/OOPII-master/OOPII-master/jars/apache-log4j-1.2.17/contribs/Jamie Tsao" />
+          <root url="file://$USER_HOME$/Downloads/OOPII-master/OOPII-master/jars/apache-log4j-1.2.17/contribs/JimMoore" />
+          <root url="file://$USER_HOME$/Downloads/OOPII-master/OOPII-master/jars/apache-log4j-1.2.17/contribs/ThomasFenner" />
+          <root url="file://$USER_HOME$/Downloads/OOPII-master/OOPII-master/jars/apache-log4j-1.2.17/src/main/java" />
+          <root url="file://$USER_HOME$/Downloads/OOPII-master/OOPII-master/jars/apache-log4j-1.2.17/src/main/javadoc" />
+          <root url="file://$USER_HOME$/Downloads/OOPII-master/OOPII-master/jars/apache-log4j-1.2.17/src/performance/java" />
+          <root url="file://$USER_HOME$/Downloads/OOPII-master/OOPII-master/jars/apache-log4j-1.2.17/tests/src/java" />
+        </SOURCES>
+        <jarDirectory url="file://$USER_HOME$/Downloads/OOPII-master/OOPII-master/jars" recursive="false" />
+        <jarDirectory url="file://$USER_HOME$/Downloads/OOPII-master/OOPII-master/jars" recursive="false" type="SOURCES" />
       </library>
     </orderEntry>
   </component>

@@ -11,11 +11,13 @@ import gr.hua.oopii.travelAgency.openData.OpenData;
 import java.io.IOException;
 import java.util.Arrays;
 import java.util.ArrayList;
+import java.util.Date;
 
 public class City {
     private static final String[] wikiFeatures = new String[]{"cafe", "sea", "museum", "temple","stadium", "bar", "park"};
     private static final float MAX_DISTANCE = 9517;             //Athens - Sydney distance
 
+    private Date timestamp;
     private float[] features;
     private String name;
     private String countryName;
@@ -25,6 +27,7 @@ public class City {
         this.features = features;
         this.name = name;
         this.countryName = countryName;
+        this.timestamp = new Date();
     }
 
     public City(float geodesicDist) {
@@ -32,9 +35,7 @@ public class City {
     }
 
     public City(String name, String countryName) {
-        this.name = name;
-        this.countryName = countryName;
-        this.features = new float[]{0F, 0F, 0F, 0F, 0F, 0F, 0F, 0F, 0F, 0F};
+        this(new float[]{0F, 0F, 0F, 0F, 0F, 0F, 0F, 0F, 0F, 0F}, name, countryName);
     }
 
     public static City unifiedDistRec(PerceptronTraveler perceptron) throws Exception {
