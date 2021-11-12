@@ -29,17 +29,23 @@ public class Control {
     private boolean wikiDataDownloaded = false;
     private LocalDateTime weatherDataDownloadTime;
 
-    private float officeLon, officeLat;
+    public float officeLon, officeLat;
 
 
-
-    public Control(String officeCity, String officeCountry) throws IOException {
-        OpenWeatherMap tempWeatherObj = OpenData.retrieveWeatherData(officeCity, officeCountry);
-        this.officeLat = (float) tempWeatherObj.getCoord().getLat();
-        this.officeLon = (float) tempWeatherObj.getCoord().getLon();
+    public Control(String officeCity, String officeCountry) throws IOException, StopRunningException {
+        try {
+            OpenWeatherMap tempWeatherObj = OpenData.retrieveWeatherData(officeCity, officeCountry);
+            this.officeLat = (float) tempWeatherObj.getCoord().getLat();
+            this.officeLon = (float) tempWeatherObj.getCoord().getLon();
+        } catch (FileNotFoundException e) {
+            throw new FileNotFoundException();
+        } catch (IOException e) {
+            System.err.println("Error! Please check your internet connection and try again.");
+            throw new StopRunningException(e);
+        }
     }
 
-    public Control() {
+    public Control() throws StopRunningException {
         String officeCity, officeCountry;
         Scanner input = new Scanner(System.in);
         boolean retry;
@@ -52,12 +58,14 @@ public class Control {
             System.out.println("Please enter the country's ISO:");
             officeCountry = input.next();
             try {
-                new Control(officeCity, officeCountry);
-            } catch (FileNotFoundException e) {
+                //this(officeCity,officeCountry);  //FIXME
+                { //Temp code block -> No internet exception handling
+                    OpenWeatherMap tempWeatherObj = OpenData.retrieveWeatherData(officeCity, officeCountry);
+                    this.officeLat = (float) tempWeatherObj.getCoord().getLat();
+                    this.officeLon = (float) tempWeatherObj.getCoord().getLon();
+                }
+            } catch (IOException e) {
                 System.err.println("Error! There is no such city at " + officeCountry + ". Please try again.");
-                retry = true;
-            } catch (IOException e2) {
-                System.err.println("Error! Please check your internet connection and try again.");
                 retry = true;
             }
         } while (retry);
@@ -109,14 +117,14 @@ public class Control {
 
             boolean downloadWeatherData = false;                    //Downloads weather data if 1 hour has elapsed since the last download
             try {
-                if(weatherDataDownloadTime.plusHours(1).isBefore(LocalDateTime.now())){
-                    downloadWeatherData =true;
+                if (weatherDataDownloadTime.plusHours(1).isBefore(LocalDateTime.now())) {
+                    downloadWeatherData = true;
                 }
-            } catch (NullPointerException e){
-                    downloadWeatherData =true;
-            } finally{
-                if (downloadWeatherData){
-                    City.setWeatherData(getCitiesLibrary(),this);
+            } catch (NullPointerException e) {
+                downloadWeatherData = true;
+            } finally {
+                if (downloadWeatherData) {
+                    City.setWeatherData(getCitiesLibrary(), this);
                     weatherDataDownloadTime = LocalDateTime.now();
                 }
             }
@@ -148,7 +156,7 @@ public class Control {
         }
         lastPerceptronUsed = casePerceptron;
         //Run perceptron
-        try{
+        try {
             return casePerceptron.recommend(casePerceptron.retrieveCompatibleCities(citiesLibrary), citiesLibrary);
         } catch (CitiesLibraryEmptyException e) {
             System.err.println(e.getMessage());
