@@ -20,8 +20,6 @@ public abstract class Input {
                 retry=true;
             }
         } while (retry);
-
-        scanner.close();
         return answer;
     }
 
@@ -40,7 +38,6 @@ public abstract class Input {
                 retry = true;
             }
         } while (retry);
-        scanner.close();
         return answer;
     }
 
