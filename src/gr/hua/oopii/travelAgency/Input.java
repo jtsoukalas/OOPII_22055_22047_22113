@@ -21,7 +21,7 @@ public abstract class Input {
             }
         } while (retry);
 
-        scanner.close();
+        //scanner.close();
         return answer;
     }
 
@@ -40,7 +40,7 @@ public abstract class Input {
                 retry = true;
             }
         } while (retry);
-        scanner.close();
+        //scanner.close();
         return answer;
     }
 
