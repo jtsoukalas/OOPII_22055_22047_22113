@@ -26,16 +26,17 @@ public class Control {
     private final PerceptronElderTraveler elderPerceptron = new PerceptronElderTraveler();
     private static PerceptronTraveler lastPerceptronUsed;
 
-    private static boolean wikiDataDownloaded = false;
-    private static LocalDateTime weatherDataDownloadTime;
+    private boolean wikiDataDownloaded = false;
+    private LocalDateTime weatherDataDownloadTime;
 
-    private static float officeLon, officeLat;
+    private float officeLon, officeLat;
+
 
 
     public Control(String officeCity, String officeCountry) throws IOException {
         OpenWeatherMap tempWeatherObj = OpenData.retrieveWeatherData(officeCity, officeCountry);
-        Control.officeLat = (float) tempWeatherObj.getCoord().getLat();
-        Control.officeLon = (float) tempWeatherObj.getCoord().getLon();
+        this.officeLat = (float) tempWeatherObj.getCoord().getLat();
+        this.officeLon = (float) tempWeatherObj.getCoord().getLon();
     }
 
     public Control() {
@@ -115,7 +116,7 @@ public class Control {
                     downloadWeatherData =true;
             } finally{
                 if (downloadWeatherData){
-                    City.setWeatherData(getCitiesLibrary());
+                    City.setWeatherData(getCitiesLibrary(),this);
                     weatherDataDownloadTime = LocalDateTime.now();
                 }
             }
@@ -183,11 +184,11 @@ public class Control {
         return lastPerceptronUsed;
     }
 
-    public static float getOfficeLon() {
-        return officeLon;
+    public float getOfficeLon() {
+        return this.officeLon;
     }
 
-    public static float getOfficeLat() {
-        return officeLat;
+    public float getOfficeLat() {
+        return this.officeLat;
     }
 }

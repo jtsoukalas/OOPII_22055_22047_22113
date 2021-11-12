@@ -122,7 +122,7 @@ public class City {
     }
 
     //Downloads weather data and place it to citiesLibrary without changing other data at the library
-    public static void setWeatherData(ArrayList<City> citiesLibrary) throws IOException, CitiesLibraryEmptyException {
+    public static void setWeatherData(ArrayList<City> citiesLibrary, Control control) throws IOException, CitiesLibraryEmptyException {
         if (citiesLibrary==null){
             throw new CitiesLibraryEmptyException();
         }
@@ -134,7 +134,7 @@ public class City {
             //Setting normalised data at feature[] of city object
             tempFeatures[7] = normaliseFeature((float) tempWeatherObj.getMain().getTemp(), 1);
             tempFeatures[8] = normaliseFeature((float) tempWeatherObj.getClouds().getAll(), 2);
-            tempFeatures[9] = normaliseFeature((float) geodesicDistance(Control.getOfficeLat(), Control.getOfficeLon(), tempWeatherObj.getCoord().getLat(), tempWeatherObj.getCoord().getLon()), 3);
+            tempFeatures[9] = normaliseFeature((float) geodesicDistance(control.getOfficeLat(), control.getOfficeLon(), tempWeatherObj.getCoord().getLat(), tempWeatherObj.getCoord().getLon()), 3);
             city.setFeatures(tempFeatures);
         }
     }
