@@ -15,36 +15,36 @@ import java.util.ArrayList;
 import java.util.Collection;
 import java.util.List;
 
-public class JsonHandler<E> {
+public class JsonHandler<DataStructureType, ObjectType> {
 
     String fileName;
 
     public JsonHandler() {
     }
 
-    private void writeJSON(E source) throws IOException, JsonGenerationException, JsonMappingException {
+    private void writeJSON(DataStructureType source) throws IOException, JsonGenerationException, JsonMappingException {
         ObjectMapper mapper = new ObjectMapper();
         mapper.writeValue(new File(fileName), source);
     }
 
     @SuppressWarnings("unchecked")
-    public E readJSON() throws JsonParseException, JsonMappingException, IOException {
+    public void readJSON() throws JsonParseException, JsonMappingException, IOException {
         ObjectMapper mapper = new ObjectMapper();
         //mapper.enableDefaultTyping();
         //TypeToken<ObjectType> typeToken = new TypeToken<ObjectType>(getClass()) { };
        //Type type = typeToken.getType(); // or getRawType() to return Class<? super T>
 
-        TypeReference<E> myType2 = new TypeReference<>() {};
+        //TypeReference<E> myType2 = new TypeReference<>() {};
         //TypeReference<DataStructureType> myType1 = new TypeReference<>() {};
 
         //System.out.println(ObjectType.class);
 
-        return mapper.readValue(new File("arraylist.json"), mapper.getTypeFactory().
-               constructCollectionType( List.class, myType2.getClass()));
+        //return mapper.readValue(new File("arraylist.json"), mapper.getTypeFactory().
+               //constructCollectionType( List.class, myType2.getClass()));
 
-        //mapper.getTypeFactory().constructParametricType(ObjectType.class, myType2);
+        // mapper.getTypeFactory().constructParametricType(ObjectType.class, myType2);
 
-        //return mapper.readValue(new File(fileName), myType2);
+        //return mapper.readValue(new File(fileName), new TypeReference<DataStructureType<ObjectType>>(){});
     }
 
 }

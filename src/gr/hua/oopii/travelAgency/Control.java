@@ -1,21 +1,25 @@
 package gr.hua.oopii.travelAgency;
 
+import com.fasterxml.jackson.core.type.TypeReference;
+import com.fasterxml.jackson.databind.ObjectMapper;
 import gr.hua.oopii.travelAgency.exception.CitiesLibraryEmptyException;
 import gr.hua.oopii.travelAgency.exception.NoRecommendationException;
+import gr.hua.oopii.travelAgency.exception.StopRunningException;
+import gr.hua.oopii.travelAgency.openData.OpenData;
 import gr.hua.oopii.travelAgency.openWeather.OpenWeatherMap;
 import gr.hua.oopii.travelAgency.perceptrons.PerceptronElderTraveler;
 import gr.hua.oopii.travelAgency.perceptrons.PerceptronMiddleTraveler;
 import gr.hua.oopii.travelAgency.perceptrons.PerceptronTraveler;
 import gr.hua.oopii.travelAgency.perceptrons.PerceptronYoungTraveler;
-import gr.hua.oopii.travelAgency.exception.StopRunningException;
-import gr.hua.oopii.travelAgency.openData.OpenData;
 
+import java.io.File;
 import java.io.FileNotFoundException;
 import java.io.IOException;
 import java.time.LocalDateTime;
 import java.util.ArrayList;
 import java.util.Random;
 import java.util.Scanner;
+import java.util.Set;
 
 
 public class Control {
@@ -29,10 +33,14 @@ public class Control {
     private boolean wikiDataDownloaded = false;
     private LocalDateTime weatherDataDownloadTime;
 
-    public float officeLon, officeLat;
+    private float officeLon, officeLat;
+
+    private final String citiesLibraryJsonFileName = "citiesLibrary.json";
 
 
     public Control(String officeCity, String officeCountry) throws IOException, StopRunningException {
+        System.out.println("Retrieve cities library from Json file res= " + this.retrieveCitiesLibraryJson());  //Debugging reasons
+
         try {
             OpenWeatherMap tempWeatherObj = OpenData.retrieveWeatherData(officeCity, officeCountry);
             this.officeLat = (float) tempWeatherObj.getCoord().getLat();
@@ -60,9 +68,18 @@ public class Control {
             try {
                 //this(officeCity,officeCountry);  //FIXME
                 { //Temp code block -> No internet exception handling
-                    OpenWeatherMap tempWeatherObj = OpenData.retrieveWeatherData(officeCity, officeCountry);
-                    this.officeLat = (float) tempWeatherObj.getCoord().getLat();
-                    this.officeLon = (float) tempWeatherObj.getCoord().getLon();
+                    System.out.println("-Retrieve cities library from Json file res = " + this.retrieveCitiesLibraryJson() + "-");  //Debugging reasons
+
+                    try {
+                        OpenWeatherMap tempWeatherObj = OpenData.retrieveWeatherData(officeCity, officeCountry);
+                        this.officeLat = (float) tempWeatherObj.getCoord().getLat();
+                        this.officeLon = (float) tempWeatherObj.getCoord().getLon();
+                    } catch (FileNotFoundException e) {
+                        throw new FileNotFoundException();
+                    } catch (IOException e) {
+                        System.err.println("Error! Please check your internet connection and try again.");
+                        throw new StopRunningException(e);
+                    }
                 }
             } catch (IOException e) {
                 System.err.println("Error! There is no such city at " + officeCountry + ". Please try again.");
@@ -107,12 +124,14 @@ public class Control {
 
     public ArrayList<City> runPerceptron(int age) throws StopRunningException, IllegalArgumentException {
         //Update Wiki and Weather data if needed
+        boolean newData = false;
         try {
             if (!wikiDataDownloaded) {                              //Downloads wiki data once
                 System.out.println("-Downloading data from the web, please wait-");
                 initNameCitiesLibrary();
                 City.setWikiData(getCitiesLibrary());
                 wikiDataDownloaded = true;
+                newData = true;
             }
 
             boolean downloadWeatherData = false;                    //Downloads weather data if 1 hour has elapsed since the last download
@@ -126,6 +145,7 @@ public class Control {
                 if (downloadWeatherData) {
                     City.setWeatherData(getCitiesLibrary(), this);
                     weatherDataDownloadTime = LocalDateTime.now();
+                    newData = true;
                 }
             }
         } catch (FileNotFoundException e) {
@@ -137,6 +157,11 @@ public class Control {
         } catch (CitiesLibraryEmptyException e) {
             System.err.println(e.getMessage());
             throw new StopRunningException(e);
+        }
+
+        //Update cities library Json file
+        if (newData) {
+            System.out.println("-Cities library Json file update res = " + this.saveCitiesLibrary() + "-");
         }
 
         //Choose suitable perceptron
@@ -161,6 +186,29 @@ public class Control {
         } catch (CitiesLibraryEmptyException e) {
             System.err.println(e.getMessage());
             throw new StopRunningException(e);
+        }
+    }
+
+    public boolean saveCitiesLibrary() {
+        ObjectMapper mapper = new ObjectMapper();
+        try {
+            mapper.writeValue(new File("citiesLibrary.json"), this.citiesLibrary);     //FIXME Parametric file name
+            return true;
+        } catch (IOException e) {
+            return false;
+        }
+    }
+
+    public boolean retrieveCitiesLibraryJson() {
+        ObjectMapper mapper = new ObjectMapper();
+        //mapper.enableDefaultTyping();
+        try {
+            this.citiesLibrary = mapper.readValue(new File("citiesLibrary.json"), new TypeReference<ArrayList<City>>(){});//mapper.getTypeFactory().constructCollectionType(List.class, City.class));  //FIXME Class type problem
+            this.weatherDataDownloadTime = LocalDateTime.now();     //FIXME Optimization needed
+            this.wikiDataDownloaded = true;                         //FIXME Optimization needed
+            return true;
+        } catch (IOException e) {
+            return false;
         }
     }
 
