@@ -39,6 +39,8 @@ public class JsonHandler<DataStructureType, ObjectType> {
 
         //System.out.println(ObjectType.class);
 
+        //Type myType = new TypeToken<DataStructureType<ObjectType>>(){}.getClass;
+
         //return mapper.readValue(new File("arraylist.json"), mapper.getTypeFactory().
                //constructCollectionType( List.class, myType2.getClass()));
 

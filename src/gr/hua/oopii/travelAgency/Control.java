@@ -1,7 +1,11 @@
 package gr.hua.oopii.travelAgency;
 
+//import com.fasterxml.jackson.core.type.TypeReference;
 import com.fasterxml.jackson.core.type.TypeReference;
 import com.fasterxml.jackson.databind.ObjectMapper;
+//import com.google.common.reflect.TypeToken;
+import com.google.gson.Gson;
+import com.google.gson.reflect.TypeToken;
 import gr.hua.oopii.travelAgency.exception.CitiesLibraryEmptyException;
 import gr.hua.oopii.travelAgency.exception.NoRecommendationException;
 import gr.hua.oopii.travelAgency.exception.StopRunningException;
@@ -15,11 +19,12 @@ import gr.hua.oopii.travelAgency.perceptrons.PerceptronYoungTraveler;
 import java.io.File;
 import java.io.FileNotFoundException;
 import java.io.IOException;
+import java.lang.reflect.Type;
+import java.net.Proxy;
 import java.time.LocalDateTime;
 import java.util.ArrayList;
 import java.util.Random;
 import java.util.Scanner;
-import java.util.Set;
 
 
 public class Control {
@@ -161,7 +166,7 @@ public class Control {
 
         //Update cities library Json file
         if (newData) {
-            System.out.println("-Cities library Json file update res = " + this.saveCitiesLibrary() + "-");
+            System.out.println("-Cities library Json file update res = " + this.saveCitiesLibraryJson() + "-");
         }
 
         //Choose suitable perceptron
@@ -189,25 +194,41 @@ public class Control {
         }
     }
 
-    public boolean saveCitiesLibrary() {
-        ObjectMapper mapper = new ObjectMapper();
+    public boolean saveCitiesLibraryJson() {
+        {//ref: https://www.youtube.com/watch?v=ZZddxpxGQPE&list=PLpUMhvC6l7AOy4UEORSutzFus98n-Es_l&index=4
+            String json = new Gson().toJson(this.citiesLibrary);
+            return true;
+        }
+        /*ObjectMapper mapper = new ObjectMapper();
         try {
             mapper.writeValue(new File("citiesLibrary.json"), this.citiesLibrary);     //FIXME Parametric file name
             return true;
         } catch (IOException e) {
             return false;
-        }
+        }*/
     }
 
     public boolean retrieveCitiesLibraryJson() {
         ObjectMapper mapper = new ObjectMapper();
         //mapper.enableDefaultTyping();
         try {
-            this.citiesLibrary = mapper.readValue(new File("citiesLibrary.json"), new TypeReference<ArrayList<City>>(){});//mapper.getTypeFactory().constructCollectionType(List.class, City.class));  //FIXME Class type problem
+            {//ref: https://www.youtube.com/watch?v=ZZddxpxGQPE&list=PLpUMhvC6l7AOy4UEORSutzFus98n-Es_l&index=4
+                File file = new File("citiesLibrary.json");
+                String tmpJson = "[{\"features\":[0.1,1.0,1.0,0.6,1.0,0.8,1.0,0.6857142,0.02,0.0],\"name\":\"Athens\",\"countryName\":\"GR\"},{\"features\":[0.1,1.0,1.0,0.4,0.4,1.0,1.0,0.68517005,0.9,0.15611756],\"name\":\"London\",\"countryName\":\"UK\"},{\"features\":[0.0,1.0,1.0,0.0,0.6,1.0,1.0,0.66680264,0.75,0.13639854],\"name\":\"Brussels\",\"countryName\":\"BE\"},{\"features\":[0.0,1.0,1.0,0.2,0.1,1.0,1.0,0.6740816,0.0,0.15464252],\"name\":\"Madrid\",\"countryName\":\"ES\"},{\"features\":[0.0,1.0,1.0,0.0,0.5,0.0,0.2,0.6329252,0.75,0.16118917],\"name\":\"Helsinki\",\"countryName\":\"FI\"},{\"features\":[0.0,1.0,1.0,0.1,0.0,1.0,1.0,0.6777551,0.75,0.13680944],\"name\":\"Paris\",\"countryName\":\"FR\"},{\"features\":[0.0,1.0,1.0,0.1,0.1,1.0,1.0,0.64142865,0.0,0.11772461],\"name\":\"Berlin\",\"countryName\":\"DE\"},{\"features\":[0.0,1.0,1.0,0.0,0.2,0.2,1.0,0.60503405,0.0,0.15723297],\"name\":\"Stockholm\",\"countryName\":\"SE\"},{\"features\":[0.0,1.0,1.0,0.0,0.6,0.2,1.0,0.67768705,0.2,0.62063575],\"name\":\"Tokyo\",\"countryName\":\"JP\"},{\"features\":[0.0,0.1,0.0,0.0,0.0,1.0,0.1,0.77231294,0.91,0.69603443],\"name\":\"Rio\",\"countryName\":\"BR\"},{\"features\":[0.0,1.0,1.0,0.0,0.1,0.5,1.0,0.69625854,0.34,0.64736575],\"name\":\"Denver\",\"countryName\":\"US\"},{\"features\":[0.0,1.0,1.0,0.3,0.4,1.0,1.0,0.70149654,0.2,0.06860799],\"name\":\"Rome\",\"countryName\":\"IT\"},{\"features\":[0.0,1.0,1.0,0.1,0.1,1.0,0.9,0.7121088,0.4,0.05695873],\"name\":\"Naples\",\"countryName\":\"IT\"},{\"features\":[0.0,1.0,1.0,0.2,0.3,1.0,1.0,0.6689796,0.75,0.095412716],\"name\":\"Milan\",\"countryName\":\"IT\"},{\"features\":[0.1,1.0,1.0,0.0,1.0,0.8,1.0,0.63476187,0.88,0.14568649],\"name\":\"Moscow\",\"countryName\":\"RU\"}]";
+
+                Type myType = new TypeToken<ArrayList<City>>() {
+                }.getClass();
+                Gson gson = new Gson();
+                ArrayList<City> tmp = gson.fromJson(tmpJson, myType);
+                System.out.println(tmp.toString());
+            }
+
+
+            //this.citiesLibrary = mapper.readValue(new File("citiesLibrary.json"), new TypeReference<ArrayList<City>>(){});//mapper.getTypeFactory().constructCollectionType(List.class, City.class));  //FIXME Class type problem
             this.weatherDataDownloadTime = LocalDateTime.now();     //FIXME Optimization needed
             this.wikiDataDownloaded = true;                         //FIXME Optimization needed
             return true;
-        } catch (IOException e) {
+        } catch (Exception e) {
             return false;
         }
     }
