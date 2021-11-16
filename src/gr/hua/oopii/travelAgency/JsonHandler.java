@@ -6,7 +6,7 @@ import com.fasterxml.jackson.core.type.TypeReference;
 import com.fasterxml.jackson.databind.JsonMappingException;
 import com.fasterxml.jackson.databind.ObjectMapper;
 import com.fasterxml.jackson.databind.type.CollectionType;
-import com.google.common.reflect.TypeToken;
+
 
 import java.io.File;
 import java.io.IOException;
@@ -15,38 +15,50 @@ import java.util.ArrayList;
 import java.util.Collection;
 import java.util.List;
 
-public class JsonHandler<DataStructureType, ObjectType> {
+public class JsonHandler<E> {
 
     String fileName;
 
     public JsonHandler() {
     }
 
-    private void writeJSON(DataStructureType source) throws IOException, JsonGenerationException, JsonMappingException {
+    private void writeJSON(E source) throws IOException, JsonGenerationException, JsonMappingException {
         ObjectMapper mapper = new ObjectMapper();
         mapper.writeValue(new File(fileName), source);
     }
 
     @SuppressWarnings("unchecked")
-    public void readJSON() throws JsonParseException, JsonMappingException, IOException {
+    public E readJSON() throws JsonParseException, JsonMappingException, IOException {
         ObjectMapper mapper = new ObjectMapper();
         //mapper.enableDefaultTyping();
         //TypeToken<ObjectType> typeToken = new TypeToken<ObjectType>(getClass()) { };
        //Type type = typeToken.getType(); // or getRawType() to return Class<? super T>
 
-        //TypeReference<E> myType2 = new TypeReference<>() {};
+        TypeReference<E> myType2 = new TypeReference<>() {};
         //TypeReference<DataStructureType> myType1 = new TypeReference<>() {};
 
         //System.out.println(ObjectType.class);
 
-        //Type myType = new TypeToken<DataStructureType<ObjectType>>(){}.getClass;
-
+<<<<<<< HEAD
+<<<<<<< HEAD
+<<<<<<< HEAD
+<<<<<<< HEAD
+        return mapper.readValue(new File("arraylist.json"), mapper.getTypeFactory().
+               constructCollectionType( List.class, myType2.getClass()));
+=======
+=======
+>>>>>>> parent of 6bf619c (Json handling drafts)
+=======
+>>>>>>> parent of 6bf619c (Json handling drafts)
+=======
+>>>>>>> parent of 6bf619c (Json handling drafts)
         //return mapper.readValue(new File("arraylist.json"), mapper.getTypeFactory().
                //constructCollectionType( List.class, myType2.getClass()));
+>>>>>>> parent of 6bf619c (Json handling drafts)
 
-        // mapper.getTypeFactory().constructParametricType(ObjectType.class, myType2);
+        //mapper.getTypeFactory().constructParametricType(ObjectType.class, myType2);
 
-        //return mapper.readValue(new File(fileName), new TypeReference<DataStructureType<ObjectType>>(){});
+        //return mapper.readValue(new File(fileName), myType2);
     }
 
 }

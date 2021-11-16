@@ -1,30 +1,42 @@
 package gr.hua.oopii.travelAgency;
 
-//import com.fasterxml.jackson.core.type.TypeReference;
+<<<<<<< HEAD
+<<<<<<< HEAD
+<<<<<<< HEAD
+<<<<<<< HEAD
+=======
 import com.fasterxml.jackson.core.type.TypeReference;
 import com.fasterxml.jackson.databind.ObjectMapper;
-//import com.google.common.reflect.TypeToken;
-import com.google.gson.Gson;
-import com.google.gson.reflect.TypeToken;
+>>>>>>> parent of 6bf619c (Json handling drafts)
+=======
+import com.fasterxml.jackson.core.type.TypeReference;
+import com.fasterxml.jackson.databind.ObjectMapper;
+>>>>>>> parent of 6bf619c (Json handling drafts)
+=======
+import com.fasterxml.jackson.core.type.TypeReference;
+import com.fasterxml.jackson.databind.ObjectMapper;
+>>>>>>> parent of 6bf619c (Json handling drafts)
+=======
+import com.fasterxml.jackson.core.type.TypeReference;
+import com.fasterxml.jackson.databind.ObjectMapper;
+>>>>>>> parent of 6bf619c (Json handling drafts)
 import gr.hua.oopii.travelAgency.exception.CitiesLibraryEmptyException;
 import gr.hua.oopii.travelAgency.exception.NoRecommendationException;
-import gr.hua.oopii.travelAgency.exception.StopRunningException;
-import gr.hua.oopii.travelAgency.openData.OpenData;
 import gr.hua.oopii.travelAgency.openWeather.OpenWeatherMap;
 import gr.hua.oopii.travelAgency.perceptrons.PerceptronElderTraveler;
 import gr.hua.oopii.travelAgency.perceptrons.PerceptronMiddleTraveler;
 import gr.hua.oopii.travelAgency.perceptrons.PerceptronTraveler;
 import gr.hua.oopii.travelAgency.perceptrons.PerceptronYoungTraveler;
+import gr.hua.oopii.travelAgency.exception.StopRunningException;
+import gr.hua.oopii.travelAgency.openData.OpenData;
 
-import java.io.File;
 import java.io.FileNotFoundException;
 import java.io.IOException;
-import java.lang.reflect.Type;
-import java.net.Proxy;
 import java.time.LocalDateTime;
 import java.util.ArrayList;
 import java.util.Random;
 import java.util.Scanner;
+import java.util.Set;
 
 
 public class Control {
@@ -40,25 +52,15 @@ public class Control {
 
     private float officeLon, officeLat;
 
-    private final String citiesLibraryJsonFileName = "citiesLibrary.json";
 
 
-    public Control(String officeCity, String officeCountry) throws IOException, StopRunningException {
-        System.out.println("Retrieve cities library from Json file res= " + this.retrieveCitiesLibraryJson());  //Debugging reasons
-
-        try {
-            OpenWeatherMap tempWeatherObj = OpenData.retrieveWeatherData(officeCity, officeCountry);
-            this.officeLat = (float) tempWeatherObj.getCoord().getLat();
-            this.officeLon = (float) tempWeatherObj.getCoord().getLon();
-        } catch (FileNotFoundException e) {
-            throw new FileNotFoundException();
-        } catch (IOException e) {
-            System.err.println("Error! Please check your internet connection and try again.");
-            throw new StopRunningException(e);
-        }
+    public Control(String officeCity, String officeCountry) throws IOException {
+        OpenWeatherMap tempWeatherObj = OpenData.retrieveWeatherData(officeCity, officeCountry);
+        this.officeLat = (float) tempWeatherObj.getCoord().getLat();
+        this.officeLon = (float) tempWeatherObj.getCoord().getLon();
     }
 
-    public Control() throws StopRunningException {
+    public Control() {
         String officeCity, officeCountry;
         Scanner input = new Scanner(System.in);
         boolean retry;
@@ -71,23 +73,12 @@ public class Control {
             System.out.println("Please enter the country's ISO:");
             officeCountry = input.next();
             try {
-                //this(officeCity,officeCountry);  //FIXME
-                { //Temp code block -> No internet exception handling
-                    System.out.println("-Retrieve cities library from Json file res = " + this.retrieveCitiesLibraryJson() + "-");  //Debugging reasons
-
-                    try {
-                        OpenWeatherMap tempWeatherObj = OpenData.retrieveWeatherData(officeCity, officeCountry);
-                        this.officeLat = (float) tempWeatherObj.getCoord().getLat();
-                        this.officeLon = (float) tempWeatherObj.getCoord().getLon();
-                    } catch (FileNotFoundException e) {
-                        throw new FileNotFoundException();
-                    } catch (IOException e) {
-                        System.err.println("Error! Please check your internet connection and try again.");
-                        throw new StopRunningException(e);
-                    }
-                }
-            } catch (IOException e) {
+                new Control(officeCity, officeCountry);
+            } catch (FileNotFoundException e) {
                 System.err.println("Error! There is no such city at " + officeCountry + ". Please try again.");
+                retry = true;
+            } catch (IOException e2) {
+                System.err.println("Error! Please check your internet connection and try again.");
                 retry = true;
             }
         } while (retry);
@@ -129,28 +120,25 @@ public class Control {
 
     public ArrayList<City> runPerceptron(int age) throws StopRunningException, IllegalArgumentException {
         //Update Wiki and Weather data if needed
-        boolean newData = false;
         try {
             if (!wikiDataDownloaded) {                              //Downloads wiki data once
                 System.out.println("-Downloading data from the web, please wait-");
                 initNameCitiesLibrary();
                 City.setWikiData(getCitiesLibrary());
                 wikiDataDownloaded = true;
-                newData = true;
             }
 
             boolean downloadWeatherData = false;                    //Downloads weather data if 1 hour has elapsed since the last download
             try {
-                if (weatherDataDownloadTime.plusHours(1).isBefore(LocalDateTime.now())) {
-                    downloadWeatherData = true;
+                if(weatherDataDownloadTime.plusHours(1).isBefore(LocalDateTime.now())){
+                    downloadWeatherData =true;
                 }
-            } catch (NullPointerException e) {
-                downloadWeatherData = true;
-            } finally {
-                if (downloadWeatherData) {
-                    City.setWeatherData(getCitiesLibrary(), this);
+            } catch (NullPointerException e){
+                    downloadWeatherData =true;
+            } finally{
+                if (downloadWeatherData){
+                    City.setWeatherData(getCitiesLibrary(),this);
                     weatherDataDownloadTime = LocalDateTime.now();
-                    newData = true;
                 }
             }
         } catch (FileNotFoundException e) {
@@ -164,11 +152,14 @@ public class Control {
             throw new StopRunningException(e);
         }
 
+<<<<<<< HEAD
+=======
         //Update cities library Json file
         if (newData) {
-            System.out.println("-Cities library Json file update res = " + this.saveCitiesLibraryJson() + "-");
+            System.out.println("-Cities library Json file update res = " + this.saveCitiesLibrary() + "-");
         }
 
+>>>>>>> parent of 6bf619c (Json handling drafts)
         //Choose suitable perceptron
         PerceptronTraveler casePerceptron;
         if (age >= 15 && age < 25) {             //Young traveller
@@ -186,7 +177,7 @@ public class Control {
         }
         lastPerceptronUsed = casePerceptron;
         //Run perceptron
-        try {
+        try{
             return casePerceptron.recommend(casePerceptron.retrieveCompatibleCities(citiesLibrary), citiesLibrary);
         } catch (CitiesLibraryEmptyException e) {
             System.err.println(e.getMessage());
@@ -194,45 +185,41 @@ public class Control {
         }
     }
 
-    public boolean saveCitiesLibraryJson() {
-        {//ref: https://www.youtube.com/watch?v=ZZddxpxGQPE&list=PLpUMhvC6l7AOy4UEORSutzFus98n-Es_l&index=4
-            String json = new Gson().toJson(this.citiesLibrary);
-            return true;
-        }
-        /*ObjectMapper mapper = new ObjectMapper();
+<<<<<<< HEAD
+<<<<<<< HEAD
+<<<<<<< HEAD
+<<<<<<< HEAD
+=======
+=======
+>>>>>>> parent of 6bf619c (Json handling drafts)
+=======
+>>>>>>> parent of 6bf619c (Json handling drafts)
+=======
+>>>>>>> parent of 6bf619c (Json handling drafts)
+    public boolean saveCitiesLibrary() {
+        ObjectMapper mapper = new ObjectMapper();
         try {
             mapper.writeValue(new File("citiesLibrary.json"), this.citiesLibrary);     //FIXME Parametric file name
             return true;
         } catch (IOException e) {
             return false;
-        }*/
+        }
     }
 
     public boolean retrieveCitiesLibraryJson() {
         ObjectMapper mapper = new ObjectMapper();
         //mapper.enableDefaultTyping();
         try {
-            {//ref: https://www.youtube.com/watch?v=ZZddxpxGQPE&list=PLpUMhvC6l7AOy4UEORSutzFus98n-Es_l&index=4
-                File file = new File("citiesLibrary.json");
-                String tmpJson = "[{\"features\":[0.1,1.0,1.0,0.6,1.0,0.8,1.0,0.6857142,0.02,0.0],\"name\":\"Athens\",\"countryName\":\"GR\"},{\"features\":[0.1,1.0,1.0,0.4,0.4,1.0,1.0,0.68517005,0.9,0.15611756],\"name\":\"London\",\"countryName\":\"UK\"},{\"features\":[0.0,1.0,1.0,0.0,0.6,1.0,1.0,0.66680264,0.75,0.13639854],\"name\":\"Brussels\",\"countryName\":\"BE\"},{\"features\":[0.0,1.0,1.0,0.2,0.1,1.0,1.0,0.6740816,0.0,0.15464252],\"name\":\"Madrid\",\"countryName\":\"ES\"},{\"features\":[0.0,1.0,1.0,0.0,0.5,0.0,0.2,0.6329252,0.75,0.16118917],\"name\":\"Helsinki\",\"countryName\":\"FI\"},{\"features\":[0.0,1.0,1.0,0.1,0.0,1.0,1.0,0.6777551,0.75,0.13680944],\"name\":\"Paris\",\"countryName\":\"FR\"},{\"features\":[0.0,1.0,1.0,0.1,0.1,1.0,1.0,0.64142865,0.0,0.11772461],\"name\":\"Berlin\",\"countryName\":\"DE\"},{\"features\":[0.0,1.0,1.0,0.0,0.2,0.2,1.0,0.60503405,0.0,0.15723297],\"name\":\"Stockholm\",\"countryName\":\"SE\"},{\"features\":[0.0,1.0,1.0,0.0,0.6,0.2,1.0,0.67768705,0.2,0.62063575],\"name\":\"Tokyo\",\"countryName\":\"JP\"},{\"features\":[0.0,0.1,0.0,0.0,0.0,1.0,0.1,0.77231294,0.91,0.69603443],\"name\":\"Rio\",\"countryName\":\"BR\"},{\"features\":[0.0,1.0,1.0,0.0,0.1,0.5,1.0,0.69625854,0.34,0.64736575],\"name\":\"Denver\",\"countryName\":\"US\"},{\"features\":[0.0,1.0,1.0,0.3,0.4,1.0,1.0,0.70149654,0.2,0.06860799],\"name\":\"Rome\",\"countryName\":\"IT\"},{\"features\":[0.0,1.0,1.0,0.1,0.1,1.0,0.9,0.7121088,0.4,0.05695873],\"name\":\"Naples\",\"countryName\":\"IT\"},{\"features\":[0.0,1.0,1.0,0.2,0.3,1.0,1.0,0.6689796,0.75,0.095412716],\"name\":\"Milan\",\"countryName\":\"IT\"},{\"features\":[0.1,1.0,1.0,0.0,1.0,0.8,1.0,0.63476187,0.88,0.14568649],\"name\":\"Moscow\",\"countryName\":\"RU\"}]";
-
-                Type myType = new TypeToken<ArrayList<City>>() {
-                }.getClass();
-                Gson gson = new Gson();
-                ArrayList<City> tmp = gson.fromJson(tmpJson, myType);
-                System.out.println(tmp.toString());
-            }
-
-
-            //this.citiesLibrary = mapper.readValue(new File("citiesLibrary.json"), new TypeReference<ArrayList<City>>(){});//mapper.getTypeFactory().constructCollectionType(List.class, City.class));  //FIXME Class type problem
+            this.citiesLibrary = mapper.readValue(new File("citiesLibrary.json"), new TypeReference<ArrayList<City>>(){});//mapper.getTypeFactory().constructCollectionType(List.class, City.class));  //FIXME Class type problem
             this.weatherDataDownloadTime = LocalDateTime.now();     //FIXME Optimization needed
             this.wikiDataDownloaded = true;                         //FIXME Optimization needed
             return true;
-        } catch (Exception e) {
+        } catch (IOException e) {
             return false;
         }
     }
 
+>>>>>>> parent of 6bf619c (Json handling drafts)
     public String cityLibraryToString() {
         StringBuilder returnCityCatalogue = new StringBuilder();
         for (City city : citiesLibrary) {
