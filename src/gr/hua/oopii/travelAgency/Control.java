@@ -2,6 +2,11 @@ package gr.hua.oopii.travelAgency;
 
 <<<<<<< HEAD
 <<<<<<< HEAD
+<<<<<<< HEAD
+=======
+import com.fasterxml.jackson.core.type.TypeReference;
+import com.fasterxml.jackson.databind.ObjectMapper;
+>>>>>>> parent of 6bf619c (Json handling drafts)
 =======
 import com.fasterxml.jackson.core.type.TypeReference;
 import com.fasterxml.jackson.databind.ObjectMapper;
@@ -177,7 +182,10 @@ public class Control {
 
 <<<<<<< HEAD
 <<<<<<< HEAD
+<<<<<<< HEAD
 =======
+=======
+>>>>>>> parent of 6bf619c (Json handling drafts)
 =======
 >>>>>>> parent of 6bf619c (Json handling drafts)
     public boolean saveCitiesLibrary() {
