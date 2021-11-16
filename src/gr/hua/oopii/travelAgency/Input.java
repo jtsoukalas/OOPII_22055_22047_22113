@@ -55,4 +55,9 @@ public abstract class Input {
         } while (retry);
         return age;
     }
+
+    public static String readString(){
+        Scanner scanner = new Scanner(System.in);
+        return scanner.nextLine();
+    }
 }

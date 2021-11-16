@@ -1,5 +1,6 @@
 package gr.hua.oopii.travelAgency;
 
+import gr.hua.oopii.travelAgency.exception.StopRunningException;
 import gr.hua.oopii.travelAgency.openWeather.OpenWeatherMap;
 import gr.hua.oopii.travelAgency.perceptrons.PerceptronTraveler;
 import gr.hua.oopii.travelAgency.exception.CitiesLibraryEmptyException;
@@ -8,13 +9,14 @@ import gr.hua.oopii.travelAgency.openData.CountWords;
 import gr.hua.oopii.travelAgency.openData.MediaWiki;
 import gr.hua.oopii.travelAgency.openData.OpenData;
 
+import java.io.FileNotFoundException;
 import java.io.IOException;
 import java.util.Arrays;
 import java.util.ArrayList;
 import java.util.Date;
 
-public class City {
-    private static final String[] wikiFeatures = new String[]{"cafe", "sea", "museum", "temple","stadium", "bar", "park"};
+public class City implements Comparable<City> {
+    private static final String[] wikiFeatures = new String[]{"cafe", "sea", "museum", "temple", "stadium", "bar", "park"};
     private static final float MAX_DISTANCE = 9517;             //Athens - Sydney distance
 
     private Date timestamp;
@@ -30,6 +32,29 @@ public class City {
         this.timestamp = new Date();
     }
 
+    public City() throws StopRunningException {
+        boolean retry;
+        do {
+            System.out.println("Provide city name");
+            this.name = Input.readString();
+            System.out.println("Provide country's ISO");
+            this.countryName = Input.readString();
+            try {
+                retry = false;
+                OpenWeatherMap tempWeatherObj = OpenData.retrieveWeatherData(name, countryName);
+            } catch (FileNotFoundException e) {
+                System.err.println("Location wasn't found,please try another location...");
+                retry = true;
+            } catch (IOException e) {
+                System.err.println("Error! Please check your internet connection and try again.");
+                throw new StopRunningException(e);
+            }
+        } while (retry);
+
+        this.timestamp = new Date();
+    }
+
+
     public City(float geodesicDist) {
         this.features = new float[]{0F, 0F, 0F, 0F, 0F, 0F, 0F, 0F, 0F, geodesicDist};
     }
@@ -39,12 +64,12 @@ public class City {
     }
 
     public static City unifiedDistRec(PerceptronTraveler perceptron) throws Exception {
-        ArrayList <City>citiesToCompare = perceptron.getLastRecommendation();
+        ArrayList<City> citiesToCompare = perceptron.getLastRecommendation();
 
-        if (citiesToCompare.isEmpty()){
+        if (citiesToCompare.isEmpty()) {
             throw new NoRecommendationException();
         }
-        City min = new City(normaliseFeature(MAX_DISTANCE,3));
+        City min = new City(normaliseFeature(MAX_DISTANCE, 3));
         for (City city : citiesToCompare) {
             if (min.getFeatures()[9] > city.getFeatures()[9] && city.getFeatures()[9] != 0) {
                 min = city;
@@ -122,37 +147,49 @@ public class City {
     }
 
     //Downloads weather data and place it to citiesLibrary without changing other data at the library
-    public static void setWeatherData(ArrayList<City> citiesLibrary, Control control) throws IOException, CitiesLibraryEmptyException {
-        if (citiesLibrary==null){
+    public static void setWeatherData(ArrayList<City> citiesLibrary, Control control) throws
+            IOException, CitiesLibraryEmptyException {
+        if (citiesLibrary == null) {
             throw new CitiesLibraryEmptyException();
         }
         for (City city : citiesLibrary) {
-            //Gathering weather data
-            OpenWeatherMap tempWeatherObj = OpenData.retrieveWeatherData(city.name, city.countryName);
-            float[] tempFeatures = city.getFeatures();
-
-            //Setting normalised data at feature[] of city object
-            tempFeatures[7] = normaliseFeature((float) tempWeatherObj.getMain().getTemp(), 1);
-            tempFeatures[8] = normaliseFeature((float) tempWeatherObj.getClouds().getAll(), 2);
-            tempFeatures[9] = normaliseFeature((float) geodesicDistance(control.getOfficeLat(), control.getOfficeLon(), tempWeatherObj.getCoord().getLat(), tempWeatherObj.getCoord().getLon()), 3);
-            city.setFeatures(tempFeatures);
+            city.setWeatherData(control);
         }
     }
 
+    public void setWeatherData(Control control) throws IOException {
+        //Gathering weather data
+        OpenWeatherMap tempWeatherObj = OpenData.retrieveWeatherData(this.name, this.countryName);
+        float[] tempFeatures = this.getFeatures();
+
+        //Setting normalised data at feature[] of city object
+        tempFeatures[7] = normaliseFeature((float) tempWeatherObj.getMain().getTemp(), 1);
+        tempFeatures[8] = normaliseFeature((float) tempWeatherObj.getClouds().getAll(), 2);
+        tempFeatures[9] = normaliseFeature((float) geodesicDistance(control.getOfficeLat(), control.getOfficeLon(), tempWeatherObj.getCoord().getLat(), tempWeatherObj.getCoord().getLon()), 3);
+        this.setFeatures(tempFeatures);
+    }
+
+
     //Downloads wiki data and place it to citiesLibrary without changing other data at the library
-    public static void setWikiData(ArrayList<City> citiesLibrary) throws IOException, CitiesLibraryEmptyException {
-        if (citiesLibrary==null){
+    public static void setWikiData(ArrayList<City> citiesLibrary) throws
+            IOException, CitiesLibraryEmptyException {
+        if (citiesLibrary == null) {
             throw new CitiesLibraryEmptyException();
         }
         for (City city : citiesLibrary) {
-            float[] tempFeatures = city.getFeatures();
-            int[] tempWikiFeatures = countWikiKeywords(city.getName(), city.getCountryName());
-            //Normalise and copy wiki features to city's features
-            for (int featureIndex = 0; featureIndex < wikiFeatures.length; featureIndex++) {
-                tempFeatures[featureIndex] = normaliseFeature((float)tempWikiFeatures[featureIndex], 0);
-            }
-            city.setFeatures(tempFeatures);
+            city.setWikiData();
         }
+    }
+
+    public void setWikiData() throws IOException {
+        float[] tempFeatures = this.getFeatures();
+        int[] tempWikiFeatures = countWikiKeywords(this.getName(), this.getCountryName());
+        //Normalise and copy wiki features to city's features
+        for (int featureIndex = 0; featureIndex < wikiFeatures.length; featureIndex++) {
+            tempFeatures[featureIndex] = normaliseFeature((float) tempWikiFeatures[featureIndex], 0);
+        }
+        this.setFeatures(tempFeatures);
+
     }
 
     //Counts keywords shown to city's Wiki article for every feature
@@ -189,9 +226,26 @@ public class City {
         this.countryName = countryName;
     }
 
+    public Date getTimestamp() {
+        return timestamp;
+    }
+
+    @Override
+    public boolean equals(Object obj) {
+        if ( this.getName().equalsIgnoreCase(((City) obj).getName()) && this.getCountryName().equalsIgnoreCase(((City)obj).getCountryName())) {
+            return true;
+        }
+        return false;
+    }
+
     @Override
     public String toString() {
         return name +
                 "\t\t\t\t" + Arrays.toString(features);
+    }
+
+    @Override
+    public int compareTo(City o) {
+        return 0;
     }
 }
