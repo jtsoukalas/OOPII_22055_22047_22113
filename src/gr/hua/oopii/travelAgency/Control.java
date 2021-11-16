@@ -1,5 +1,10 @@
 package gr.hua.oopii.travelAgency;
 
+<<<<<<< HEAD
+=======
+import com.fasterxml.jackson.core.type.TypeReference;
+import com.fasterxml.jackson.databind.ObjectMapper;
+>>>>>>> parent of 6bf619c (Json handling drafts)
 import gr.hua.oopii.travelAgency.exception.CitiesLibraryEmptyException;
 import gr.hua.oopii.travelAgency.exception.NoRecommendationException;
 import gr.hua.oopii.travelAgency.openWeather.OpenWeatherMap;
@@ -16,6 +21,7 @@ import java.time.LocalDateTime;
 import java.util.ArrayList;
 import java.util.Random;
 import java.util.Scanner;
+import java.util.Set;
 
 
 public class Control {
@@ -131,6 +137,14 @@ public class Control {
             throw new StopRunningException(e);
         }
 
+<<<<<<< HEAD
+=======
+        //Update cities library Json file
+        if (newData) {
+            System.out.println("-Cities library Json file update res = " + this.saveCitiesLibrary() + "-");
+        }
+
+>>>>>>> parent of 6bf619c (Json handling drafts)
         //Choose suitable perceptron
         PerceptronTraveler casePerceptron;
         if (age >= 15 && age < 25) {             //Young traveller
@@ -156,6 +170,32 @@ public class Control {
         }
     }
 
+<<<<<<< HEAD
+=======
+    public boolean saveCitiesLibrary() {
+        ObjectMapper mapper = new ObjectMapper();
+        try {
+            mapper.writeValue(new File("citiesLibrary.json"), this.citiesLibrary);     //FIXME Parametric file name
+            return true;
+        } catch (IOException e) {
+            return false;
+        }
+    }
+
+    public boolean retrieveCitiesLibraryJson() {
+        ObjectMapper mapper = new ObjectMapper();
+        //mapper.enableDefaultTyping();
+        try {
+            this.citiesLibrary = mapper.readValue(new File("citiesLibrary.json"), new TypeReference<ArrayList<City>>(){});//mapper.getTypeFactory().constructCollectionType(List.class, City.class));  //FIXME Class type problem
+            this.weatherDataDownloadTime = LocalDateTime.now();     //FIXME Optimization needed
+            this.wikiDataDownloaded = true;                         //FIXME Optimization needed
+            return true;
+        } catch (IOException e) {
+            return false;
+        }
+    }
+
+>>>>>>> parent of 6bf619c (Json handling drafts)
     public String cityLibraryToString() {
         StringBuilder returnCityCatalogue = new StringBuilder();
         for (City city : citiesLibrary) {
