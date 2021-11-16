@@ -40,9 +40,12 @@ public class JsonHandler<E> {
         //System.out.println(ObjectType.class);
 
 <<<<<<< HEAD
+<<<<<<< HEAD
         return mapper.readValue(new File("arraylist.json"), mapper.getTypeFactory().
                constructCollectionType( List.class, myType2.getClass()));
 =======
+=======
+>>>>>>> parent of 6bf619c (Json handling drafts)
         //return mapper.readValue(new File("arraylist.json"), mapper.getTypeFactory().
                //constructCollectionType( List.class, myType2.getClass()));
 >>>>>>> parent of 6bf619c (Json handling drafts)

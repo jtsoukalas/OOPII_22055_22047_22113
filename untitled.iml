@@ -88,6 +88,7 @@
       </library>
     </orderEntry>
 <<<<<<< HEAD
+<<<<<<< HEAD
     <orderEntry type="module-library">
       <library name="JUnit4">
         <CLASSES>
@@ -98,6 +99,8 @@
         <SOURCES />
       </library>
     </orderEntry>
+=======
+>>>>>>> parent of 6bf619c (Json handling drafts)
 =======
 >>>>>>> parent of 6bf619c (Json handling drafts)
   </component>
