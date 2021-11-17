@@ -4,6 +4,8 @@ import gr.hua.oopii.travelAgency.City;
 import gr.hua.oopii.travelAgency.exception.CitiesLibraryEmptyException;
 
 import java.util.ArrayList;
+import java.util.Collection;
+import java.util.Comparator;
 
 public abstract class PerceptronTraveler implements PerceptronTravelerInterface {
 
@@ -69,6 +71,12 @@ public abstract class PerceptronTraveler implements PerceptronTravelerInterface 
             approvedCities[cityIndex] = sum > 0;
         }
         return approvedCities;
+    }
+
+    public ArrayList<City> sortRecommendation(Comparator<City> comparator){
+        ArrayList<City> tempLastRec = lastRecommendation;
+        tempLastRec.sort(comparator);
+        return tempLastRec;
     }
 
     public float[] getWeightsBias() {

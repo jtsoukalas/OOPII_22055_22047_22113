@@ -144,6 +144,9 @@ public class Control {
         }
     }
 
+    /**
+     * @version 1.2
+     */
     public ArrayList<City> runPerceptron(int age) throws StopRunningException, IllegalArgumentException {
         //Update Wiki and Weather data if needed
         boolean newData = false;
@@ -202,13 +205,23 @@ public class Control {
             }
         }
         lastPerceptronUsed = casePerceptron;
+        System.out.println("Would you like your recommendation sorted? True/False");
+        boolean sorted = Input.readBoolean();
+
+
         //Run perceptron
         try {
+            if (sorted) {
+                casePerceptron.recommend(casePerceptron.retrieveCompatibleCities(citiesLibrary), citiesLibrary);
+                return casePerceptron.sortRecommendation();
+            }
             return casePerceptron.recommend(casePerceptron.retrieveCompatibleCities(citiesLibrary), citiesLibrary);
         } catch (CitiesLibraryEmptyException e) {
+
             System.err.println(e.getMessage());
             throw new StopRunningException(e);
         }
+
     }
 
     public boolean saveCitiesLibraryJson() {

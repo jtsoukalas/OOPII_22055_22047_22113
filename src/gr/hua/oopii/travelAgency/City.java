@@ -232,7 +232,7 @@ public class City implements Comparable<City> {
 
     @Override
     public boolean equals(Object obj) {
-        if ( this.getName().equalsIgnoreCase(((City) obj).getName()) && this.getCountryName().equalsIgnoreCase(((City)obj).getCountryName())) {
+        if (this.getName().equalsIgnoreCase(((City) obj).getName()) && this.getCountryName().equalsIgnoreCase(((City) obj).getCountryName())) {
             return true;
         }
         return false;
