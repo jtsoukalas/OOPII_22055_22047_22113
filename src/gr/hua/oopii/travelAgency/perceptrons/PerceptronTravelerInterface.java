@@ -1,8 +1,8 @@
 package gr.hua.oopii.travelAgency.perceptrons;
 
 import gr.hua.oopii.travelAgency.City;
-import gr.hua.oopii.travelAgency.cityComparator.geodesicCompare;
 import gr.hua.oopii.travelAgency.exception.CitiesLibraryEmptyException;
+import gr.hua.oopii.travelAgency.exception.NoRecommendationException;
 
 import java.util.ArrayList;
 import java.util.Comparator;
@@ -19,6 +19,7 @@ public interface PerceptronTravelerInterface {
 
     float[] getWeightsBias();
 
-    ArrayList<City> sortRecommendation(Comparator<City> comparator);
-    ArrayList<City> sortRecommendation();
+    ArrayList<City> sortRecommendation(Comparator<City> comparator) throws NoRecommendationException;
+
+    ArrayList<City> sortRecommendation() throws NoRecommendationException;
 }

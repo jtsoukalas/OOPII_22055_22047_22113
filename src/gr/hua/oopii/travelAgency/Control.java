@@ -7,9 +7,7 @@ import com.fasterxml.jackson.databind.ObjectMapper;
 //import com.google.common.reflect.TypeToken;
 //import com.google.gson.Gson;
 //import com.google.gson.reflect.TypeToken;
-import gr.hua.oopii.travelAgency.exception.CitiesLibraryEmptyException;
-import gr.hua.oopii.travelAgency.exception.NoRecommendationException;
-import gr.hua.oopii.travelAgency.exception.StopRunningException;
+import gr.hua.oopii.travelAgency.exception.*;
 import gr.hua.oopii.travelAgency.openData.OpenData;
 import gr.hua.oopii.travelAgency.openWeather.OpenWeatherMap;
 import gr.hua.oopii.travelAgency.perceptrons.PerceptronElderTraveler;
@@ -112,7 +110,7 @@ public class Control {
     }
 
     // Returns timestamp if user's city already exists, or null if it's a new city
-    public Date newCity(String cityName, String countryName) throws IOException {
+    public Date newCity(String cityName, String countryName) throws NoSuchCityException, NoInternetException {
         City userCityRecommendation = new City(cityName, countryName);
         try {
             return citiesLibrary.get(citiesLibrary.indexOf(userCityRecommendation)).getTimestamp();
@@ -147,7 +145,7 @@ public class Control {
     /**
      * @version 1.2
      */
-    public ArrayList<City> runPerceptron(int age) throws StopRunningException, IllegalArgumentException {
+    public ArrayList<City> runPerceptron(int age) throws StopRunningException, IllegalArgumentException, NoRecommendationException {
         //Update Wiki and Weather data if needed
         boolean newData = false;
         try {
@@ -173,13 +171,7 @@ public class Control {
                     newData = true;
                 }
             }
-        } catch (FileNotFoundException e) {
-            System.err.println("Error! Can not download data form the internet. Please try again later.");
-            throw new StopRunningException(e);
-        } catch (IOException e) {
-            System.err.println("Error! Please check your internet connection and try again.");
-            throw new StopRunningException(e);
-        } catch (CitiesLibraryEmptyException e) {
+        } catch (CitiesLibraryEmptyException | NoSuchCityException | NoInternetException e) {
             System.err.println(e.getMessage());
             throw new StopRunningException(e);
         }

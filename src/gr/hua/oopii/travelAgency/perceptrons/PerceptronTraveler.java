@@ -2,6 +2,7 @@ package gr.hua.oopii.travelAgency.perceptrons;
 
 import gr.hua.oopii.travelAgency.City;
 import gr.hua.oopii.travelAgency.exception.CitiesLibraryEmptyException;
+import gr.hua.oopii.travelAgency.exception.NoRecommendationException;
 
 import java.util.ArrayList;
 import java.util.Collection;
@@ -73,7 +74,10 @@ public abstract class PerceptronTraveler implements PerceptronTravelerInterface 
         return approvedCities;
     }
 
-    public ArrayList<City> sortRecommendation(Comparator<City> comparator){
+    public ArrayList<City> sortRecommendation(Comparator<City> comparator) throws NoRecommendationException {
+        if (lastRecommendation == null || lastRecommendation.isEmpty()){
+            throw new NoRecommendationException();
+        }
         ArrayList<City> tempLastRec = lastRecommendation;
         tempLastRec.sort(comparator);
         return tempLastRec;

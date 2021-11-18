@@ -1,7 +1,8 @@
 package gr.hua.oopii.travelAgency.perceptrons;
 
 import gr.hua.oopii.travelAgency.City;
-import gr.hua.oopii.travelAgency.cityComparator.geodesicCompare;
+import gr.hua.oopii.travelAgency.cityComparator.GeodesicCompare;
+import gr.hua.oopii.travelAgency.exception.NoRecommendationException;
 
 import java.util.ArrayList;
 
@@ -11,7 +12,7 @@ public class PerceptronElderTraveler extends PerceptronTraveler {
                 -1F, 0.4F, 1F, 1F, -1F,-1.4F);
     }
 
-    public ArrayList<City> sortRecommendation(){
-        return sortRecommendation(new geodesicCompare().reversed());
+    public ArrayList<City> sortRecommendation() throws NoRecommendationException {
+        return sortRecommendation(new GeodesicCompare().reversed());
     }
 }

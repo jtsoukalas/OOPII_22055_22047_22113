@@ -37,7 +37,7 @@ public class OpenData {
         return mapper.readValue(new URL("http://api.openweathermap.org/data/2.5/weather?q=" + city + "," + country + "&APPID=" + appid + ""), OpenWeatherMap.class);
     }
 
-    public static MediaWiki retrieveWikiData(String city, String country)throws IOException{
+    public static MediaWiki retrieveWikiData(String city)throws IOException{
         ObjectMapper mapper = new ObjectMapper();
         return mapper.readValue(new URL("https://en.wikipedia.org/w/api.php?action=query&prop=extracts&titles=" + city + "&format=json&formatversion=2"), MediaWiki.class);
     }

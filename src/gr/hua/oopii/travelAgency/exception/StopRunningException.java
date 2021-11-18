@@ -12,4 +12,9 @@ public class StopRunningException extends Exception {
         numExceptions++;
         this.cause = cause;
     }
+
+    @Override
+    public Exception getCause() {
+        return cause;
+    }
 }

@@ -1,6 +1,7 @@
 package gr.hua.oopii.travelAgency;
 
 import gr.hua.oopii.travelAgency.exception.NoRecommendationException;
+import gr.hua.oopii.travelAgency.exception.NoSuchCityException;
 import gr.hua.oopii.travelAgency.exception.StopRunningException;
 
 import java.util.Date;
@@ -9,7 +10,7 @@ public class Main {
 
     public static void main(String[] args) throws Exception {
         try {
-            Control control = new Control("Athens","GR");
+            Control control = new Control("Athens", "GR");
 
             do {
 
@@ -21,18 +22,29 @@ public class Main {
                     System.err.println(e.getMessage());
                 }
                 {// Testing newCity
+                    boolean retry;
                     System.out.println("Do you want to add a new candidate city? (true/false)");
-                    if(Input.readBoolean()) {
-                        System.out.println("Provide city name");
-                        String name = Input.readString();
-                        System.out.println("Provide country's ISO");
-                        String countryName = Input.readString();
-                        Date date = control.newCity(name, countryName);
-                        if (date == null) {
-                            System.out.println("City added successfully");
-                        } else {
-                            System.out.println("City already exists since " + date);
-                        }
+                    if (Input.readBoolean()) {
+                        do {
+                            try {
+                                retry = false;
+
+                                System.out.println("Provide city name");
+                                String name = Input.readString();
+                                System.out.println("Provide country's ISO");
+                                String countryName = Input.readString();
+                                Date date = control.newCity(name, countryName);
+                                if (date == null) {
+                                    System.out.println("City added successfully");
+                                } else {
+                                    System.out.println("City already exists since " + date);
+                                }
+
+                            } catch (NoSuchCityException e) {
+                                System.err.println("City " + e.getCityName() + " wasn't found. Do you want to try another city? (true/false)");
+                                retry = Input.readBoolean();
+                            }
+                        } while (retry);
                     }
                 }
                 System.out.println("Next traveler? (true/false)");

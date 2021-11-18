@@ -1,13 +1,12 @@
 package gr.hua.oopii.travelAgency;
 
-import gr.hua.oopii.travelAgency.exception.StopRunningException;
+import gr.hua.oopii.travelAgency.exception.*;
 import gr.hua.oopii.travelAgency.openWeather.OpenWeatherMap;
 import gr.hua.oopii.travelAgency.perceptrons.PerceptronTraveler;
-import gr.hua.oopii.travelAgency.exception.CitiesLibraryEmptyException;
-import gr.hua.oopii.travelAgency.exception.NoRecommendationException;
 import gr.hua.oopii.travelAgency.openData.CountWords;
 import gr.hua.oopii.travelAgency.openData.MediaWiki;
 import gr.hua.oopii.travelAgency.openData.OpenData;
+import org.jetbrains.annotations.NotNull;
 
 import java.io.FileNotFoundException;
 import java.io.IOException;
@@ -41,7 +40,7 @@ public class City implements Comparable<City> {
             this.countryName = Input.readString();
             try {
                 retry = false;
-                OpenWeatherMap tempWeatherObj = OpenData.retrieveWeatherData(name, countryName);
+                OpenData.retrieveWeatherData(name, countryName);
             } catch (FileNotFoundException e) {
                 System.err.println("Location wasn't found,please try another location...");
                 retry = true;
@@ -148,7 +147,7 @@ public class City implements Comparable<City> {
 
     //Downloads weather data and place it to citiesLibrary without changing other data at the library
     public static void setWeatherData(ArrayList<City> citiesLibrary, Control control) throws
-            IOException, CitiesLibraryEmptyException {
+            CitiesLibraryEmptyException, NoSuchCityException, NoInternetException {
         if (citiesLibrary == null) {
             throw new CitiesLibraryEmptyException();
         }
@@ -157,51 +156,67 @@ public class City implements Comparable<City> {
         }
     }
 
-    public void setWeatherData(Control control) throws IOException {
-        //Gathering weather data
-        OpenWeatherMap tempWeatherObj = OpenData.retrieveWeatherData(this.name, this.countryName);
-        float[] tempFeatures = this.getFeatures();
+    public void setWeatherData(Control control) throws NoSuchCityException, NoInternetException {
+        try {
+            //Gathering weather data
+            OpenWeatherMap tempWeatherObj = OpenData.retrieveWeatherData(this.name, this.countryName);
 
-        //Setting normalised data at feature[] of city object
-        tempFeatures[7] = normaliseFeature((float) tempWeatherObj.getMain().getTemp(), 1);
-        tempFeatures[8] = normaliseFeature((float) tempWeatherObj.getClouds().getAll(), 2);
-        tempFeatures[9] = normaliseFeature((float) geodesicDistance(control.getOfficeLat(), control.getOfficeLon(), tempWeatherObj.getCoord().getLat(), tempWeatherObj.getCoord().getLon()), 3);
-        this.setFeatures(tempFeatures);
+            float[] tempFeatures = this.getFeatures();
+
+            //Setting normalised data at feature[] of city object
+            tempFeatures[7] = normaliseFeature((float) tempWeatherObj.getMain().getTemp(), 1);
+            tempFeatures[8] = normaliseFeature((float) tempWeatherObj.getClouds().getAll(), 2);
+            tempFeatures[9] = normaliseFeature((float) geodesicDistance(control.getOfficeLat(), control.getOfficeLon(), tempWeatherObj.getCoord().getLat(), tempWeatherObj.getCoord().getLon()), 3);
+            this.setFeatures(tempFeatures);
+
+        } catch (FileNotFoundException e) {
+            throw new NoSuchCityException(this.name, "OpenWeather");
+        } catch (IOException e) {
+            throw new NoInternetException("OpenWeather");
+        }
     }
 
 
     //Downloads wiki data and place it to citiesLibrary without changing other data at the library
-    public static void setWikiData(ArrayList<City> citiesLibrary) throws
-            IOException, CitiesLibraryEmptyException {
-        if (citiesLibrary == null) {
+    public static void setWikiData(@NotNull ArrayList<City> citiesLibrary) throws
+            CitiesLibraryEmptyException, NoSuchCityException, NoInternetException {
+
+        if (citiesLibrary.isEmpty()) {
             throw new CitiesLibraryEmptyException();
         }
+
         for (City city : citiesLibrary) {
             city.setWikiData();
         }
     }
 
-    public void setWikiData() throws IOException {
-        float[] tempFeatures = this.getFeatures();
-        int[] tempWikiFeatures = countWikiKeywords(this.getName(), this.getCountryName());
-        //Normalise and copy wiki features to city's features
-        for (int featureIndex = 0; featureIndex < wikiFeatures.length; featureIndex++) {
-            tempFeatures[featureIndex] = normaliseFeature((float) tempWikiFeatures[featureIndex], 0);
-        }
-        this.setFeatures(tempFeatures);
-
+    public void setWikiData() throws NoSuchCityException, NoInternetException {
+            float[] tempFeatures = this.getFeatures();
+            int[] tempWikiFeatures = countWikiKeywords(this.getName());
+            //Normalise and copy wiki features to city's features
+            for (int featureIndex = 0; featureIndex < wikiFeatures.length; featureIndex++) {
+                tempFeatures[featureIndex] = normaliseFeature((float) tempWikiFeatures[featureIndex], 0);
+            }
+            this.setFeatures(tempFeatures);
     }
 
     //Counts keywords shown to city's Wiki article for every feature
-    public static int[] countWikiKeywords(String city, String country) throws IOException {
-        MediaWiki wikiObj = OpenData.retrieveWikiData(city, country);
-        int[] tempFeature = new int[wikiFeatures.length];
-        for (int featureIndex = 0; featureIndex < wikiFeatures.length; featureIndex++) {
-            tempFeature[featureIndex] = CountWords.countCriterionfCity(wikiObj.toString(), wikiFeatures[featureIndex]);
+    public static int[] countWikiKeywords(String city) throws NoSuchCityException, NoInternetException {
+        try {
+            MediaWiki wikiObj = OpenData.retrieveWikiData(city);
+            int[] tempFeature = new int[wikiFeatures.length];
+            for (int featureIndex = 0; featureIndex < wikiFeatures.length; featureIndex++) {
+                tempFeature[featureIndex] = CountWords.countCriterionfCity(wikiObj.toString(), wikiFeatures[featureIndex]);
+            }
+            return tempFeature;
+        } catch (FileNotFoundException e) {
+            throw new NoSuchCityException(city, "Wikipedia");
+        } catch (IOException e) {
+            throw new NoInternetException("Wikipedia");
         }
-        return tempFeature;
     }
 
+    //TODO review setters & getters
     public float[] getFeatures() {
         return features;
     }
@@ -232,10 +247,7 @@ public class City implements Comparable<City> {
 
     @Override
     public boolean equals(Object obj) {
-        if (this.getName().equalsIgnoreCase(((City) obj).getName()) && this.getCountryName().equalsIgnoreCase(((City) obj).getCountryName())) {
-            return true;
-        }
-        return false;
+        return this.getName().equalsIgnoreCase(((City) obj).getName()) && this.getCountryName().equalsIgnoreCase(((City) obj).getCountryName());
     }
 
     @Override
@@ -245,7 +257,7 @@ public class City implements Comparable<City> {
     }
 
     @Override
-    public int compareTo(City o) {
+    public int compareTo(@NotNull City o) {
         return 0;
     }
 }

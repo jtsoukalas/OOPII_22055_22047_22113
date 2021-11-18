@@ -1,7 +1,8 @@
 package gr.hua.oopii.travelAgency.perceptrons;
 
 import gr.hua.oopii.travelAgency.City;
-import gr.hua.oopii.travelAgency.cityComparator.timestampCompare;
+import gr.hua.oopii.travelAgency.cityComparator.TimestampCompare;
+import gr.hua.oopii.travelAgency.exception.NoRecommendationException;
 
 import java.util.ArrayList;
 
@@ -11,8 +12,7 @@ public class PerceptronMiddleTraveler extends PerceptronTraveler {
                 0.6F, 0.5F, 0.7F, 0.8F, -0.3F,-2.7F);
     }
 
-    public ArrayList<City> sortRecommendation(){
-        return sortRecommendation(new timestampCompare());
+    public ArrayList<City> sortRecommendation() throws NoRecommendationException {
+        return sortRecommendation(new TimestampCompare());
     }
-
 }
