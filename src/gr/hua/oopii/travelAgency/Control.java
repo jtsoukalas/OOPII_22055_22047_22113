@@ -211,14 +211,15 @@ public class Control {
 
         //Run perceptron
         try {
-            if (sorted) {
-                casePerceptron.recommend(casePerceptron.retrieveCompatibleCities(citiesLibrary), citiesLibrary);
-                return casePerceptron.sortRecommendation();
-            }
-            return casePerceptron.recommend(casePerceptron.retrieveCompatibleCities(citiesLibrary), citiesLibrary);
-        } catch (CitiesLibraryEmptyException e) {
+           casePerceptron.recommend(casePerceptron.retrieveCompatibleCities(citiesLibrary), citiesLibrary);
 
-            System.err.println(e.getMessage());
+            if (sorted) {
+                return casePerceptron.sortRecommendation();
+            } else {
+                return casePerceptron.getLastRecommendation();
+            }
+        } catch (CitiesLibraryEmptyException e) {
+            System.err.println(e.getMessage());     //4 debugging
             throw new StopRunningException(e);
         }
 

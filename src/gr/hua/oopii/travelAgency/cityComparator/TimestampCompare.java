@@ -3,10 +3,11 @@ package gr.hua.oopii.travelAgency.cityComparator;
 import gr.hua.oopii.travelAgency.City;
 
 import java.util.Comparator;
+import java.util.Date;
 
-public class timestampCompare implements Comparator<City> {
+public class TimestampCompare implements Comparator<City> {
     @Override
     public int compare(City o1, City o2) {
-        return 0;
+        return o1.getTimestamp().compareTo(o2.getTimestamp());
     }
 }
