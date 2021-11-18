@@ -20,16 +20,19 @@ public class Main {
                 } catch (NoRecommendationException e) {
                     System.err.println(e.getMessage());
                 }
-                {// new method to test
-                    System.out.println("Provide city name");
-                    String name = Input.readString();
-                    System.out.println("Provide country's ISO");
-                    String countryName = Input.readString();
-                    Date date = control.newCity(name, countryName);
-                    if (date == null) {
-                        System.out.println("City not on list");
-                    } else {
-                        System.out.println("City already exists since " + date);
+                {// Testing newCity
+                    System.out.println("Do you want to add a new candidate city? (true/false)");
+                    if(Input.readBoolean()) {
+                        System.out.println("Provide city name");
+                        String name = Input.readString();
+                        System.out.println("Provide country's ISO");
+                        String countryName = Input.readString();
+                        Date date = control.newCity(name, countryName);
+                        if (date == null) {
+                            System.out.println("City added successfully");
+                        } else {
+                            System.out.println("City already exists since " + date);
+                        }
                     }
                 }
                 System.out.println("Next traveler? (true/false)");

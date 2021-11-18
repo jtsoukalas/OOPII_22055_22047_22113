@@ -8,9 +8,10 @@
 .idea/misc.xml
 *.class
 >>>>>>> bf0166d88ba8176dedaf2c569b1584ad6a9de352
-.idea/misc.xml
 untitled.iml
 out/production/.DS_Store
 out/production/untitled/firstDeliverable/.DS_Store
 out/production/untitled/.DS_Store
 .DS_Store
+citiesLibrary.json
+citiesLibraryFormGson.json.json
