@@ -5,6 +5,11 @@ import org.jetbrains.annotations.NotNull;
 
 import java.util.Comparator;
 
+/**
+ * @since secondDeliverable
+ * @version 1.0
+ */
+
 public class GeodesicCompare implements Comparator<City> {
     @Override
     public int compare(@NotNull City o1, @NotNull City o2) {

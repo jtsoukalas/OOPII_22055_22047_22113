@@ -2,6 +2,11 @@ package gr.hua.oopii.travelAgency.exception;
 
 import java.io.Serial;
 
+/**
+ * @since secondDeliverable
+ * @version 1.0
+ */
+
 public class NoSuchCityException extends Exception {
 
 	@Serial
