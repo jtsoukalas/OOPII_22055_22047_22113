@@ -62,7 +62,7 @@ public class City implements Comparable<City> {
         this(new float[]{0F, 0F, 0F, 0F, 0F, 0F, 0F, 0F, 0F, 0F}, name, countryName);
     }
 
-    public static City unifiedDistRec(PerceptronTraveler perceptron) throws Exception {
+    public static City unifiedDistRec(@NotNull PerceptronTraveler perceptron) throws NoRecommendationException {
         ArrayList<City> citiesToCompare = perceptron.getLastRecommendation();
 
         if (citiesToCompare.isEmpty()) {
@@ -146,9 +146,9 @@ public class City implements Comparable<City> {
     }
 
     //Downloads weather data and place it to citiesLibrary without changing other data at the library
-    public static void setWeatherData(ArrayList<City> citiesLibrary, Control control) throws
+    public static void setWeatherData(@NotNull ArrayList<City> citiesLibrary, @NotNull Control control) throws
             CitiesLibraryEmptyException, NoSuchCityException, NoInternetException {
-        if (citiesLibrary == null) {
+        if (citiesLibrary.isEmpty()) {
             throw new CitiesLibraryEmptyException();
         }
         for (City city : citiesLibrary) {
@@ -156,7 +156,7 @@ public class City implements Comparable<City> {
         }
     }
 
-    public void setWeatherData(Control control) throws NoSuchCityException, NoInternetException {
+    public void setWeatherData(@NotNull Control control) throws NoSuchCityException, NoInternetException {
         try {
             //Gathering weather data
             OpenWeatherMap tempWeatherObj = OpenData.retrieveWeatherData(this.name, this.countryName);
@@ -247,6 +247,9 @@ public class City implements Comparable<City> {
 
     @Override
     public boolean equals(Object obj) {
+        if (getClass() != obj.getClass()) {
+            return false;
+        }
         return this.getName().equalsIgnoreCase(((City) obj).getName()) && this.getCountryName().equalsIgnoreCase(((City) obj).getCountryName());
     }
 

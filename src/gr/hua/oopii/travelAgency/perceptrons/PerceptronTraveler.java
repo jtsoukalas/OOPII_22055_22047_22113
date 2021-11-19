@@ -3,6 +3,7 @@ package gr.hua.oopii.travelAgency.perceptrons;
 import gr.hua.oopii.travelAgency.City;
 import gr.hua.oopii.travelAgency.exception.CitiesLibraryEmptyException;
 import gr.hua.oopii.travelAgency.exception.NoRecommendationException;
+import org.jetbrains.annotations.NotNull;
 
 import java.util.ArrayList;
 import java.util.Collection;
@@ -32,7 +33,7 @@ public abstract class PerceptronTraveler implements PerceptronTravelerInterface 
     }
 
     //Returns an ArrayList with the cities that have a positive rate from the retrieveCompatibleCities method
-    public ArrayList<City> recommend(boolean[] compatibleCities, ArrayList<City> citiesLibrary) {
+    public ArrayList<City> recommend(boolean @NotNull [] compatibleCities, @NotNull ArrayList<City> citiesLibrary) {
         ArrayList<City> recommendation = new ArrayList<>();
         for (int cityIndex = 0; cityIndex < compatibleCities.length; cityIndex++) {
             if (compatibleCities[cityIndex] && citiesLibrary.get(cityIndex).getFeatures()[9] != 0) {
@@ -43,7 +44,7 @@ public abstract class PerceptronTraveler implements PerceptronTravelerInterface 
         return recommendation;
     }
 
-    public ArrayList<City> recommend(boolean[] compatibleCities, ArrayList<City> citiesLibrary, boolean uppercase) {
+    public ArrayList<City> recommend(boolean @NotNull [] compatibleCities, @NotNull ArrayList<City> citiesLibrary, boolean uppercase) {
         ArrayList<City> recommendation = recommend(compatibleCities, citiesLibrary);
 
         if (uppercase) {
@@ -57,11 +58,12 @@ public abstract class PerceptronTraveler implements PerceptronTravelerInterface 
     }
 
     //Calculates city's rate and returns the result of Heaviside step
-    public boolean[] retrieveCompatibleCities(ArrayList<City> citiesLibrary) throws CitiesLibraryEmptyException {
+    public boolean[] retrieveCompatibleCities(@NotNull ArrayList<City> citiesLibrary) throws CitiesLibraryEmptyException {
         if (citiesLibrary.isEmpty()){
             throw new CitiesLibraryEmptyException();
         }
 
+        // Summation and Heaviside step
         boolean[] approvedCities = new boolean[citiesLibrary.size()];
         for (int cityIndex = 0; cityIndex < approvedCities.length; cityIndex++) {
             float sum = 0;

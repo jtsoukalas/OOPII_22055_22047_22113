@@ -21,7 +21,7 @@ public class Main {
                 } catch (NoRecommendationException e) {
                     System.err.println(e.getMessage());
                 }
-                {// Testing newCity
+                {// Testing addCandidateCity
                     boolean retry;
                     System.out.println("Do you want to add a new candidate city? (true/false)");
                     if (Input.readBoolean()) {
@@ -33,7 +33,7 @@ public class Main {
                                 String name = Input.readString();
                                 System.out.println("Provide country's ISO");
                                 String countryName = Input.readString();
-                                Date date = control.newCity(name, countryName);
+                                Date date = control.addCandidateCity(name, countryName);
                                 if (date == null) {
                                     System.out.println("City added successfully");
                                 } else {

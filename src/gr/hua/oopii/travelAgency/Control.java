@@ -97,6 +97,10 @@ public class Control {
 
 
     public void initNameCitiesLibrary() {
+        if (!citiesLibrary.isEmpty()) {
+            return;
+        }
+
         int cityAmount = 15;
         String[] cityNames = new String[]{"Athens", "London", "Brussels", "Madrid", "Helsinki", "Paris", "Berlin",
                 "Stockholm", "Tokyo", "Rio", "Denver", "Rome", "Naples", "Milan", "Moscow"};
@@ -109,8 +113,8 @@ public class Control {
         }
     }
 
-    // Returns timestamp if user's city already exists, or null if it's a new city
-    public Date newCity(String cityName, String countryName) throws NoSuchCityException, NoInternetException {
+    // Returns timestamp if city already exists, or null if it's a new city
+    public Date addCandidateCity(String cityName, String countryName) throws NoSuchCityException, NoInternetException {
         City userCityRecommendation = new City(cityName, countryName);
         try {
             return citiesLibrary.get(citiesLibrary.indexOf(userCityRecommendation)).getTimestamp();
@@ -142,9 +146,7 @@ public class Control {
         }
     }
 
-    /**
-     * @version 1.2
-     */
+
     public ArrayList<City> runPerceptron(int age) throws StopRunningException, IllegalArgumentException, NoRecommendationException {
         //Update Wiki and Weather data if needed
         boolean newData = false;
@@ -176,7 +178,7 @@ public class Control {
             throw new StopRunningException(e);
         }
 
-        //Update cities library Json file
+        //Update cities library Json file       //TODO Talk about where should we update the Json file
         if (newData) {
             System.out.println("-Cities library Json file update res = " + this.saveCitiesLibraryJson() + "-");
         }
@@ -257,7 +259,11 @@ public class Control {
         }
     }
 
-    public String cityLibraryToString() {
+    public String cityLibraryToString() throws CitiesLibraryEmptyException {
+        if (citiesLibrary.isEmpty()){
+            throw new CitiesLibraryEmptyException();
+        }
+
         StringBuilder returnCityCatalogue = new StringBuilder();
         for (City city : citiesLibrary) {
             returnCityCatalogue.append(city.toString()).append("\n");
@@ -274,7 +280,7 @@ public class Control {
         for (City compatibleCity : compatibleCities) {
             recommendation.append(compatibleCity.getName()).append(" | ");
         }
-        return recommendation.toString();
+        return recommendation.deleteCharAt(recommendation.lastIndexOf("|")).toString();
     }
 
     public ArrayList<City> getCitiesLibrary() {
