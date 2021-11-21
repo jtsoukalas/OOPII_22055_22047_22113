@@ -97,7 +97,7 @@ public class Control {
 
 
     public void initNameCitiesLibrary() {
-        if (!citiesLibrary.isEmpty()) {
+        if (citiesLibrary!=null && !citiesLibrary.isEmpty()) {
             return;
         }
 

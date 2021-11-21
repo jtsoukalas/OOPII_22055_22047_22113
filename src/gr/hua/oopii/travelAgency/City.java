@@ -161,6 +161,14 @@ public class City implements Comparable<City> {
             //Gathering weather data
             OpenWeatherMap tempWeatherObj = OpenData.retrieveWeatherData(this.name, this.countryName);
 
+            //Name formatting if needed
+            if (!this.getName().equals(tempWeatherObj.getName())) {
+                this.setName(tempWeatherObj.getName());
+            }
+            if (this.getCountryName().equals(tempWeatherObj.getSys().getCountry())) {
+                this.setCountryName(tempWeatherObj.getSys().getCountry());
+            }
+
             float[] tempFeatures = this.getFeatures();
 
             //Setting normalised data at feature[] of city object
@@ -191,13 +199,13 @@ public class City implements Comparable<City> {
     }
 
     public void setWikiData() throws NoSuchCityException, NoInternetException {
-            float[] tempFeatures = this.getFeatures();
-            int[] tempWikiFeatures = countWikiKeywords(this.getName());
-            //Normalise and copy wiki features to city's features
-            for (int featureIndex = 0; featureIndex < wikiFeatures.length; featureIndex++) {
-                tempFeatures[featureIndex] = normaliseFeature((float) tempWikiFeatures[featureIndex], 0);
-            }
-            this.setFeatures(tempFeatures);
+        float[] tempFeatures = this.getFeatures();
+        int[] tempWikiFeatures = countWikiKeywords(this.getName());
+        //Normalise and copy wiki features to city's features
+        for (int featureIndex = 0; featureIndex < wikiFeatures.length; featureIndex++) {
+            tempFeatures[featureIndex] = normaliseFeature((float) tempWikiFeatures[featureIndex], 0);
+        }
+        this.setFeatures(tempFeatures);
     }
 
     //Counts keywords shown to city's Wiki article for every feature
