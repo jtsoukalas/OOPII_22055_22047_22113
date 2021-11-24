@@ -31,28 +31,7 @@ public class City implements Comparable<City> {
         this.timestamp = new Date();
     }
 
-    public City() throws StopRunningException {
-        boolean retry;
-        do {
-            System.out.println("Provide city name");
-            this.name = Input.readString();
-            System.out.println("Provide country's ISO");
-            this.countryName = Input.readString();
-            try {
-                retry = false;
-                OpenData.retrieveWeatherData(name, countryName);
-            } catch (FileNotFoundException e) {
-                System.err.println("Location wasn't found,please try another location...");
-                retry = true;
-            } catch (IOException e) {
-                System.err.println("Error! Please check your internet connection and try again.");
-                throw new StopRunningException(e);
-            }
-        } while (retry);
-
-        this.timestamp = new Date();
-    }
-
+    public City() {}
 
     public City(float geodesicDist) {
         this.features = new float[]{0F, 0F, 0F, 0F, 0F, 0F, 0F, 0F, 0F, geodesicDist};

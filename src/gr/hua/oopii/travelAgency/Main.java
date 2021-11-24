@@ -5,6 +5,7 @@ import gr.hua.oopii.travelAgency.exception.NoSuchCityException;
 import gr.hua.oopii.travelAgency.exception.StopRunningException;
 
 import java.util.Date;
+import java.util.TreeMap;
 
 public class Main {
 
@@ -13,7 +14,6 @@ public class Main {
             Control control = new Control("Athens", "GR");
 
             do {
-
                 System.out.println("Please enter traveler's age:");
                 int age = Input.readAge();
                 try {
@@ -39,7 +39,7 @@ public class Main {
                                 } else {
                                     System.out.println("City already exists since " + date);
                                 }
-
+                                System.out.println("Testing makeWeekCityCatalogue():\n"+control.makeWeekCityCatalogue()); //todo
                             } catch (NoSuchCityException e) {
                                 System.err.println("City " + e.getCityName() + " wasn't found. Do you want to try another city? (true/false)");
                                 retry = Input.readBoolean();

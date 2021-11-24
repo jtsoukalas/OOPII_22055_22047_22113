@@ -21,10 +21,8 @@ import java.io.IOException;
 import java.lang.reflect.Type;
 import java.net.Proxy;
 import java.time.LocalDateTime;
-import java.util.ArrayList;
-import java.util.Date;
-import java.util.Random;
-import java.util.Scanner;
+import java.time.ZoneId;
+import java.util.*;
 
 
 public class Control {
@@ -33,7 +31,7 @@ public class Control {
     private final PerceptronYoungTraveler youngPerceptron = new PerceptronYoungTraveler();
     private final PerceptronMiddleTraveler middlePerceptron = new PerceptronMiddleTraveler();
     private final PerceptronElderTraveler elderPerceptron = new PerceptronElderTraveler();
-    private static PerceptronTraveler lastPerceptronUsed;
+    private static PerceptronTraveler lastPerceptronUsed;       //todo unnecessary?
 
     private boolean wikiDataDownloaded = false;
     private LocalDateTime weatherDataDownloadTime;
@@ -56,8 +54,6 @@ public class Control {
             System.err.println("Error! Please check your internet connection and try again.");
             throw new StopRunningException(e);
         }
-        this.wikiDataDownloaded = false;
-        this.weatherDataDownloadTime = null;
     }
 
     public Control() throws StopRunningException {
@@ -97,7 +93,7 @@ public class Control {
 
 
     public void initNameCitiesLibrary() {
-        if (citiesLibrary!=null && !citiesLibrary.isEmpty()) {
+        if (citiesLibrary != null && !citiesLibrary.isEmpty()) {
             return;
         }
 
@@ -119,9 +115,12 @@ public class Control {
         try {
             return citiesLibrary.get(citiesLibrary.indexOf(userCityRecommendation)).getTimestamp();
         } catch (IndexOutOfBoundsException e) {
+            //Download data and append to ArrayList
             userCityRecommendation.setWeatherData(this);
             userCityRecommendation.setWikiData();
             citiesLibrary.add(userCityRecommendation);
+            //Update Json
+            this.saveCitiesLibraryJson();
             return null;
         }
     }
@@ -148,10 +147,50 @@ public class Control {
 
 
     public ArrayList<City> runPerceptron(int age) throws StopRunningException, IllegalArgumentException, NoRecommendationException {
-        //Update Wiki and Weather data if needed
+        this.updateData();
+
+        //Choose suitable perceptron
+        PerceptronTraveler casePerceptron;
+        if (age >= 15 && age < 25) {             //Young traveller
+            casePerceptron = youngPerceptron;
+        } else {
+            if (age >= 25 && age < 60) {         //Middle traveller
+                casePerceptron = middlePerceptron;
+            } else {
+                if (age >= 60 && age <= 115) {     //Elder traveller
+                    casePerceptron = elderPerceptron;
+                } else {
+                    throw new IllegalArgumentException("Age should be from 15 to 115.");
+                }
+            }
+        }
+        lastPerceptronUsed = casePerceptron;
+
+        System.out.println("Would you like your recommendation sorted? True/False");
+        boolean sorted = Input.readBoolean();
+
+        //Run perceptron
+        try {
+            casePerceptron.recommend(casePerceptron.retrieveCompatibleCities(citiesLibrary), citiesLibrary);
+
+            if (sorted) {
+                return casePerceptron.sortRecommendation();
+            } else {
+                return casePerceptron.getLastRecommendation();
+            }
+        } catch (CitiesLibraryEmptyException e) {
+            System.err.println(e.getMessage());     //4 debugging
+            throw new StopRunningException(e);
+        }
+
+    }
+
+    private void updateData() throws StopRunningException {
+        retrieveCitiesLibraryJson();
+
         boolean newData = false;
         try {
-            if (!wikiDataDownloaded) {                              //Downloads wiki data once
+            if (!this.wikiDataDownloaded) {                              //Downloads wiki data once
                 System.out.println("-Downloading data from the web, please wait-");
                 initNameCitiesLibrary();
                 City.setWikiData(getCitiesLibrary());
@@ -161,7 +200,7 @@ public class Control {
 
             boolean downloadWeatherData = false;                    //Downloads weather data if 1 hour has elapsed since the last download
             try {
-                if (weatherDataDownloadTime.plusHours(1).isBefore(LocalDateTime.now())) {
+                if (weatherDataDownloadTime.plusHours(1).isAfter(LocalDateTime.now())) {
                     downloadWeatherData = true;
                 }
             } catch (NullPointerException e) {
@@ -182,41 +221,6 @@ public class Control {
         if (newData) {
             System.out.println("-Cities library Json file update res = " + this.saveCitiesLibraryJson() + "-");
         }
-
-        //Choose suitable perceptron
-        PerceptronTraveler casePerceptron;
-        if (age >= 15 && age < 25) {             //Young traveller
-            casePerceptron = youngPerceptron;
-        } else {
-            if (age >= 25 && age < 60) {         //Middle traveller
-                casePerceptron = middlePerceptron;
-            } else {
-                if (age >= 60 && age <= 115) {     //Elder traveller
-                    casePerceptron = elderPerceptron;
-                } else {
-                    throw new IllegalArgumentException("Age should be from 15 to 115.");
-                }
-            }
-        }
-        lastPerceptronUsed = casePerceptron;
-        System.out.println("Would you like your recommendation sorted? True/False");
-        boolean sorted = Input.readBoolean();
-
-
-        //Run perceptron
-        try {
-           casePerceptron.recommend(casePerceptron.retrieveCompatibleCities(citiesLibrary), citiesLibrary);
-
-            if (sorted) {
-                return casePerceptron.sortRecommendation();
-            } else {
-                return casePerceptron.getLastRecommendation();
-            }
-        } catch (CitiesLibraryEmptyException e) {
-            System.err.println(e.getMessage());     //4 debugging
-            throw new StopRunningException(e);
-        }
-
     }
 
     public boolean saveCitiesLibraryJson() {
@@ -238,29 +242,39 @@ public class Control {
         ObjectMapper mapper = new ObjectMapper();
         //mapper.enableDefaultTyping();
         try {
-            /*
-            {//ref: https://www.youtube.com/watch?v=ZZddxpxGQPE&list=PLpUMhvC6l7AOy4UEORSutzFus98n-Es_l&index=4
-                File file = new File("citiesLibrary.json");
-                String tmpJson = "[{\"features\":[0.1,1.0,1.0,0.6,1.0,0.8,1.0,0.6857142,0.02,0.0],\"name\":\"Athens\",\"countryName\":\"GR\"},{\"features\":[0.1,1.0,1.0,0.4,0.4,1.0,1.0,0.68517005,0.9,0.15611756],\"name\":\"London\",\"countryName\":\"UK\"},{\"features\":[0.0,1.0,1.0,0.0,0.6,1.0,1.0,0.66680264,0.75,0.13639854],\"name\":\"Brussels\",\"countryName\":\"BE\"},{\"features\":[0.0,1.0,1.0,0.2,0.1,1.0,1.0,0.6740816,0.0,0.15464252],\"name\":\"Madrid\",\"countryName\":\"ES\"},{\"features\":[0.0,1.0,1.0,0.0,0.5,0.0,0.2,0.6329252,0.75,0.16118917],\"name\":\"Helsinki\",\"countryName\":\"FI\"},{\"features\":[0.0,1.0,1.0,0.1,0.0,1.0,1.0,0.6777551,0.75,0.13680944],\"name\":\"Paris\",\"countryName\":\"FR\"},{\"features\":[0.0,1.0,1.0,0.1,0.1,1.0,1.0,0.64142865,0.0,0.11772461],\"name\":\"Berlin\",\"countryName\":\"DE\"},{\"features\":[0.0,1.0,1.0,0.0,0.2,0.2,1.0,0.60503405,0.0,0.15723297],\"name\":\"Stockholm\",\"countryName\":\"SE\"},{\"features\":[0.0,1.0,1.0,0.0,0.6,0.2,1.0,0.67768705,0.2,0.62063575],\"name\":\"Tokyo\",\"countryName\":\"JP\"},{\"features\":[0.0,0.1,0.0,0.0,0.0,1.0,0.1,0.77231294,0.91,0.69603443],\"name\":\"Rio\",\"countryName\":\"BR\"},{\"features\":[0.0,1.0,1.0,0.0,0.1,0.5,1.0,0.69625854,0.34,0.64736575],\"name\":\"Denver\",\"countryName\":\"US\"},{\"features\":[0.0,1.0,1.0,0.3,0.4,1.0,1.0,0.70149654,0.2,0.06860799],\"name\":\"Rome\",\"countryName\":\"IT\"},{\"features\":[0.0,1.0,1.0,0.1,0.1,1.0,0.9,0.7121088,0.4,0.05695873],\"name\":\"Naples\",\"countryName\":\"IT\"},{\"features\":[0.0,1.0,1.0,0.2,0.3,1.0,1.0,0.6689796,0.75,0.095412716],\"name\":\"Milan\",\"countryName\":\"IT\"},{\"features\":[0.1,1.0,1.0,0.0,1.0,0.8,1.0,0.63476187,0.88,0.14568649],\"name\":\"Moscow\",\"countryName\":\"RU\"}]";
+            this.citiesLibrary = mapper.readValue(new File("citiesLibrary.json"), new TypeReference<ArrayList<City>>() {
+            });
 
-                Type myType = new TypeToken<ArrayList<City>>() {
-                }.getClass();
-                Gson gson = new Gson();
-                ArrayList<City> tmp = gson.fromJson(tmpJson, myType);
-                System.out.println(tmp.toString());
+            //Find last weather download time
+            Date lastUpdateTime = citiesLibrary.get(0).getTimestamp();
+            for (int citiesCounter = 1; citiesCounter < citiesLibrary.size(); citiesCounter++) {
+                if (citiesLibrary.get(citiesCounter).getTimestamp().compareTo(lastUpdateTime) < 0) {
+                    lastUpdateTime = citiesLibrary.get(citiesCounter).getTimestamp();
+                }
             }
-            */
-            //this.citiesLibrary = mapper.readValue(new File("citiesLibrary.json"), new TypeReference<ArrayList<City>>(){});//mapper.getTypeFactory().constructCollectionType(List.class, City.class));  //FIXME Class type problem
-            this.weatherDataDownloadTime = LocalDateTime.now();     //FIXME Optimization needed
-            this.wikiDataDownloaded = true;                         //FIXME Optimization needed
+            this.weatherDataDownloadTime = lastUpdateTime.toInstant().atZone(ZoneId.systemDefault()).toLocalDateTime();
+            this.wikiDataDownloaded = true;
             return true;
         } catch (Exception e) {
             return false;
         }
     }
 
+    public TreeMap<Integer, String> makeWeekCityCatalogue(){
+
+        TreeMap<Integer, String> map = new TreeMap<>();
+
+        for (City city : citiesLibrary) {
+            Calendar calendar = Calendar.getInstance();
+            calendar.setTime(city.getTimestamp());
+            Integer dayOfWeek = calendar.get(Calendar.DAY_OF_WEEK);
+            map.merge(dayOfWeek, city.getName(), (a, b) -> a + "," + b);
+        }
+        return map;
+    }
+
     public String cityLibraryToString() throws CitiesLibraryEmptyException {
-        if (citiesLibrary.isEmpty()){
+        if (citiesLibrary.isEmpty()) {
             throw new CitiesLibraryEmptyException();
         }
 
