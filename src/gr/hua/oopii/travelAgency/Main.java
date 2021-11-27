@@ -5,7 +5,6 @@ import gr.hua.oopii.travelAgency.exception.NoSuchCityException;
 import gr.hua.oopii.travelAgency.exception.StopRunningException;
 
 import java.util.Date;
-import java.util.TreeMap;
 
 public class Main {
 
@@ -39,7 +38,6 @@ public class Main {
                                 } else {
                                     System.out.println("City already exists since " + date);
                                 }
-                                System.out.println("Testing makeWeekCityCatalogue():\n"+control.makeWeekCityCatalogue()); //todo
                             } catch (NoSuchCityException e) {
                                 System.err.println("City " + e.getCityName() + " wasn't found. Do you want to try another city? (true/false)");
                                 retry = Input.readBoolean();
@@ -47,11 +45,17 @@ public class Main {
                         } while (retry);
                     }
                 }
+                {//Testing weekCityCatalogue methods
+                    System.out.println("Do you want to print cities catalog? (true/false)");
+                    if (Input.readBoolean()){
+                        System.out.println("Cities catalog (ordered by day):\n"+control.presentWeekCityCatalogue(control.makeWeekCityCatalogue())); //todo
+                    }
+                }
                 System.out.println("Next traveler? (true/false)");
             } while (Input.readBoolean());
 
-            //Testing unifiedDistRec
-            System.out.println("Closest City is: " + (City.unifiedDistRec(Control.getLastPerceptronUsed()).getName()));
+            //Testing findClosestRec
+            System.out.println("Closest City is: " + (City.findClosestRec(Control.getLastPerceptronUsed()).getName()));
 
         } catch (StopRunningException e) {
             System.err.println("The program stopped running. Please come back later.");

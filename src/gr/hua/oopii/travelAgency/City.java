@@ -18,10 +18,12 @@ public class City implements Comparable<City> {
     private static final String[] wikiFeatures = new String[]{"cafe", "sea", "museum", "temple", "stadium", "bar", "park"};
     private static final float MAX_DISTANCE = 9517;             //Athens - Sydney distance
 
-    private Date timestamp;
-    private float[] features;
     private String name;
     private String countryName;
+    private Date timestamp;
+
+    private float[] features;
+    private Date weatherDownloadTimestamp;
 
 
     public City(float[] features, String name, String countryName) {
@@ -29,19 +31,20 @@ public class City implements Comparable<City> {
         this.name = name;
         this.countryName = countryName;
         this.timestamp = new Date();
+        this.weatherDownloadTimestamp = new Date();
     }
 
     public City() {}
 
     public City(float geodesicDist) {
-        this.features = new float[]{0F, 0F, 0F, 0F, 0F, 0F, 0F, 0F, 0F, geodesicDist};
+        this(new float[]{0F, 0F, 0F, 0F, 0F, 0F, 0F, 0F, 0F, geodesicDist}, null, null);
     }
 
     public City(String name, String countryName) {
         this(new float[]{0F, 0F, 0F, 0F, 0F, 0F, 0F, 0F, 0F, 0F}, name, countryName);
     }
 
-    public static City unifiedDistRec(@NotNull PerceptronTraveler perceptron) throws NoRecommendationException {
+    public static City findClosestRec(@NotNull PerceptronTraveler perceptron) throws NoRecommendationException {
         ArrayList<City> citiesToCompare = perceptron.getLastRecommendation();
 
         if (citiesToCompare.isEmpty()) {
@@ -155,6 +158,7 @@ public class City implements Comparable<City> {
             tempFeatures[8] = normaliseFeature((float) tempWeatherObj.getClouds().getAll(), 2);
             tempFeatures[9] = normaliseFeature((float) geodesicDistance(control.getOfficeLat(), control.getOfficeLon(), tempWeatherObj.getCoord().getLat(), tempWeatherObj.getCoord().getLon()), 3);
             this.setFeatures(tempFeatures);
+            this.weatherDownloadTimestamp = new Date();
 
         } catch (FileNotFoundException e) {
             throw new NoSuchCityException(this.name, "OpenWeather");
@@ -232,6 +236,10 @@ public class City implements Comparable<City> {
         return timestamp;
     }
 
+    public Date getWeatherDownloadTimestamp() {
+        return weatherDownloadTimestamp;
+    }
+
     @Override
     public boolean equals(Object obj) {
         if (getClass() != obj.getClass()) {
@@ -248,6 +256,9 @@ public class City implements Comparable<City> {
 
     @Override
     public int compareTo(@NotNull City o) {
+        if (this.name.equalsIgnoreCase(o.name) && this.countryName.equalsIgnoreCase(o.countryName)){
+            return 0;
+        }
         return 0;
     }
 }

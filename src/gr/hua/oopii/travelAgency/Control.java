@@ -7,6 +7,7 @@ import com.fasterxml.jackson.databind.ObjectMapper;
 //import com.google.common.reflect.TypeToken;
 //import com.google.gson.Gson;
 //import com.google.gson.reflect.TypeToken;
+import gr.hua.oopii.travelAgency.comparators.WeekDayCompare;
 import gr.hua.oopii.travelAgency.exception.*;
 import gr.hua.oopii.travelAgency.openData.OpenData;
 import gr.hua.oopii.travelAgency.openWeather.OpenWeatherMap;
@@ -18,8 +19,9 @@ import gr.hua.oopii.travelAgency.perceptrons.PerceptronYoungTraveler;
 import java.io.File;
 import java.io.FileNotFoundException;
 import java.io.IOException;
-import java.lang.reflect.Type;
-import java.net.Proxy;
+import java.text.DateFormat;
+import java.text.ParseException;
+import java.text.SimpleDateFormat;
 import java.time.LocalDateTime;
 import java.time.ZoneId;
 import java.util.*;
@@ -34,16 +36,11 @@ public class Control {
     private static PerceptronTraveler lastPerceptronUsed;       //todo unnecessary?
 
     private boolean wikiDataDownloaded = false;
-    private LocalDateTime weatherDataDownloadTime;
+    private LocalDateTime weatherDownloadTimestamp;
 
     private float officeLon, officeLat;
 
-    private final String citiesLibraryJsonFileName = "citiesLibrary.json";
-
-
     public Control(String officeCity, String officeCountry) throws IOException, StopRunningException {
-        System.out.println("Retrieve cities library from Json file res= " + this.retrieveCitiesLibraryJson());  //Debugging reasons
-
         try {
             OpenWeatherMap tempWeatherObj = OpenData.retrieveWeatherData(officeCity, officeCountry);
             this.officeLat = (float) tempWeatherObj.getCoord().getLat();
@@ -186,29 +183,33 @@ public class Control {
     }
 
     private void updateData() throws StopRunningException {
-        retrieveCitiesLibraryJson();
+        System.out.println("Retrieve cities library from Json file res= " + this.retrieveCitiesLibraryJson());  //Debugging reasons
 
         boolean newData = false;
         try {
-            if (!this.wikiDataDownloaded) {                              //Downloads wiki data once
-                System.out.println("-Downloading data from the web, please wait-");
+            if(weatherDownloadTimestamp==null){
                 initNameCitiesLibrary();
-                City.setWikiData(getCitiesLibrary());
+            }
+
+            if (!this.wikiDataDownloaded) {                              //Downloads wiki data once
+                System.out.println("-Downloading Wiki data, please wait-");
+                City.setWikiData(citiesLibrary);
                 wikiDataDownloaded = true;
                 newData = true;
             }
 
             boolean downloadWeatherData = false;                    //Downloads weather data if 1 hour has elapsed since the last download
             try {
-                if (weatherDataDownloadTime.plusHours(1).isAfter(LocalDateTime.now())) {
+                if (weatherDownloadTimestamp.plusHours(1).isBefore(LocalDateTime.now())) {
                     downloadWeatherData = true;
                 }
             } catch (NullPointerException e) {
                 downloadWeatherData = true;
             } finally {
                 if (downloadWeatherData) {
+                    System.out.println("-Downloading Weather data, please wait-");
                     City.setWeatherData(getCitiesLibrary(), this);
-                    weatherDataDownloadTime = LocalDateTime.now();
+                    weatherDownloadTimestamp = LocalDateTime.now();
                     newData = true;
                 }
             }
@@ -246,13 +247,13 @@ public class Control {
             });
 
             //Find last weather download time
-            Date lastUpdateTime = citiesLibrary.get(0).getTimestamp();
+            Date firstWeatherDownloadTimestamp = citiesLibrary.get(0).getWeatherDownloadTimestamp();
             for (int citiesCounter = 1; citiesCounter < citiesLibrary.size(); citiesCounter++) {
-                if (citiesLibrary.get(citiesCounter).getTimestamp().compareTo(lastUpdateTime) < 0) {
-                    lastUpdateTime = citiesLibrary.get(citiesCounter).getTimestamp();
+                if (citiesLibrary.get(citiesCounter).getWeatherDownloadTimestamp().compareTo(firstWeatherDownloadTimestamp) < 0) {
+                    firstWeatherDownloadTimestamp = citiesLibrary.get(citiesCounter).getWeatherDownloadTimestamp();
                 }
             }
-            this.weatherDataDownloadTime = lastUpdateTime.toInstant().atZone(ZoneId.systemDefault()).toLocalDateTime();
+            this.weatherDownloadTimestamp = firstWeatherDownloadTimestamp.toInstant().atZone(ZoneId.systemDefault()).toLocalDateTime();
             this.wikiDataDownloaded = true;
             return true;
         } catch (Exception e) {
@@ -260,17 +261,26 @@ public class Control {
         }
     }
 
-    public TreeMap<Integer, String> makeWeekCityCatalogue(){
+    public TreeMap<String, String> makeWeekCityCatalogue() {
+        TreeMap<String, String> map = new TreeMap<>(new WeekDayCompare());
 
-        TreeMap<Integer, String> map = new TreeMap<>();
-
+        SimpleDateFormat f = new SimpleDateFormat("EEEEEE");
         for (City city : citiesLibrary) {
-            Calendar calendar = Calendar.getInstance();
-            calendar.setTime(city.getTimestamp());
-            Integer dayOfWeek = calendar.get(Calendar.DAY_OF_WEEK);
-            map.merge(dayOfWeek, city.getName(), (a, b) -> a + "," + b);
+            map.merge(f.format(city.getTimestamp()).toUpperCase(Locale.ROOT), city.getName(), (a, b) -> a + "," + b);
         }
         return map;
+    }
+
+    public String presentWeekCityCatalogue(TreeMap<String, String> tree){
+        StringBuilder sb = new StringBuilder();
+
+        enum Days{
+            MONDAY, TUESDAY, WEDNESDAY, THURSDAY, FRIDAY, SATURDAY, SUNDAY
+        }
+        for (Days day : Days.values()) {
+            sb.append(day.ordinal()+1).append(". ").append(day).append(": ").append(tree.get(day.toString())).append("\n");
+        }
+        return sb.toString();
     }
 
     public String cityLibraryToString() throws CitiesLibraryEmptyException {

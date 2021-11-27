@@ -1,14 +1,9 @@
-package gr.hua.oopii.travelAgency.cityComparator;
+package gr.hua.oopii.travelAgency.comparators;
 
 import gr.hua.oopii.travelAgency.City;
 import org.jetbrains.annotations.NotNull;
 
 import java.util.Comparator;
-
-/**
- * @since secondDeliverable
- * @version 1.0
- */
 
 public class GeodesicCompare implements Comparator<City> {
     @Override

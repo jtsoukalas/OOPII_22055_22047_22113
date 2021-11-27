@@ -2,11 +2,6 @@ package gr.hua.oopii.travelAgency.exception;
 
 import java.io.Serial;
 
-/**
- * @since firstDeliverable
- * @version 1.1
- */
-
 public class StopRunningException extends Exception {
     @Serial
     private static final long serialVersionUID = 1L;

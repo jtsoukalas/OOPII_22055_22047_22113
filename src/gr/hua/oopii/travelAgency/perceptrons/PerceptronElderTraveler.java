@@ -1,7 +1,7 @@
 package gr.hua.oopii.travelAgency.perceptrons;
 
 import gr.hua.oopii.travelAgency.City;
-import gr.hua.oopii.travelAgency.cityComparator.GeodesicCompare;
+import gr.hua.oopii.travelAgency.comparators.GeodesicCompare;
 import gr.hua.oopii.travelAgency.exception.NoRecommendationException;
 
 import java.util.ArrayList;
