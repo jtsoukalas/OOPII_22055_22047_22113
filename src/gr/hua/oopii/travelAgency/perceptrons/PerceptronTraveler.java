@@ -1,6 +1,7 @@
 package gr.hua.oopii.travelAgency.perceptrons;
 
 import gr.hua.oopii.travelAgency.City;
+import gr.hua.oopii.travelAgency.Control;
 import gr.hua.oopii.travelAgency.exception.CitiesLibraryEmptyException;
 import gr.hua.oopii.travelAgency.exception.NoRecommendationException;
 import org.jetbrains.annotations.NotNull;
@@ -9,23 +10,48 @@ import java.util.ArrayList;
 import java.util.Collection;
 import java.util.Comparator;
 
+/**
+ * PerceptronTraveler used to process {@link City} objects in order to produce recommendations.
+ * @see PerceptronTravelerInterface
+ */
 public abstract class PerceptronTraveler implements PerceptronTravelerInterface {
 
-    /* Perceptron's weightBias fields:
-     * 0.cafe 1.sea, 2.museum, 3.temple, 4.stadium,
+    /**
+     * Perceptron's weightBias fields: <br>
+     * 0.cafe, 1.sea, 2.museum, 3.temple, 4.stadium,
      * 5.bar, 6.park 7.temperature, 8.weather(how cloudy), 9.distance
-     * Range = [-1,1] -> [Less significant, Most significant]
+     * <br> Range = [-1,1] -> [Less significant, Most significant]
+     * <br> Used at {@link #retrieveCompatibleCities(ArrayList)}
      */
-
     private final float[] weightsBias;
+    /**
+     * Determines the abstraction of weightBias for recommendations.
+     * <br> Used at {@link #retrieveCompatibleCities(ArrayList)}
+     */
     private final float bias;
+    /**
+     * Contains the last recommendation produced by this perceptron.
+     */
     private ArrayList<City> lastRecommendation;
 
+    /**
+     * Main constructor for {@link PerceptronTraveler}
+     * @since firstDeliverable
+     * @version 0
+     * @author
+     */
     public PerceptronTraveler(float[] weightsBias, float bias) {
         this.weightsBias = weightsBias;
         this.bias = bias;
     }
 
+    /**
+     * Constructor with weights as independent floats and bias.
+     * <br>Uses {@link #PerceptronTraveler(float[], float)} constructor.
+     * @since
+     * @version
+     * @author
+     */
     public PerceptronTraveler(float cafe, float sea, float museum, float temple,
                               float stadium, float bar, float park, float temperature,
                               float weather, float distance, float bias) {
@@ -33,6 +59,16 @@ public abstract class PerceptronTraveler implements PerceptronTravelerInterface 
     }
 
     //Returns an ArrayList with the cities that have a positive rate from the retrieveCompatibleCities method
+
+    /**
+     * {@inheritDoc}
+     * @param compatibleCities boolean array with true for output from {@link #retrieveCompatibleCities(ArrayList)}
+     * @param citiesLibrary {@link Control} fixme
+     * @return the recommendation Arraylist with the approved cities
+     * @since
+     * @version
+     * @author
+     */
     public ArrayList<City> recommend(boolean @NotNull [] compatibleCities, @NotNull ArrayList<City> citiesLibrary) {
         ArrayList<City> recommendation = new ArrayList<>();
         for (int cityIndex = 0; cityIndex < compatibleCities.length; cityIndex++) {
@@ -44,6 +80,16 @@ public abstract class PerceptronTraveler implements PerceptronTravelerInterface 
         return recommendation;
     }
 
+    /**
+     * {@inheritDoc}
+     * @param compatibleCities boolean array with true for output from {@link #retrieveCompatibleCities(ArrayList)}
+     * @param citiesLibrary {@link Control} fixme
+     * @param uppercase -accepts a boolean value
+     * @return the recommendation Arraylist with the approved cities
+     * @since
+     * @version
+     * @author
+     */
     public ArrayList<City> recommend(boolean @NotNull [] compatibleCities, @NotNull ArrayList<City> citiesLibrary, boolean uppercase) {
         ArrayList<City> recommendation = recommend(compatibleCities, citiesLibrary);
 
@@ -57,7 +103,15 @@ public abstract class PerceptronTraveler implements PerceptronTravelerInterface 
         return recommendation;
     }
 
-    //Calculates city's rate and returns the result of Heaviside step
+    /**
+     * {@inheritDoc}
+     * @since
+     * @version
+     * @author
+     * @param citiesLibrary fixme
+     * @return parallel boolean[] with {@code citiesLibrary}, {@code true} if city passes the required rate else {@code false}.
+     * @throws CitiesLibraryEmptyException if the parameter {@code citiesLibrary} is empty.
+     */
     public boolean[] retrieveCompatibleCities(@NotNull ArrayList<City> citiesLibrary) throws CitiesLibraryEmptyException {
         if (citiesLibrary.isEmpty()){
             throw new CitiesLibraryEmptyException();
@@ -76,6 +130,17 @@ public abstract class PerceptronTraveler implements PerceptronTravelerInterface 
         return approvedCities;
     }
 
+    /**
+     * {@inheritDoc}
+     * @param comparator compares the desired fields
+     * @see gr.hua.oopii.travelAgency.comparators.GeodesicCompare
+     * @see gr.hua.oopii.travelAgency.comparators.TimestampCompare
+     * @return the recommended cities sorted
+     * @throws NoRecommendationException when {@link PerceptronTraveler#getLastRecommendation} returns null
+     * @since
+     * @version
+     * @author
+     */
     public ArrayList<City> sortRecommendation(Comparator<City> comparator) throws NoRecommendationException {
         if (lastRecommendation == null || lastRecommendation.isEmpty()){
             throw new NoRecommendationException();

@@ -28,7 +28,9 @@ import java.util.*;
 
 
 public class Control {
-
+    /**
+     * SMth
+     */
     private ArrayList<City> citiesLibrary;
     private final PerceptronYoungTraveler youngPerceptron = new PerceptronYoungTraveler();
     private final PerceptronMiddleTraveler middlePerceptron = new PerceptronMiddleTraveler();
