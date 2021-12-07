@@ -10,12 +10,13 @@ import java.util.ArrayList;
 import java.util.Comparator;
 
 /**
- * PerceptronTraveler used to process {@link City} objects in order to produce recommendations.
+ * <h1>PerceptronTraveler used to process {@link City} objects in order to produce recommendations</h1>
  */
 public interface PerceptronTravelerInterface {
 
     /**
-     * Checks all the values from CompatibleCities and if it's {@code true} adds this city to the {@code recommendation}.
+     * <h1>Produces recommendation</h1>
+     * Checks CompatibleCities and for each {@code true} value adds this city to the {@code recommendation}.
      * @param compatibleCities boolean array with true for output from {@link #retrieveCompatibleCities(ArrayList)}
      * @param citiesLibrary {@link Control} fixme
      * @return the recommendation Arraylist with the approved cities
@@ -23,7 +24,9 @@ public interface PerceptronTravelerInterface {
      ArrayList<City> recommend(boolean[] compatibleCities, ArrayList<City> citiesLibrary);
 
     /**
-     * Checks all the values from CompatibleCities and if it's {@code true} adds this city to the {@code recommendation}.
+     * <h1> Produces recommendation</h1>
+     * <h4> with uppercase output option</h4>
+     * Checks CompatibleCities and for each {@code true} value adds this city to the {@code recommendation}.
      * @param compatibleCities boolean array with true for output from {@link #retrieveCompatibleCities(ArrayList)}
      * @param citiesLibrary {@link Control} fixme
      * @param uppercase -accepts a boolean value
@@ -32,6 +35,7 @@ public interface PerceptronTravelerInterface {
     ArrayList<City> recommend(boolean[] compatibleCities, ArrayList<City> citiesLibrary, boolean uppercase);
 
     /**
+     * <h1>Summation and heaviside step in order to retrieve compatible cities</h1>
      * Process the features for all {@link City} objects at {@code citiesLibrary},
      * the weights and the bias from this perceptron and produces a parallel boolean Array for {@code citiesLibrary}
      * (each array element represents a city from {@code citiesLibrary}).
@@ -47,19 +51,7 @@ public interface PerceptronTravelerInterface {
     boolean[] retrieveCompatibleCities(@NotNull ArrayList<City> citiesLibrary) throws CitiesLibraryEmptyException;
 
     /**
-     * it's an assistant method
-     * @return last recommendation Arraylist
-     */
-    //ArrayList<City> getLastRecommendation();
-
-    /**
-     *it's an assistant method
-     * @return weightBias
-     */
-    //float[] getWeightsBias();
-
-    /**
-     * Sorts the recommendations based one the {@code comparator}.
+     * <h1>Sorts the recommendations based one the {@code comparator}</h1>
      *
      * @param comparator compares the desired fields
      * @see gr.hua.oopii.travelAgency.comparators.GeodesicCompare
@@ -70,7 +62,7 @@ public interface PerceptronTravelerInterface {
     ArrayList<City> sortRecommendation(Comparator<City> comparator) throws NoRecommendationException;
 
     /**
-     * Sorts the recommendations with the default order.
+     * <h1>Sorts the recommendations with the default order</h1>
      * Uses the {@link PerceptronTraveler#sortRecommendation(Comparator)} with the default comparator.
      * @return the recommended cities sorted
      * @throws NoRecommendationException when {@link PerceptronTraveler#getLastRecommendation} returns null

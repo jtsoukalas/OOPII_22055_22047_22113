@@ -11,7 +11,7 @@ import java.util.Collection;
 import java.util.Comparator;
 
 /**
- * PerceptronTraveler used to process {@link City} objects in order to produce recommendations.
+ * <h1>PerceptronTraveler used to process {@link City} objects in order to produce recommendations</h1>
  * @see PerceptronTravelerInterface
  */
 public abstract class PerceptronTraveler implements PerceptronTravelerInterface {
@@ -35,9 +35,8 @@ public abstract class PerceptronTraveler implements PerceptronTravelerInterface 
     private ArrayList<City> lastRecommendation;
 
     /**
-     * Main constructor for {@link PerceptronTraveler}
+     * <h1>Main constructor for {@link PerceptronTraveler}</h1>
      * @since firstDeliverable
-     * @version 0
      * @author
      */
     public PerceptronTraveler(float[] weightsBias, float bias) {
@@ -46,10 +45,9 @@ public abstract class PerceptronTraveler implements PerceptronTravelerInterface 
     }
 
     /**
-     * Constructor with weights as independent floats and bias.
+     * <h1>Constructor with bias and weights as independent floats </h1>
      * <br>Uses {@link #PerceptronTraveler(float[], float)} constructor.
      * @since
-     * @version
      * @author
      */
     public PerceptronTraveler(float cafe, float sea, float museum, float temple,
@@ -58,11 +56,9 @@ public abstract class PerceptronTraveler implements PerceptronTravelerInterface 
         this(new float[]{cafe, sea, museum, temple, stadium, bar, park, temperature, weather, distance}, bias);
     }
 
-    //Returns an ArrayList with the cities that have a positive rate from the retrieveCompatibleCities method
-
     /**
      * {@inheritDoc}
-     * @param compatibleCities boolean array with true for output from {@link #retrieveCompatibleCities(ArrayList)}
+     * @param compatibleCities boolean[ ] - output from {@link #retrieveCompatibleCities(ArrayList)}
      * @param citiesLibrary {@link Control} fixme
      * @return the recommendation Arraylist with the approved cities
      * @since

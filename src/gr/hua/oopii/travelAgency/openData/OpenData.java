@@ -19,9 +19,9 @@ public class OpenData {
     /**
      * Retrieves weather information, geotag (lan, lon) and a Wikipedia article for a given city.
      *
-     * @param city    The Wikipedia article and OpenWeatherMap city.
-     * @param country The country initials (i.e. gr, it, de).
-     * @param appid   Your API key of the OpenWeatherMap.
+     * city    The Wikipedia article and OpenWeatherMap city.
+     * country The country initials (i.e. gr, it, de).
+     * appid   Your API key of the OpenWeatherMap.
      */
     private static final String appid = "a506d7877c77a7c49a31382e27104746";
 
