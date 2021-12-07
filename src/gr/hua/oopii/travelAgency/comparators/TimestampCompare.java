@@ -15,7 +15,7 @@ import java.util.Comparator;
 public class TimestampCompare implements Comparator<City> {
 
     /**
-     * Compares two city objects about the timestamps
+     * Compares two city objects by the timestamps
      *
      * @param o1 City object
      * @param o2 City object

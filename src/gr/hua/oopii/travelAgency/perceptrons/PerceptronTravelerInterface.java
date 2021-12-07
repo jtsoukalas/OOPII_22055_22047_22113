@@ -51,7 +51,7 @@ public interface PerceptronTravelerInterface {
     boolean[] retrieveCompatibleCities(@NotNull ArrayList<City> citiesLibrary) throws CitiesLibraryEmptyException;
 
     /**
-     * <h1>Sorts the recommendations based one the {@code comparator}</h1>
+     * <h1>Sorts recommendations based one the {@code comparator}</h1>
      *
      * @param comparator compares the desired fields
      * @see gr.hua.oopii.travelAgency.comparators.GeodesicCompare
@@ -62,8 +62,8 @@ public interface PerceptronTravelerInterface {
     ArrayList<City> sortRecommendation(Comparator<City> comparator) throws NoRecommendationException;
 
     /**
-     * <h1>Sorts the recommendations with the default order</h1>
-     * Uses the {@link PerceptronTraveler#sortRecommendation(Comparator)} with the default comparator.
+     * <h1>Sorts recommendations using implementation's comparator </h1>
+     * Uses the {@link PerceptronTraveler#sortRecommendation(Comparator)} with the comparator defined at implementations.
      * @return the recommended cities sorted
      * @throws NoRecommendationException when {@link PerceptronTraveler#getLastRecommendation} returns null
      */

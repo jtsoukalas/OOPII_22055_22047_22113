@@ -19,8 +19,6 @@ import gr.hua.oopii.travelAgency.perceptrons.PerceptronYoungTraveler;
 import java.io.File;
 import java.io.FileNotFoundException;
 import java.io.IOException;
-import java.text.DateFormat;
-import java.text.ParseException;
 import java.text.SimpleDateFormat;
 import java.time.LocalDateTime;
 import java.time.ZoneId;
@@ -29,24 +27,43 @@ import java.util.*;
 
 public class Control {
     /**
-     * SMth
+     * ArrayList<
      */
     private ArrayList<City> citiesLibrary;
+
+    /**
+     * {@link PerceptronTraveler} objects that will be used at processes
+     */
     private final PerceptronYoungTraveler youngPerceptron = new PerceptronYoungTraveler();
     private final PerceptronMiddleTraveler middlePerceptron = new PerceptronMiddleTraveler();
     private final PerceptronElderTraveler elderPerceptron = new PerceptronElderTraveler();
     private static PerceptronTraveler lastPerceptronUsed;       //todo unnecessary?
 
-    private boolean wikiDataDownloaded = false;
+    /**
+     * Flag for wikipedia data download
+     */
+    private boolean wikiDataDownloaded;
+    /**
+     * Is the point of time when weather data downloaded(worse case senario)
+     */
     private LocalDateTime weatherDownloadTimestamp;
 
-    private float officeLon, officeLat;
+    /**
+     * Coordination in order to find distance between user and candidate city
+     */
+    private float userLon, userLat;
 
-    public Control(String officeCity, String officeCountry) throws IOException, StopRunningException {
+    /**
+     * @param userCity
+     * @param userCountry
+     * @throws IOException
+     * @throws StopRunningException
+     */
+    public Control(String userCity, String userCountry) throws IOException, StopRunningException {
         try {
-            OpenWeatherMap tempWeatherObj = OpenData.retrieveWeatherData(officeCity, officeCountry);
-            this.officeLat = (float) tempWeatherObj.getCoord().getLat();
-            this.officeLon = (float) tempWeatherObj.getCoord().getLon();
+            OpenWeatherMap tempWeatherObj = OpenData.retrieveWeatherData(userCity, userCountry);
+            this.userLat = (float) tempWeatherObj.getCoord().getLat();
+            this.userLon = (float) tempWeatherObj.getCoord().getLon();
         } catch (FileNotFoundException e) {
             throw new FileNotFoundException();
         } catch (IOException e) {
@@ -74,8 +91,8 @@ public class Control {
 
                     try {
                         OpenWeatherMap tempWeatherObj = OpenData.retrieveWeatherData(officeCity, officeCountry);
-                        this.officeLat = (float) tempWeatherObj.getCoord().getLat();
-                        this.officeLon = (float) tempWeatherObj.getCoord().getLon();
+                        this.userLat = (float) tempWeatherObj.getCoord().getLat();
+                        this.userLon = (float) tempWeatherObj.getCoord().getLon();
                     } catch (FileNotFoundException e) {
                         throw new FileNotFoundException();
                     } catch (IOException e) {
@@ -90,7 +107,12 @@ public class Control {
         } while (retry);
     }
 
-
+    /**
+     * <h1>Initialization of Cities names</h1>
+     * Save the City names into a table of Strings
+     * Save the ISO of each City in a parallel table of Strings
+     * Adds each City object in an ArrayList
+     */
     public void initNameCitiesLibrary() {
         if (citiesLibrary != null && !citiesLibrary.isEmpty()) {
             return;
@@ -108,7 +130,16 @@ public class Control {
         }
     }
 
-    // Returns timestamp if city already exists, or null if it's a new city
+    /**
+     * <h1>Adds a Candidate City from the User</h1>
+     * Creates new City object
+     *
+     * @param cityName
+     * @param countryName
+     * @return the (Date) timestamp if city already exists, or null if it's a new city
+     * @throws NoSuchCityException if there is not a City with this name in earth
+     * @throws NoInternetException if there is no Internet
+     */
     public Date addCandidateCity(String cityName, String countryName) throws NoSuchCityException, NoInternetException {
         City userCityRecommendation = new City(cityName, countryName);
         try {
@@ -124,6 +155,13 @@ public class Control {
         }
     }
 
+
+    /**
+     * <h1>Create Hardcoded Data</h1>
+     * For each city name that initialized:sets random value to each feature.
+     * Normalizes all the features that added randomly.
+     * Adds the temp City to citiesLibrary.
+     */
     public void makeDummyData() {
         int cityAmount = 15;
         Random rand = new Random();
@@ -145,6 +183,16 @@ public class Control {
     }
 
 
+    /**
+     * <h1>Run Perceptron</h1>
+     * Uses parameter age and creates the corresponding perceptron(young,middle or elder)
+     * Asks for the recommendations to be sorted or not
+     * @param age
+     * @return last recommendations sorted or not
+     * @throws StopRunningException      if city Library is Empty
+     * @throws IllegalArgumentException  if wrong inputs has been given from the user
+     * @throws NoRecommendationException if there are no recommendations
+     */
     public ArrayList<City> runPerceptron(int age) throws StopRunningException, IllegalArgumentException, NoRecommendationException {
         this.updateData();
 
@@ -178,18 +226,22 @@ public class Control {
                 return casePerceptron.getLastRecommendation();
             }
         } catch (CitiesLibraryEmptyException e) {
-            System.err.println(e.getMessage());     //4 debugging
+            System.err.println(e.getMessage());     //Debugging reasons
             throw new StopRunningException(e);
         }
 
     }
 
+    /**
+     *
+     * @throws StopRunningException
+     */
     private void updateData() throws StopRunningException {
         System.out.println("Retrieve cities library from Json file res= " + this.retrieveCitiesLibraryJson());  //Debugging reasons
 
         boolean newData = false;
         try {
-            if(weatherDownloadTimestamp==null){
+            if (weatherDownloadTimestamp == null) {
                 initNameCitiesLibrary();
             }
 
@@ -227,10 +279,7 @@ public class Control {
     }
 
     public boolean saveCitiesLibraryJson() {
-        /*{//ref: https://www.youtube.com/watch?v=ZZddxpxGQPE&list=PLpUMhvC6l7AOy4UEORSutzFus98n-Es_l&index=4
-            String json = new Gson().toJson(this.citiesLibrary);
-            return true;
-        }*/
+
         ObjectMapper mapper = new ObjectMapper();
         try {
             mapper.writeValue(new File("citiesLibrary.json"), this.citiesLibrary);     //FIXME Parametric file name
@@ -243,10 +292,9 @@ public class Control {
 
     public boolean retrieveCitiesLibraryJson() {
         ObjectMapper mapper = new ObjectMapper();
-        //mapper.enableDefaultTyping();
+        //mapper.en
         try {
-            this.citiesLibrary = mapper.readValue(new File("citiesLibrary.json"), new TypeReference<ArrayList<City>>() {
-            });
+            this.citiesLibrary = mapper.readValue(new File("citiesLibrary.json"), new TypeReference<ArrayList<City>>() {});
 
             //Find last weather download time
             Date firstWeatherDownloadTimestamp = citiesLibrary.get(0).getWeatherDownloadTimestamp();
@@ -273,14 +321,14 @@ public class Control {
         return map;
     }
 
-    public String presentWeekCityCatalogue(TreeMap<String, String> tree){
+    public String presentWeekCityCatalogue(TreeMap<String, String> tree) {
         StringBuilder sb = new StringBuilder();
 
-        enum Days{
+        enum Days {
             MONDAY, TUESDAY, WEDNESDAY, THURSDAY, FRIDAY, SATURDAY, SUNDAY
         }
         for (Days day : Days.values()) {
-            sb.append(day.ordinal()+1).append(". ").append(day).append(": ").append(tree.get(day.toString())).append("\n");
+            sb.append(day.ordinal() + 1).append(". ").append(day).append(": ").append(tree.get(day.toString())).append("\n");
         }
         return sb.toString();
     }
@@ -317,11 +365,11 @@ public class Control {
         return lastPerceptronUsed;
     }
 
-    public float getOfficeLon() {
-        return this.officeLon;
+    public float getUserLon() {
+        return this.userLon;
     }
 
-    public float getOfficeLat() {
-        return this.officeLat;
+    public float getUserLat() {
+        return this.userLat;
     }
 }

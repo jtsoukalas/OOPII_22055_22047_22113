@@ -1,0 +1,30 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<Diagram>
+  <ID>JAVA</ID>
+  <OriginalElement />
+  <nodes>
+    <node x="476.0" y="686.0">gr.hua.oopii.travelAgency.openData</node>
+    <node x="467.0" y="0.0">gr.hua.oopii.travelAgency.City</node>
+    <node x="704.0" y="686.0">gr.hua.oopii.travelAgency.test</node>
+    <node x="703.0" y="520.0">gr.hua.oopii.travelAgency.comparators</node>
+    <node x="247.0" y="686.0">gr.hua.oopii.travelAgency.exception</node>
+    <node x="0.0" y="0.0">gr.hua.oopii.travelAgency.Control</node>
+    <node x="447.0" y="520.0">gr.hua.oopii.travelAgency.openWeather</node>
+    <node x="0.0" y="520.0">gr.hua.oopii.travelAgency.Input</node>
+    <node x="0.0" y="686.0">gr.hua.oopii.travelAgency.perceptrons</node>
+    <node x="235.0" y="520.0">gr.hua.oopii.travelAgency.Main</node>
+  </nodes>
+  <notes />
+  <edges />
+  <settings layout="Hierarchic" zoom="1.0" showDependencies="false" x="454.5" y="357.99999999999994" />
+  <SelectedNodes />
+  <Categories>
+    <Category>Fields</Category>
+    <Category>Inner Classes</Category>
+    <Category>Methods</Category>
+    <Category>Properties</Category>
+  </Categories>
+  <SCOPE>Project Files</SCOPE>
+  <VISIBILITY>private</VISIBILITY>
+</Diagram>
+

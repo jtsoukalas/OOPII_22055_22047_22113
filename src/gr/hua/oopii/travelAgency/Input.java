@@ -3,21 +3,33 @@ package gr.hua.oopii.travelAgency;
 import java.util.InputMismatchException;
 import java.util.Scanner;
 
+/**
+ * <h1>Read methods with exception handling</h1>
+ *
+ * @author Orestis Kritsotakis
+ * @author Konstantinos Kokkalis
+ * @author Iasonas Tsoukalas
+ * @version 0
+ * @since firstDeliverable
+ */
+
+
 public abstract class Input {
 
-    public static int readInt(String errorMessage){
-        int answer=-1;
-        boolean retry;
-        Scanner scanner = new Scanner (System.in);
 
-        do{
-            try{
-                answer= scanner.nextInt();
-                retry=false;
-            } catch (Exception e){
-                System.err.print(errorMessage+"\nPlease try again:");
+    public static int readInt(String errorMessage) {
+        int answer = -1;
+        boolean retry;
+        Scanner scanner = new Scanner(System.in);
+
+        do {
+            try {
+                answer = scanner.nextInt();
+                retry = false;
+            } catch (Exception e) {
+                System.err.print(errorMessage + "\nPlease try again:");
                 scanner.next();
-                retry=true;
+                retry = true;
             }
         } while (retry);
         return answer;
@@ -56,7 +68,7 @@ public abstract class Input {
         return age;
     }
 
-    public static String readString(){
+    public static String readString() {
         Scanner scanner = new Scanner(System.in);
         return scanner.nextLine();
     }
