@@ -108,7 +108,7 @@ public class Control {
     }
 
     /**
-     * <h1>Initialization of Cities names</h1>
+     * <h1>Initialization of City names</h1>
      * Save the City names into a table of Strings
      * Save the ISO of each City in a parallel table of Strings
      * Adds each City object in an ArrayList
@@ -233,6 +233,11 @@ public class Control {
     }
 
     /**
+     * <h1>Controls when data from wikipedia open weather map and Json files need an update</h1>
+     * If weather data hasn't been downloaded once it initialises the citiesLibrary ArrayList to extract data for the contained cities
+     * Downloads wikipedia data if needed and sets newData to true
+     * Downloads weather data if needed and sets newData to true (with the help of a timestamp in order to update accordingly)
+     * When newData is true the CitiesLibrary Json file updates in order to save the new data
      *
      * @throws StopRunningException
      */
@@ -278,6 +283,11 @@ public class Control {
         }
     }
 
+    /**
+     * <h1>Saves the citiesLibrary to a json</h1>
+     * Takes the city Library objects and saves them to a .json file
+     * @return true if the saving is successfull otherwise false
+     */
     public boolean saveCitiesLibraryJson() {
 
         ObjectMapper mapper = new ObjectMapper();
@@ -290,6 +300,13 @@ public class Control {
     }
 
 
+    /**
+     * <h1>Retrive the .json file with the CitiesLibrary</h1>
+     * retrieve the data of each city that are saved in the .json
+     * compares the last weather data download time with the weather download timestamp now and changes the current timestamp
+     * depending on the difference of the two downloads//TODO καθε ποτε ξανακατεβαζει τα weather data
+     * @return true if the retrieving is successfully otherwise false
+     */
     public boolean retrieveCitiesLibraryJson() {
         ObjectMapper mapper = new ObjectMapper();
         //mapper.en
@@ -311,6 +328,10 @@ public class Control {
         }
     }
 
+    /**
+     * <h1>Creates a city catalogue that sorts each city by the day of week that its been added</h1>
+     * @return map
+     */
     public TreeMap<String, String> makeWeekCityCatalogue() {
         TreeMap<String, String> map = new TreeMap<>(new WeekDayCompare());
 
@@ -321,6 +342,11 @@ public class Control {
         return map;
     }
 
+    /**
+     * <h1>toString method that outputs the city catalogue and the day of week that each city is being added </h1>
+     * @param tree The treeMap that we want to present
+     * @return City Catalogue sorted by day of week
+     */
     public String presentWeekCityCatalogue(TreeMap<String, String> tree) {
         StringBuilder sb = new StringBuilder();
 
@@ -345,6 +371,13 @@ public class Control {
         return returnCityCatalogue.toString();
     }
 
+    /**
+     * <h1>Creates a string to represent the recommendations<h1/>
+     * Takes compatible cities names from each city Object and appends them to a string
+     * @param compatibleCities
+     * @return a string with all the recommendations
+     * @throws NoRecommendationException
+     */
     public static String recommendationToString(ArrayList<City> compatibleCities) throws NoRecommendationException {
         if (compatibleCities.isEmpty()) {
             throw new NoRecommendationException();
