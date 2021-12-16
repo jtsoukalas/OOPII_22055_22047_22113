@@ -54,18 +54,18 @@ public class Control {
     private float userLon, userLat;
 
     /**
-     * @param userCity
-     * @param userCountry
-     * @throws IOException
-     * @throws StopRunningException
+     * @param userCity user's city name
+     * @param userCountry user's country name (ISO)
+     * @throws NoSuchCityException if there is no city with given parameters
+     * @throws StopRunningException if there is no connection to the internet. Then the program has to end.
      */
-    public Control(String userCity, String userCountry) throws IOException, StopRunningException {
+    public Control(String userCity, String userCountry) throws StopRunningException, NoSuchCityException {
         try {
             OpenWeatherMap tempWeatherObj = OpenData.retrieveWeatherData(userCity, userCountry);
             this.userLat = (float) tempWeatherObj.getCoord().getLat();
             this.userLon = (float) tempWeatherObj.getCoord().getLon();
         } catch (FileNotFoundException e) {
-            throw new FileNotFoundException();
+            throw new NoSuchCityException(userCity,"OpenWeather");
         } catch (IOException e) {
             System.err.println("Error! Please check your internet connection and try again.");
             throw new StopRunningException(e);
@@ -85,7 +85,7 @@ public class Control {
             System.out.println("Please enter the country's ISO:");
             officeCountry = input.next();
             try {
-                //this(officeCity,officeCountry);  //FIXME
+                //this(officeCity,officeCountry);  //FIXME we can't call other constructor
                 { //Temp code block -> No internet exception handling
                     System.out.println("-Retrieve cities library from Json file res = " + this.retrieveCitiesLibraryJson() + "-");  //Debugging reasons
 
@@ -301,15 +301,13 @@ public class Control {
 
 
     /**
-     * <h1>Retrive the .json file with the CitiesLibrary</h1>
-     * retrieve the data of each city that are saved in the .json
-     * compares the last weather data download time with the weather download timestamp now and changes the current timestamp
-     * depending on the difference of the two downloads//TODO καθε ποτε ξανακατεβαζει τα weather data
+     * <h1>Retrieves data from the Json file and creates CitiesLibrary</h1>
+     * Retrieve the data of each city that saved in the Json
+     * Saves a timestamp from earliest weather download
      * @return true if the retrieving is successfully otherwise false
      */
     public boolean retrieveCitiesLibraryJson() {
         ObjectMapper mapper = new ObjectMapper();
-        //mapper.en
         try {
             this.citiesLibrary = mapper.readValue(new File("citiesLibrary.json"), new TypeReference<ArrayList<City>>() {});
 

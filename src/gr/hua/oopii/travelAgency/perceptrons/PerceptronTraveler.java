@@ -7,11 +7,11 @@ import gr.hua.oopii.travelAgency.exception.NoRecommendationException;
 import org.jetbrains.annotations.NotNull;
 
 import java.util.ArrayList;
-import java.util.Collection;
 import java.util.Comparator;
 
 /**
  * <h1>PerceptronTraveler used to process {@link City} objects in order to produce recommendations</h1>
+ *
  * @see PerceptronTravelerInterface
  */
 public abstract class PerceptronTraveler implements PerceptronTravelerInterface {
@@ -36,8 +36,9 @@ public abstract class PerceptronTraveler implements PerceptronTravelerInterface 
 
     /**
      * <h1>Main constructor for {@link PerceptronTraveler}</h1>
-     * @since firstDeliverable
+     *
      * @author
+     * @since firstDeliverable
      */
     public PerceptronTraveler(float[] weightsBias, float bias) {
         this.weightsBias = weightsBias;
@@ -47,8 +48,9 @@ public abstract class PerceptronTraveler implements PerceptronTravelerInterface 
     /**
      * <h1>Constructor with bias and weights as independent floats </h1>
      * <br>Uses {@link #PerceptronTraveler(float[], float)} constructor.
-     * @since
+     *
      * @author
+     * @since
      */
     public PerceptronTraveler(float cafe, float sea, float museum, float temple,
                               float stadium, float bar, float park, float temperature,
@@ -58,17 +60,18 @@ public abstract class PerceptronTraveler implements PerceptronTravelerInterface 
 
     /**
      * {@inheritDoc}
+     *
      * @param compatibleCities boolean[ ] - output from {@link #retrieveCompatibleCities(ArrayList)}
-     * @param citiesLibrary {@link Control} fixme
+     * @param citiesLibrary    {@link Control} fixme
      * @return the recommendation Arraylist with the approved cities
-     * @since
      * @version
      * @author
+     * @since
      */
     public ArrayList<City> recommend(boolean @NotNull [] compatibleCities, @NotNull ArrayList<City> citiesLibrary) {
         ArrayList<City> recommendation = new ArrayList<>();
         for (int cityIndex = 0; cityIndex < compatibleCities.length; cityIndex++) {
-            if (compatibleCities[cityIndex] && citiesLibrary.get(cityIndex).getFeatures()[9] != 0) {
+            if (compatibleCities[cityIndex] && citiesLibrary.get(cityIndex).getFeatures()[9] != 0) { //Avoids user's location to be a recommendation
                 recommendation.add(citiesLibrary.get(cityIndex));
             }
         }
@@ -78,13 +81,14 @@ public abstract class PerceptronTraveler implements PerceptronTravelerInterface 
 
     /**
      * {@inheritDoc}
+     *
      * @param compatibleCities boolean array with true for output from {@link #retrieveCompatibleCities(ArrayList)}
-     * @param citiesLibrary {@link Control} fixme
-     * @param uppercase -accepts a boolean value
+     * @param citiesLibrary    {@link Control} fixme
+     * @param uppercase        -accepts a boolean value
      * @return the recommendation Arraylist with the approved cities
-     * @since
      * @version
      * @author
+     * @since
      */
     public ArrayList<City> recommend(boolean @NotNull [] compatibleCities, @NotNull ArrayList<City> citiesLibrary, boolean uppercase) {
         ArrayList<City> recommendation = recommend(compatibleCities, citiesLibrary);
@@ -101,15 +105,16 @@ public abstract class PerceptronTraveler implements PerceptronTravelerInterface 
 
     /**
      * {@inheritDoc}
-     * @since
-     * @version
-     * @author
+     *
      * @param citiesLibrary fixme
      * @return parallel boolean[] with {@code citiesLibrary}, {@code true} if city passes the required rate else {@code false}.
      * @throws CitiesLibraryEmptyException if the parameter {@code citiesLibrary} is empty.
+     * @version
+     * @author
+     * @since
      */
     public boolean[] retrieveCompatibleCities(@NotNull ArrayList<City> citiesLibrary) throws CitiesLibraryEmptyException {
-        if (citiesLibrary.isEmpty()){
+        if (citiesLibrary.isEmpty()) {
             throw new CitiesLibraryEmptyException();
         }
 
@@ -120,7 +125,7 @@ public abstract class PerceptronTraveler implements PerceptronTravelerInterface 
             for (int featureIndex = 0; featureIndex < 10; featureIndex++) {
                 sum += citiesLibrary.get(cityIndex).getFeatures()[featureIndex] * weightsBias[featureIndex];
             }
-            sum += bias;
+            sum += bias;    // sum = Σ (feature * weight) + bias
             approvedCities[cityIndex] = sum > 0;
         }
         return approvedCities;
@@ -128,17 +133,18 @@ public abstract class PerceptronTraveler implements PerceptronTravelerInterface 
 
     /**
      * {@inheritDoc}
+     *
      * @param comparator compares the desired fields
-     * @see gr.hua.oopii.travelAgency.comparators.GeodesicCompare
-     * @see gr.hua.oopii.travelAgency.comparators.TimestampCompare
      * @return the recommended cities sorted
      * @throws NoRecommendationException when {@link PerceptronTraveler#getLastRecommendation} returns null
-     * @since
      * @version
      * @author
+     * @see gr.hua.oopii.travelAgency.comparators.GeodesicCompare
+     * @see gr.hua.oopii.travelAgency.comparators.TimestampCompare
+     * @since
      */
     public ArrayList<City> sortRecommendation(Comparator<City> comparator) throws NoRecommendationException {
-        if (lastRecommendation == null || lastRecommendation.isEmpty()){
+        if (this.lastRecommendation == null || this.lastRecommendation.isEmpty()) {
             throw new NoRecommendationException();
         }
         ArrayList<City> tempLastRec = lastRecommendation;

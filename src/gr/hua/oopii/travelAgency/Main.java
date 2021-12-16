@@ -48,7 +48,7 @@ public class Main {
                 {//Testing weekCityCatalogue methods
                     System.out.println("Do you want to print cities catalog? (true/false)");
                     if (Input.readBoolean()){
-                        System.out.println("Cities catalog (ordered by day):\n"+control.presentWeekCityCatalogue(control.makeWeekCityCatalogue())); //todo
+                        System.out.println("Cities catalog (ordered by day):\n"+control.presentWeekCityCatalogue(control.makeWeekCityCatalogue()));
                     }
                 }
                 System.out.println("Next traveler? (true/false)");

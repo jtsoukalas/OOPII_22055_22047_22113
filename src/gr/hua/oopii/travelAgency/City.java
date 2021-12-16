@@ -17,11 +17,12 @@ import java.util.Date;
 /**
  * <h1> Represents a real city and its data</h1>
  * Contains methods for: normalising features, downloading data, calculating distances.
- * @since firstDeliverable
- * @version 0
+ *
  * @author Orestis Kritsotakis
  * @author Konstantinos Kokkalis
  * @author Iasonas Tsoukalas
+ * @version 0
+ * @since firstDeliverable
  */
 public class City implements Comparable<City> {
     private static final String[] wikiFeatures = new String[]{"cafe", "sea", "museum", "temple", "stadium", "bar", "park"};
@@ -41,10 +42,12 @@ public class City implements Comparable<City> {
     /**
      * <h1> Empty constructor</h1>
      */
-    public City() {}
+    public City() {
+    }
 
     /**
      * <h1> Main constructor</h1>
+     *
      * @param features
      * @param name
      * @param countryName
@@ -60,6 +63,7 @@ public class City implements Comparable<City> {
     /**
      * <h1> Constructor only with geodesic distance </h1>
      * The other attributes will be set at default values  The other attributes will be set at default values
+     *
      * @param geodesicDist float
      */
     public City(float geodesicDist) {
@@ -78,6 +82,7 @@ public class City implements Comparable<City> {
 
     /**
      * <h1> Finds the closest recommendation</h1>
+     *
      * @param perceptron passed to getLastRecommendation
      * @return the closest City object
      * @throws NoRecommendationException if there is no recommendations
@@ -99,8 +104,9 @@ public class City implements Comparable<City> {
 
     /**
      * <h1> Normalise one term </h1>
+     *
      * @param mode defines the type of normalisation:
-     * <u>0==Wiki, 1==Weather, 2==Clouds, 3==GeodesicDistance </u>
+     *             <u>0==Wiki, 1==Weather, 2==Clouds, 3==GeodesicDistance </u>
      * @param term float that will be normalised
      */
     public static float normaliseFeature(float term, int mode) {
@@ -126,7 +132,7 @@ public class City implements Comparable<City> {
                         min = 0;
                         max = MAX_DISTANCE;         //geodesicDistance athens-sydney
                     } else {
-                        return 0;
+                        return 0;       //TODO change to IllegalArgumentsException
                     }
                 }
             }
@@ -138,7 +144,6 @@ public class City implements Comparable<City> {
      * <h1>Normalise all features for this City object</h1>
      * Uses: {@link City#normaliseFeature(float, int)}
      */
-
     public void normaliseFeature() {
         for (int featureIndex = 0; featureIndex < 10; featureIndex++) {
             if (featureIndex < 7) {                   //wiki normalisation
@@ -159,12 +164,13 @@ public class City implements Comparable<City> {
 
     /**
      * <h1> Calculates geodesic distance between two cities</h1>
+     *
      * @param lat1 first city latitude
      * @param lon1 first city longitude
      * @param lat2 second city latitude
      * @param lon2 second city longitude
-     * @author Code cource: https://www.geodatasource.com/developers/java
      * @return geodesic distance between two cities in Miles
+     * @author Code cource: https://www.geodatasource.com/developers/java
      */
 
     public static double geodesicDistance(double lat1, double lon1, double lat2, double lon2) {        //Code form: https://www.geodatasource.com/developers/java
@@ -181,8 +187,10 @@ public class City implements Comparable<City> {
         }
     }
 
-    /** <h1> Collects weather data for a city</h1>
+    /**
+     * <h1> Collects weather data for a city</h1>
      * Calls open weather map API for a city, sets the appropriate weather features after normalising them with {@link #normaliseFeature}
+     *
      * @param control Uses: {@link City#setWeatherData(Control)}
      * @throws NoSuchCityException if city wasn't found at API(s)
      * @throws NoInternetException if there is no connection with API(s)
@@ -193,11 +201,11 @@ public class City implements Comparable<City> {
             OpenWeatherMap tempWeatherObj = OpenData.retrieveWeatherData(this.name, this.countryName);
 
             //Name formatting if needed
-            if (! this.name.equals(tempWeatherObj.getName())) {
-                this.name =tempWeatherObj.getName();
+            if (!this.name.equals(tempWeatherObj.getName())) {
+                this.name = tempWeatherObj.getName();
             }
             if (this.countryName.equals(tempWeatherObj.getSys().getCountry())) {
-                this.countryName=tempWeatherObj.getSys().getCountry();
+                this.countryName = tempWeatherObj.getSys().getCountry();
             }
 
             float[] tempFeatures = this.features;
@@ -206,7 +214,7 @@ public class City implements Comparable<City> {
             tempFeatures[7] = normaliseFeature((float) tempWeatherObj.getMain().getTemp(), 1);
             tempFeatures[8] = normaliseFeature((float) tempWeatherObj.getClouds().getAll(), 2);
             tempFeatures[9] = normaliseFeature((float) geodesicDistance(control.getUserLat(), control.getUserLon(), tempWeatherObj.getCoord().getLat(), tempWeatherObj.getCoord().getLon()), 3);
-            this.features=tempFeatures;
+            this.features = tempFeatures;
             this.weatherDownloadTimestamp = new Date();
 
         } catch (FileNotFoundException e) {
@@ -221,10 +229,10 @@ public class City implements Comparable<City> {
      * Uses: {@link #setWeatherData(Control)}
      *
      * @param citiesLibrary ArrayList<City>
-     * @param control in order to get user's cord
+     * @param control       in order to get user's cord
      * @throws CitiesLibraryEmptyException if there is no cities at citiesLibrary
-     * @throws NoSuchCityException if city wasn't found at API(s)
-     * @throws NoInternetException if there is no connection with API(s)
+     * @throws NoSuchCityException         if city wasn't found at API(s)
+     * @throws NoInternetException         if there is no connection with API(s)
      */
     public static void setWeatherData(@NotNull ArrayList<City> citiesLibrary, @NotNull Control control) throws
             CitiesLibraryEmptyException, NoSuchCityException, NoInternetException {
@@ -243,6 +251,7 @@ public class City implements Comparable<City> {
      * Sets on tempWikiFeatures the amount of each keyword from wikiFeatures by calling the countWikiKeywords(the name of the certain city)
      * Sets the new data on tempFeatures and normalise them depending on the mode and the amount of each keyword
      * Sets the new tempFeatures to features
+     *
      * @throws NoSuchCityException
      * @throws NoInternetException
      */
@@ -254,16 +263,17 @@ public class City implements Comparable<City> {
         for (int featureIndex = 0; featureIndex < wikiFeatures.length; featureIndex++) {
             tempFeatures[featureIndex] = normaliseFeature((float) tempWikiFeatures[featureIndex], 0);
         }
-        this.features=tempFeatures;
+        this.features = tempFeatures;
     }
 
     /**
-     *  <h1> Downloads wiki data for each city at citiesLibrary</h1>
-     *  Uses: {@link City#setWeatherData(Control)}
+     * <h1> Downloads wiki data for each city at citiesLibrary</h1>
+     * Uses: {@link City#setWeatherData(Control)}
+     *
      * @param citiesLibrary ArrayList<City>
      * @throws CitiesLibraryEmptyException if there is no cities at citiesLibrary
-     * @throws NoSuchCityException   if city wasn't found at API(s)
-     * @throws NoInternetException  if there is no connection with API(s)
+     * @throws NoSuchCityException         if city wasn't found at API(s)
+     * @throws NoInternetException         if there is no connection with API(s)
      */
     //Downloads wiki data and place it to citiesLibrary without changing other data at the library
     public static void setWikiData(@NotNull ArrayList<City> citiesLibrary) throws
@@ -284,6 +294,7 @@ public class City implements Comparable<City> {
      * Creates an object to retrieve wiki data of the City object that took as parameter
      * Creates a table(int[] tempFeatures) that contains the amount of each keyword and it's parallel to the wikiFeatures
      * and saves the amount of the words that have been counted on each shell of the tempFeatures table
+     *
      * @param city
      * @return a table[] with the amount of the keywords of the City that took as parameter
      * @throws NoSuchCityException
@@ -361,7 +372,7 @@ public class City implements Comparable<City> {
 
     @Override
     public int compareTo(@NotNull City o) {
-        if (this.name.equalsIgnoreCase(o.name) && this.countryName.equalsIgnoreCase(o.countryName)){
+        if (this.name.equalsIgnoreCase(o.name) && this.countryName.equalsIgnoreCase(o.countryName)) {
             return 1;
         }
         return 0;
