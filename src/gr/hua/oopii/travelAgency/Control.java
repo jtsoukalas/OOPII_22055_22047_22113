@@ -87,8 +87,6 @@ public class Control {
             try {
                 //this(officeCity,officeCountry);  //FIXME we can't call other constructor
                 { //Temp code block -> No internet exception handling
-                    System.out.println("-Retrieve cities library from Json file res = " + this.retrieveCitiesLibraryJson() + "-");  //Debugging reasons
-
                     try {
                         OpenWeatherMap tempWeatherObj = OpenData.retrieveWeatherData(officeCity, officeCountry);
                         this.userLat = (float) tempWeatherObj.getCoord().getLat();
