@@ -18,8 +18,8 @@ module com.example.oopii_test {
     requires junit;
 
 
-    opens com.example.oopii_test to javafx.fxml;
-    exports com.example.oopii_test;
+    opens gr.hua.oopii.travelAgency.GUI to javafx.fxml;
+    exports gr.hua.oopii.travelAgency.GUI;
 
     exports gr.hua.oopii.travelAgency.openData;
     exports gr.hua.oopii.travelAgency.openWeather;

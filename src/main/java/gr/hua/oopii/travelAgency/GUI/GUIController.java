@@ -1,8 +1,7 @@
-package com.example.oopii_test;
+package gr.hua.oopii.travelAgency.GUI;
 
 import gr.hua.oopii.travelAgency.Control;
 import gr.hua.oopii.travelAgency.exception.NoRecommendationException;
-import gr.hua.oopii.travelAgency.exception.NoSuchCityException;
 import gr.hua.oopii.travelAgency.exception.StopRunningException;
 import javafx.fxml.FXML;
 import javafx.fxml.Initializable;
@@ -11,7 +10,7 @@ import javafx.scene.control.*;
 import java.net.URL;
 import java.util.ResourceBundle;
 
-public class HelloController implements Initializable {
+public class GUIController implements Initializable {
 
     public Spinner<Integer> age;
     public TextArea recommendationsTextArea;
@@ -29,12 +28,8 @@ public class HelloController implements Initializable {
     @FXML
     protected void gainRecommendationsButton() throws NoRecommendationException, StopRunningException {
         recommendationsTextArea.setText(Control.recommendationToString(Control.runPerceptron(age.getValue(),uppercaseCheckBox.isSelected())));
-        uppercaseCheckBox.setDisable(true);
     }
-    @FXML
-    protected void unlockButton(){
-        uppercaseCheckBox.setDisable(false);
-    }
+
 
     @Override
     public void initialize(URL url, ResourceBundle resourceBundle) {
