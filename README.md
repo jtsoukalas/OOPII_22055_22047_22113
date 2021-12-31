@@ -3,7 +3,7 @@
 
 # Travel agent
 
-Project for Object-Oriended Programming II class. Professor: [@JohnViolos](https://www.github.com/johnviolos)
+Project for Object-Oriented Programming II class. Professor: [@JohnViolos](https://www.github.com/johnviolos)
 
 
 ## Team

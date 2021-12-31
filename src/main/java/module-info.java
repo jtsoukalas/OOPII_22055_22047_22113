@@ -1,4 +1,4 @@
-module com.example.oopii_test {
+module gr.hua.oopii.travelAgency {
     requires javafx.controls;
     requires javafx.fxml;
     requires javafx.web;
@@ -16,12 +16,14 @@ module com.example.oopii_test {
     requires commons.lang;
     requires org.testng;
     requires junit;
+    requires java.sql;  //for json deserialization
 
 
     opens gr.hua.oopii.travelAgency.GUI to javafx.fxml;
-    exports gr.hua.oopii.travelAgency.GUI;
 
+    exports gr.hua.oopii.travelAgency.GUI;
     exports gr.hua.oopii.travelAgency.openData;
     exports gr.hua.oopii.travelAgency.openWeather;
-
+    opens gr.hua.oopii.travelAgency;
+    exports gr.hua.oopii.travelAgency.exception;
 }

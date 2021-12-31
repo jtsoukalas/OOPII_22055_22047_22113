@@ -4,6 +4,8 @@ package gr.hua.oopii.travelAgency;
 
 import com.fasterxml.jackson.core.type.TypeReference;
 import com.fasterxml.jackson.databind.ObjectMapper;
+import gr.hua.oopii.travelAgency.comparators.GeodesicCompare;
+import gr.hua.oopii.travelAgency.comparators.TimestampCompare;
 import gr.hua.oopii.travelAgency.comparators.WeekDayCompare;
 import gr.hua.oopii.travelAgency.exception.*;
 import gr.hua.oopii.travelAgency.openData.OpenData;
@@ -50,9 +52,9 @@ public class Control {
     private static float userLon, userLat;
 
     /**
-     * @param userCity user's city name
+     * @param userCity    user's city name
      * @param userCountry user's country name (ISO)
-     * @throws NoSuchCityException if there is no city with given parameters
+     * @throws NoSuchCityException  if there is no city with given parameters
      * @throws StopRunningException if there is no connection to the internet. Then the program has to end.
      */
     public static void init(String userCity, String userCountry) throws StopRunningException, NoSuchCityException {
@@ -61,7 +63,7 @@ public class Control {
             userLat = (float) tempWeatherObj.getCoord().getLat();
             userLon = (float) tempWeatherObj.getCoord().getLon();
         } catch (FileNotFoundException e) {
-            throw new NoSuchCityException(userCity,"OpenWeather");
+            throw new NoSuchCityException(userCity, "OpenWeather");
         } catch (IOException e) {
             System.err.println("Error! Please check your internet connection and try again.");
             throw new StopRunningException(new NoInternetException("OpenWeather"));
@@ -181,13 +183,14 @@ public class Control {
      * <h1>Run Perceptron</h1>
      * Uses parameter age and creates the corresponding perceptron(young,middle or elder)
      * Asks for the recommendations to be sorted or not
+     *
      * @param age
      * @return last recommendations sorted or not
      * @throws StopRunningException      if city Library is Empty
      * @throws IllegalArgumentException  if wrong inputs has been given from the user
      * @throws NoRecommendationException if there are no recommendations
      */
-    public static ArrayList<City> runPerceptron(int age,boolean uppercase) throws StopRunningException, IllegalArgumentException, NoRecommendationException {
+    public static ArrayList<City> runPerceptron(int age, boolean uppercase) throws StopRunningException, IllegalArgumentException, NoRecommendationException {
         updateData();
 
         //Choose suitable perceptron
@@ -228,7 +231,7 @@ public class Control {
      * @throws StopRunningException
      */
     private static void updateData() throws StopRunningException {
-        System.out.println("Retrieve cities library from Json file res= " + retrieveCitiesLibraryJson());  //Debugging reasons
+        //System.out.println("Retrieve cities library from Json file res= " + retrieveCitiesLibraryJson());  //TODO: Talk about it
 
         boolean newData = false;
         try {
@@ -265,14 +268,15 @@ public class Control {
 
         //Update cities library Json file       //TODO Talk about where should we update the Json file
         if (newData) {
-            System.out.println("-Cities library Json file update res = " + saveCitiesLibraryJson() + "-");
+            //System.out.println("-Cities library Json file update res = " + saveCitiesLibraryJson() + "-");
         }
     }
 
     /**
      * <h1>Saves the citiesLibrary to a json</h1>
      * Takes the city Library objects and saves them to a .json file
-     * @return true if the saving is successfull otherwise false
+     *
+     * @return true if the saving is successful otherwise false
      */
     public static boolean saveCitiesLibraryJson() {
 
@@ -290,12 +294,14 @@ public class Control {
      * <h1>Retrieves data from the Json file and creates CitiesLibrary</h1>
      * Retrieve the data of each city that saved in the Json
      * Saves a timestamp from earliest weather download
+     *
      * @return true if the retrieving is successfully otherwise false
      */
     public static boolean retrieveCitiesLibraryJson() {
         ObjectMapper mapper = new ObjectMapper();
         try {
-            citiesLibrary = mapper.readValue(new File("citiesLibrary.json"), new TypeReference<ArrayList<City>>() {});
+            citiesLibrary = mapper.readValue(new File("citiesLibrary.json"), new TypeReference<ArrayList<City>>() {
+            });
 
             //Find last weather download time
             Date firstWeatherDownloadTimestamp = citiesLibrary.get(0).getWeatherDownloadTimestamp();
@@ -314,6 +320,7 @@ public class Control {
 
     /**
      * <h1>Creates a city catalogue that sorts each city by the day of week that its been added</h1>
+     *
      * @return map
      */
     public static TreeMap<String, String> makeWeekCityCatalogue() {
@@ -328,6 +335,7 @@ public class Control {
 
     /**
      * <h1>toString method that outputs the city catalogue and the day of week that each city is being added </h1>
+     *
      * @param tree The treeMap that we want to present
      * @return City Catalogue sorted by day of week
      */
@@ -358,6 +366,7 @@ public class Control {
     /**
      * <h1>Creates a string to represent the recommendations<h1/>
      * Takes compatible cities names from each city Object and appends them to a string
+     *
      * @param compatibleCities
      * @return a string with all the recommendations
      * @throws NoRecommendationException
@@ -372,6 +381,64 @@ public class Control {
             recommendation.append(compatibleCity.getName()).append("\n");
         }
         return recommendation.deleteCharAt(recommendation.lastIndexOf("\n")).toString();
+    }
+
+    public static String sortRecommendation(int option) throws NoRecommendationException {
+        if (lastPerceptronUsed == null || lastPerceptronUsed.getLastRecommendation() == null) {
+            throw new NoRecommendationException();
+        }
+
+        ArrayList<String> options = retrieveSortingOptions();
+
+        if (option < 0 || option > options.size() - 1) {
+            throw new IllegalArgumentException("Sorting option: " + option + "isn't supported");
+        }
+
+        Comparator<City> caseComparator = switch (option) {
+            case 0 -> new GeodesicCompare();
+            case 1 -> new GeodesicCompare().reversed();
+            case 2 -> new TimestampCompare();
+            default -> null;
+        };
+
+        return recommendationToString(lastPerceptronUsed.sortRecommendation(caseComparator));
+    }
+
+    public static String presentCitiesLibrary(){
+        return citiesLibrary.toString();    //FIXME Optimization needed
+    }
+
+    /**
+     * Finds the default sorting option of last used perceptron
+     *
+     * @return a sorting option
+     * @throws NullPointerException if there is no Perceptron used
+     */
+    public static String retrieveDefaultSortingOption() {
+        if (lastPerceptronUsed == null) {
+            throw new NullPointerException("There is no recommendations to sort");
+        }
+
+        if (lastPerceptronUsed instanceof PerceptronElderTraveler) {
+            return "Distance descending";
+        } else if (lastPerceptronUsed instanceof PerceptronMiddleTraveler) {
+            return "Time city entered";
+        } else {
+            return "Distance";
+        }
+    }
+
+    /**
+     * Returns the supported sorting options
+     *
+     * @return the sorting options
+     */
+    public static ArrayList<String> retrieveSortingOptions() {
+        ArrayList<String> res = new ArrayList<>();
+        res.add("Distance");
+        res.add("Distance descending");
+        res.add("Time city entered");
+        return res;
     }
 
     public static ArrayList<City> getCitiesLibrary() {
