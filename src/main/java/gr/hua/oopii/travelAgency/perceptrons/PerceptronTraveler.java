@@ -72,7 +72,7 @@ public abstract class PerceptronTraveler implements PerceptronTravelerInterface 
         ArrayList<City> recommendation = new ArrayList<>();
         for (int cityIndex = 0; cityIndex < compatibleCities.length; cityIndex++) {
             if (compatibleCities[cityIndex] && citiesLibrary.get(cityIndex).getFeatures()[9] != 0) { //Avoids user's location to be a recommendation
-                recommendation.add(citiesLibrary.get(cityIndex));
+                recommendation.add(citiesLibrary.get(cityIndex).clone());
             }
         }
         lastRecommendation = recommendation;

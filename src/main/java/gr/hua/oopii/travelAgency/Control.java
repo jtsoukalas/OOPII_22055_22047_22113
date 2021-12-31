@@ -25,7 +25,8 @@ import java.util.*;
 
 public class Control {
     /**
-     * ArrayList<
+     * Source data for cities
+     * @see City
      */
     private static ArrayList<City> citiesLibrary;
 
@@ -104,12 +105,13 @@ public class Control {
 //    }
 
     /**
-     * <h1>Initialization of City names</h1>
+     * <h1>Initialization of Cities Library</h1>
      * Save the City names into a table of Strings
      * Save the ISO of each City in a parallel table of Strings
      * Adds each City object in an ArrayList
+     * Calls {@link #updateData()}
      */
-    public static void initNameCitiesLibrary() {
+    public static void initCitiesLibrary() throws StopRunningException {
         if (citiesLibrary != null && !citiesLibrary.isEmpty()) {
             return;
         }
@@ -124,6 +126,7 @@ public class Control {
         for (int cityIndex = 0; cityIndex < cityAmount; cityIndex++) {
             citiesLibrary.add(new City(cityNames[cityIndex], countryNames[cityIndex]));
         }
+        updateData();
     }
 
     /**
@@ -136,7 +139,11 @@ public class Control {
      * @throws NoSuchCityException if there is not a City with this name in earth
      * @throws NoInternetException if there is no Internet
      */
-    public static Date addCandidateCity(String cityName, String countryName) throws NoSuchCityException, NoInternetException {
+    public static Date addCandidateCity(String cityName, String countryName) throws NoSuchCityException, NoInternetException, IllegalArgumentException {
+        if (cityName == null /*|| countryName== null*/ || cityName.isEmpty() /*|| countryName.isEmpty()*/){ //TODO Talk about it
+            throw new IllegalArgumentException("City name or ISO missing");
+        }
+
         City userCityRecommendation = new City(cityName, countryName);
         try {
             return citiesLibrary.get(citiesLibrary.indexOf(userCityRecommendation)).getTimestamp();
@@ -144,9 +151,16 @@ public class Control {
             //Download data and append to ArrayList
             userCityRecommendation.setWeatherData();
             userCityRecommendation.setWikiData();
+
+            int tmpIndex = citiesLibrary.indexOf(userCityRecommendation);
+            if (tmpIndex>=0){
+                return citiesLibrary.get(tmpIndex).getTimestamp();
+            }
+
+
             citiesLibrary.add(userCityRecommendation);
-            //Update Json
-            saveCitiesLibraryJson();
+//            //Update Json
+//            saveCitiesLibraryJson();  //TODO Talk about it
             return null;
         }
     }
@@ -157,26 +171,26 @@ public class Control {
      * For each city name that initialized:sets random value to each feature.
      * Normalizes all the features that added randomly.
      * Adds the temp City to citiesLibrary.
-     */
-//    public void makeDummyData() {
-//        int cityAmount = 15;
-//        Random rand = new Random();
-//
-//        initNameCitiesLibrary();
-//        City tempCity;
-//        for (int cityIndex = 0; cityIndex < cityAmount; cityIndex++) {
-//            tempCity = citiesLibrary.remove(cityIndex);
-//            tempCity.setFeatures(new float[]{(float) rand.nextInt(10), (float) rand.nextInt(10),
-//                    (float) rand.nextInt(10), (float) rand.nextInt(10),
-//                    (float) rand.nextInt(10), (float) rand.nextInt(10),
-//                    (float) rand.nextInt(10),
-//                    rand.nextFloat() + rand.nextInt(146) + 184,                                     //Temperature in Kelvin
-//                    rand.nextFloat() + rand.nextInt(99),                                            //Weather Condition
-//                    rand.nextFloat() + rand.nextInt(9522)});                                        //geodesic distance in miles
-//            tempCity.normaliseFeature();
-//            citiesLibrary.add(tempCity);
-//        }
-//    }
+     *//*
+    public void makeDummyData() {
+        int cityAmount = 15;
+        Random rand = new Random();
+
+        initNameCitiesLibrary();
+        City tempCity;
+        for (int cityIndex = 0; cityIndex < cityAmount; cityIndex++) {
+            tempCity = citiesLibrary.remove(cityIndex);
+            tempCity.setFeatures(new float[]{(float) rand.nextInt(10), (float) rand.nextInt(10),
+                    (float) rand.nextInt(10), (float) rand.nextInt(10),
+                    (float) rand.nextInt(10), (float) rand.nextInt(10),
+                    (float) rand.nextInt(10),
+                    rand.nextFloat() + rand.nextInt(146) + 184,                                     //Temperature in Kelvin
+                    rand.nextFloat() + rand.nextInt(99),                                            //Weather Condition
+                    rand.nextFloat() + rand.nextInt(9522)});                                        //geodesic distance in miles
+            tempCity.normaliseFeature();
+            citiesLibrary.add(tempCity);
+        }
+    }*/
 
 
     /**
@@ -236,7 +250,7 @@ public class Control {
         boolean newData = false;
         try {
             if (weatherDownloadTimestamp == null) {
-                initNameCitiesLibrary();
+                initCitiesLibrary();
             }
 
             if (!wikiDataDownloaded) {                              //Downloads wiki data once
@@ -351,7 +365,7 @@ public class Control {
         return sb.toString();
     }
 
-    public String cityLibraryToString() throws CitiesLibraryEmptyException {
+    public static String cityLibraryToString() throws CitiesLibraryEmptyException {
         if (citiesLibrary.isEmpty()) {
             throw new CitiesLibraryEmptyException();
         }
@@ -402,10 +416,6 @@ public class Control {
         };
 
         return recommendationToString(lastPerceptronUsed.sortRecommendation(caseComparator));
-    }
-
-    public static String presentCitiesLibrary(){
-        return citiesLibrary.toString();    //FIXME Optimization needed
     }
 
     /**

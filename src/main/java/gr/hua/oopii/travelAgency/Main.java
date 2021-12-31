@@ -20,7 +20,7 @@ public class Main {
                 } catch (NoRecommendationException e) {
                     System.err.println(e.getMessage());
                 }
-                {// Testing addCandidateCity
+                {// Testing addCandidateCityButtonAction
                     boolean retry;
                     System.out.println("Do you want to add a new candidate city? (true/false)");
                     if (Input.readBoolean()) {

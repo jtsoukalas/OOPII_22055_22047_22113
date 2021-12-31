@@ -6,6 +6,7 @@ import gr.hua.oopii.travelAgency.openData.MediaWiki;
 import gr.hua.oopii.travelAgency.openData.OpenData;
 import gr.hua.oopii.travelAgency.openWeather.OpenWeatherMap;
 import gr.hua.oopii.travelAgency.perceptrons.PerceptronTraveler;
+import org.controlsfx.tools.Duplicatable;
 import org.jetbrains.annotations.NotNull;
 
 import java.io.FileNotFoundException;
@@ -24,7 +25,7 @@ import java.util.Date;
  * @version 0
  * @since firstDeliverable
  */
-public class City implements Comparable<City> {
+public class City implements Comparable<City>, Cloneable {
     private static final String[] wikiFeatures = new String[]{"cafe", "sea", "museum", "temple", "stadium", "bar", "park"};
     private static final float MAX_DISTANCE = 9517;             //Athens - Sydney distance
 
@@ -204,7 +205,7 @@ public class City implements Comparable<City> {
             if (!this.name.equals(tempWeatherObj.getName())) {
                 this.name = tempWeatherObj.getName();
             }
-            if (this.countryName.equals(tempWeatherObj.getSys().getCountry())) {
+            if (!this.countryName.equals(tempWeatherObj.getSys().getCountry())) {
                 this.countryName = tempWeatherObj.getSys().getCountry();
             }
 
@@ -226,10 +227,9 @@ public class City implements Comparable<City> {
 
     /**
      * <h1> Downloads weather data for each city at citiesLibrary</h1>
-     * Uses: {@link #setWeatherData(Control)}
+     * Uses: {@link #setWeatherData()}
      *
      * @param citiesLibrary ArrayList<City>
-     * @param control       in order to get user's cord
      * @throws CitiesLibraryEmptyException if there is no cities at citiesLibrary
      * @throws NoSuchCityException         if city wasn't found at API(s)
      * @throws NoInternetException         if there is no connection with API(s)
@@ -268,7 +268,7 @@ public class City implements Comparable<City> {
 
     /**
      * <h1> Downloads wiki data for each city at citiesLibrary</h1>
-     * Uses: {@link City#setWeatherData(Control)}
+     * Uses: {@link City#setWeatherData()}
      *
      * @param citiesLibrary ArrayList<City>
      * @throws CitiesLibraryEmptyException if there is no cities at citiesLibrary
@@ -376,5 +376,20 @@ public class City implements Comparable<City> {
             return 1;
         }
         return 0;
+    }
+
+    @Override
+    public City clone() {
+        try {
+            City clone = (City) super.clone();
+            clone.name = name;
+            clone.countryName = countryName;
+            clone.timestamp= (Date) timestamp.clone();
+            clone.features=features;
+            clone.weatherDownloadTimestamp = (Date) weatherDownloadTimestamp.clone();
+            return clone;
+        } catch (CloneNotSupportedException e) {
+            throw new AssertionError();
+        }
     }
 }
