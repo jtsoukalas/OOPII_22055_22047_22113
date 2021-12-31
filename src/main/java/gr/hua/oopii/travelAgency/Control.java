@@ -342,9 +342,24 @@ public class Control {
 
         SimpleDateFormat f = new SimpleDateFormat("EEEEEE");
         for (City city : citiesLibrary) {
-            map.merge(f.format(city.getTimestamp()).toUpperCase(Locale.ROOT), city.getName(), (a, b) -> a + "," + b);
+            map.merge(f.format(city.getTimestamp()).toUpperCase(Locale.ROOT), city.getName(), (a, b) -> a + ", " + b);
         }
         return map;
+    }
+
+    public static TreeMap<String, Integer> statisticsWeekCityCatalogue(TreeMap<String, String> weekCityCatalogue) {
+        Iterator<Map.Entry<String, String>> it = weekCityCatalogue.entrySet().iterator();
+
+        TreeMap<String, Integer> res = new TreeMap<>();
+
+        for (Iterator<Map.Entry<String, String>> iter = it; iter.hasNext(); ) {
+            Map.Entry<String, String> tmp = iter.next();
+
+            //Count number of cities
+            StringTokenizer st = new StringTokenizer(tmp.getValue(),",");
+            res.put(tmp.getKey(),st.countTokens());
+        }
+        return res;
     }
 
     /**
@@ -360,7 +375,7 @@ public class Control {
             MONDAY, TUESDAY, WEDNESDAY, THURSDAY, FRIDAY, SATURDAY, SUNDAY
         }
         for (Days day : Days.values()) {
-            sb.append(day.ordinal() + 1).append(". ").append(day).append(": ").append(tree.get(day.toString())).append("\n");
+            sb.append(day.ordinal() + 1).append(". ").append(day).append(": ").append(tree.get(day.toString())==null?"":tree.get(day.toString())).append("\n");
         }
         return sb.toString();
     }
