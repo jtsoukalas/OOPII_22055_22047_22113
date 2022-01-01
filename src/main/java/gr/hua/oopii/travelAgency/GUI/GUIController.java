@@ -174,9 +174,13 @@ public class GUIController implements Initializable {
                 } catch (StopRunningException ex) {
                     ex.printStackTrace();
                 }
+                dialog.hide();
             });
 
-            loadDataButton.setOnAction(e -> loadAsButtonAction());
+            loadDataButton.setOnAction(e -> {
+                loadAsButtonAction();
+                dialog.hide();
+            });
 
             Text text = new Text("We couldn't load data from default file. \nPlease select an option to proceed:");
             text.setFont(new Font("Arial", 15));
