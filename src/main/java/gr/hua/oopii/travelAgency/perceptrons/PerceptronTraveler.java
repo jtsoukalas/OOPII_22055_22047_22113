@@ -101,7 +101,7 @@ public abstract class PerceptronTraveler implements PerceptronTravelerInterface 
 //            }
 //        }
 
-        if (uppercase){     //FIXME: If we call recommend with uppercase selected and after that, call it without, the recommendations will appear in uppercase.
+        if (uppercase){
             for (City city : recommendation){
                 city.setName(city.getName().toUpperCase());
             }

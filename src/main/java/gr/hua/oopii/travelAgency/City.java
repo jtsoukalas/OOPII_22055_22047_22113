@@ -133,7 +133,7 @@ public class City implements Comparable<City>, Cloneable {
                         min = 0;
                         max = MAX_DISTANCE;         //geodesicDistance athens-sydney
                     } else {
-                        return 0;       //TODO change to IllegalArgumentsException
+                       throw new IllegalArgumentException();
                     }
                 }
             }

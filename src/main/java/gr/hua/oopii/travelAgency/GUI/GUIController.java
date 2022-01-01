@@ -8,15 +8,24 @@ import javafx.event.Event;
 import javafx.event.EventHandler;
 import javafx.fxml.FXML;
 import javafx.fxml.Initializable;
+import javafx.geometry.Pos;
+import javafx.scene.Scene;
 import javafx.scene.chart.CategoryAxis;
 import javafx.scene.chart.LineChart;
 import javafx.scene.chart.NumberAxis;
 import javafx.scene.chart.XYChart;
 import javafx.scene.control.*;
 import javafx.scene.image.Image;
+import javafx.scene.layout.VBox;
 import javafx.scene.paint.Color;
+import javafx.scene.text.Font;
 import javafx.scene.text.Text;
+import javafx.scene.text.TextAlignment;
+import javafx.stage.FileChooser;
+import javafx.stage.Modality;
+import javafx.stage.Stage;
 
+import java.io.File;
 import java.net.URL;
 import java.util.*;
 
@@ -24,7 +33,7 @@ public class GUIController implements Initializable {
 
     public Spinner<Integer> age;
     public TextArea recommendationsTextArea;
-    public CheckBox uppercaseCheckBox;  //FIXME: Change related method so it doesnt effect cities library (source data)
+    public CheckBox uppercaseCheckBox;
     public ChoiceBox<String> sortChoiceBox;
     public TextArea citiesLibraryTextArea;
     public Tab citiesLibraryTab;
@@ -55,6 +64,39 @@ public class GUIController implements Initializable {
     protected void saveButtonAction() {
         System.out.println("Saving data to Json: " + Control.saveCitiesLibraryJson());                 //4 DEBUGGING reasons
     }
+
+    @FXML
+    protected void saveAsButtonAction() {
+        FileChooser fileChooser = new FileChooser();
+
+
+        fileChooser.setTitle("Select file to save data");
+        fileChooser.getExtensionFilters().addAll(new FileChooser.ExtensionFilter("Json files", "*.json"));
+
+        File file = fileChooser.showSaveDialog(new Stage());
+        if (file != null) {
+            System.out.println("Saving data to Json res: " + Control.saveCitiesLibraryJson(file));                 //4 DEBUGGING reasons
+        } else {
+            System.out.println("Saving data to Json res: false");                 //4 DEBUGGING reasons
+        }
+    }
+
+    @FXML
+    protected void loadAsButtonAction() {
+        FileChooser fileChooser = new FileChooser();
+
+
+        fileChooser.setTitle("Select file to read data");
+        fileChooser.getExtensionFilters().addAll(new FileChooser.ExtensionFilter("Json files", "*.json"));
+
+        File file = fileChooser.showOpenDialog(new Stage());
+        if (file != null) {
+            System.out.println("Loading data to Json res: " + Control.retrieveCitiesLibraryJson(file));                 //4 DEBUGGING reasons
+        } else {
+            System.out.println("Loading data to Json res: false");                 //4 DEBUGGING reasons
+        }
+    }
+
 
     @FXML
     protected void loadDataButtonAction() {
@@ -105,21 +147,49 @@ public class GUIController implements Initializable {
         } catch (CitiesLibraryEmptyException e) {
             e.printStackTrace();
         }
-
     }
-
 
     @Override
     public void initialize(URL url, ResourceBundle resourceBundle) {
         if (!Control.retrieveCitiesLibraryJson()) {
-            System.out.println("Retrieving Json data on init: false "); //4 DEBUGGING reasons
-            try {
-                Control.initCitiesLibrary();    //FIXME: Delaying GUI start
-            } catch (StopRunningException e) {
-                e.printStackTrace();
-            }
-        } else {
-            System.out.println("Retrieving Json data on init: true "); //4 DEBUGGING reasons
+            final Stage dialog = new Stage();
+
+            Image icon = new Image(getClass().getResourceAsStream("warning-icon.png"));
+            dialog.getIcons().add(icon);
+
+            dialog.setTitle("Warning");
+            dialog.initModality(Modality.WINDOW_MODAL);
+
+            //dialog.initOwner(primaryStage);
+            VBox dialogVbox = new VBox(20);
+            Scene dialogScene = new Scene(dialogVbox);
+
+            Button downloadDataButton = new Button("Download data from web");
+            Button loadDataButton = new Button("Load data from Json file");
+
+            downloadDataButton.setOnAction(e -> {
+                dialogVbox.getChildren().add(new Text("Please wait wile downloading data...")); //FIXME: Message appears after complete download
+                try {
+                    Control.initCitiesLibrary();
+                } catch (StopRunningException ex) {
+                    ex.printStackTrace();
+                }
+            });
+
+            loadDataButton.setOnAction(e -> loadAsButtonAction());
+
+            Text text = new Text("We couldn't load data from default file. \nPlease select an option to proceed:");
+            text.setFont(new Font("Arial", 15));
+            text.setTextAlignment(TextAlignment.CENTER);
+
+            dialogVbox.getChildren().addAll(text, downloadDataButton, loadDataButton);
+
+            dialog.setScene(dialogScene);
+            dialog.setAlwaysOnTop(true);
+            dialog.setResizable(false);
+            dialog.setX(10);
+            dialog.alwaysOnTopProperty();
+            dialog.show();
         }
 
         SpinnerValueFactory<Integer> spinnerValueFactory = new SpinnerValueFactory.IntegerSpinnerValueFactory(16, 115);
@@ -158,26 +228,28 @@ public class GUIController implements Initializable {
             }
         });
 
-        XYChart.Series series = new XYChart.Series();
-
 
         citiesLibraryTab.setOnSelectionChanged(new EventHandler<Event>() {
             @Override
             public void handle(Event event) {
+                XYChart.Series series = new XYChart.Series();
                 TreeMap<String, String> weekCityCatalogue = Control.makeWeekCityCatalogue();
                 citiesLibraryByDays.setText(Control.presentWeekCityCatalogue(weekCityCatalogue));
 
-                series.getData().clear();
-                TreeMap<String, Integer> weekCityCatalogueStatistics = Control.statisticsWeekCityCatalogue(weekCityCatalogue);
+                TreeMap<String, Integer> weekCityCatalogueStatistics;
+                weekCityCatalogueStatistics = Control.statisticsWeekCityCatalogue(weekCityCatalogue);
                 Iterator<Map.Entry<String, Integer>> it = weekCityCatalogueStatistics.entrySet().iterator();
 
                 for (Iterator<Map.Entry<String, Integer>> iter = it; iter.hasNext(); ) {
                     Map.Entry<String, Integer> tmp = it.next();
-                    series.getData().add(new XYChart.Data(tmp.getKey().substring(0,3), tmp.getValue()));
+                    series.getData().add(new XYChart.Data(tmp.getKey().substring(0, 3), tmp.getValue()));
                 }
                 System.out.println(Control.statisticsWeekCityCatalogue(weekCityCatalogue).toString());
+                lineChartCitiesLibrary.setLegendVisible(false);
+                lineChartCitiesLibrary.setAnimated(false);
+                lineChartCitiesLibrary.getData().clear();
                 lineChartCitiesLibrary.getData().add(series);
             }
-        }); //FIXME: Problem at x bar's text
+        });
     }
 }

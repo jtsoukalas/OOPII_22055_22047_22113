@@ -36,7 +36,7 @@ public class Control {
     private static final PerceptronYoungTraveler youngPerceptron = new PerceptronYoungTraveler();
     private static final PerceptronMiddleTraveler middlePerceptron = new PerceptronMiddleTraveler();
     private static final PerceptronElderTraveler elderPerceptron = new PerceptronElderTraveler();
-    private static PerceptronTraveler lastPerceptronUsed;       //todo unnecessary?
+    private static PerceptronTraveler lastPerceptronUsed;
 
     /**
      * Flag for wikipedia data download
@@ -84,7 +84,7 @@ public class Control {
 //            System.out.println("Please enter the country's ISO:");
 //            officeCountry = input.next();
 //            try {
-//                //this(officeCity,officeCountry);  //FIXME we can't call other constructor
+//                //this(officeCity,officeCountry);
 //                { //Temp code block -> No internet exception handling
 //                    try {
 //                        OpenWeatherMap tempWeatherObj = OpenData.retrieveWeatherData(officeCity, officeCountry);
@@ -287,34 +287,46 @@ public class Control {
     }
 
     /**
-     * <h1>Saves the citiesLibrary to a json</h1>
-     * Takes the city Library objects and saves them to a .json file
+     * <h1>Saves the citiesLibrary to specified Json file</h1>
+     * Takes the city Library objects and saves them to the specified Json file
      *
+     * @param file desired file to save data
      * @return true if the saving is successful otherwise false
      */
-    public static boolean saveCitiesLibraryJson() {
-
+    public static boolean saveCitiesLibraryJson(File file) {
         ObjectMapper mapper = new ObjectMapper();
         try {
-            mapper.writeValue(new File("citiesLibrary.json"), citiesLibrary);     //FIXME Parametric file name
+            mapper.writeValue(file, citiesLibrary);
             return true;
         } catch (IOException e) {
             return false;
         }
     }
 
+    /**
+     * <h1>Saves the citiesLibrary to default json file </h1>
+     * Takes the city Library objects and saves them to default json file (citiesLibrary.json)
+     *
+     * @return true if the saving is successful otherwise false
+     */
+    public static boolean saveCitiesLibraryJson() {
+        return saveCitiesLibraryJson(new File("citiesLibrary.json"));
+    }
+
+
 
     /**
-     * <h1>Retrieves data from the Json file and creates CitiesLibrary</h1>
+     * <h1>Retrieves data from the specified Json file and creates CitiesLibrary</h1>
      * Retrieve the data of each city that saved in the Json
      * Saves a timestamp from earliest weather download
      *
+     * @param file desired file to retrieve data
      * @return true if the retrieving is successfully otherwise false
      */
-    public static boolean retrieveCitiesLibraryJson() {
+    public static boolean retrieveCitiesLibraryJson(File file) {
         ObjectMapper mapper = new ObjectMapper();
         try {
-            citiesLibrary = mapper.readValue(new File("citiesLibrary.json"), new TypeReference<ArrayList<City>>() {
+            citiesLibrary = mapper.readValue(file, new TypeReference<ArrayList<City>>() {
             });
 
             //Find last weather download time
@@ -330,6 +342,16 @@ public class Control {
         } catch (Exception e) {
             return false;
         }
+    }
+    /**
+     * <h1>Retrieves data from the default Json file and creates CitiesLibrary</h1>
+     * Retrieve the data of each city that saved in citiesLibrary.json
+     * Saves a timestamp from earliest weather download
+     *
+     * @return true if the retrieving is successfully otherwise false
+     */
+    public static boolean retrieveCitiesLibraryJson() {
+        return retrieveCitiesLibraryJson(new File("citiesLibrary.json"));
     }
 
     /**
@@ -350,7 +372,7 @@ public class Control {
     public static TreeMap<String, Integer> statisticsWeekCityCatalogue(TreeMap<String, String> weekCityCatalogue) {
         Iterator<Map.Entry<String, String>> it = weekCityCatalogue.entrySet().iterator();
 
-        TreeMap<String, Integer> res = new TreeMap<>();
+        TreeMap<String, Integer> res = new TreeMap<>(new WeekDayCompare());
 
         for (Iterator<Map.Entry<String, String>> iter = it; iter.hasNext(); ) {
             Map.Entry<String, String> tmp = iter.next();

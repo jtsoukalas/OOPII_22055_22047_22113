@@ -31,10 +31,10 @@
     <MenuBar>
         <Menu mnemonicParsing="false" text="File">
             <MenuItem mnemonicParsing="false" onAction="#loadDataButtonAction" text="Load data" />
-            <MenuItem mnemonicParsing="false" text="Load data from ..." />
+            <MenuItem mnemonicParsing="false" onAction="#loadAsButtonAction" text="Load data from ..." />
             <SeparatorMenuItem mnemonicParsing="false" />
             <MenuItem mnemonicParsing="false" onAction="#saveButtonAction" text="Save" />
-            <MenuItem mnemonicParsing="false" text="Save as ..." />
+            <MenuItem mnemonicParsing="false" onAction="#saveAsButtonAction" text="Save as ..." />
             <SeparatorMenuItem mnemonicParsing="false" />
             <MenuItem mnemonicParsing="false" text="Close" />
         </Menu>
