@@ -22,7 +22,7 @@
 <?import javafx.scene.text.Font?>
 <?import javafx.scene.text.Text?>
 
-<VBox alignment="CENTER" prefHeight="606.0" prefWidth="511.0" spacing="20.0" xmlns="http://javafx.com/javafx/17" xmlns:fx="http://javafx.com/fxml/1" fx:controller="gr.hua.oopii.travelAgency.GUI.GUIController">
+<VBox alignment="CENTER" prefHeight="606.0" prefWidth="511.0" spacing="20.0" style="-fx-alignment: CENTER;" xmlns="http://javafx.com/javafx/17" xmlns:fx="http://javafx.com/fxml/1" fx:controller="gr.hua.oopii.travelAgency.GUI.GUIController">
     <padding>
         <Insets bottom="20.0" left="20.0" right="20.0" top="20.0" />
     </padding>
@@ -35,26 +35,24 @@
             <SeparatorMenuItem mnemonicParsing="false" />
             <MenuItem mnemonicParsing="false" onAction="#saveButtonAction" text="Save" />
             <MenuItem mnemonicParsing="false" onAction="#saveAsButtonAction" text="Save as ..." />
-            <SeparatorMenuItem mnemonicParsing="false" />
-            <MenuItem mnemonicParsing="false" text="Close" />
         </Menu>
         <Menu mnemonicParsing="false" text="Edit">
          <items>
-               <MenuItem mnemonicParsing="false" text="Clear" />
+               <MenuItem mnemonicParsing="false" onAction="#clearButtonAction" text="Clear" />
          </items>
         </Menu>
         <Menu mnemonicParsing="false" text="Help">
             <MenuItem mnemonicParsing="false" text="About" />
         </Menu>
     </MenuBar>
-    <AnchorPane prefHeight="100.0" prefWidth="471.0">
+    <AnchorPane prefHeight="100.0" prefWidth="471.0" style="-fx-scale-shape: YES;">
         <Button layoutX="261.0" layoutY="39.0" mnemonicParsing="false" onAction="#gainRecommendationsButtonAction" text="Gain recommendations" />
         <Label layoutX="208.0" layoutY="3.0" prefHeight="23.0" prefWidth="106.0" text="New traveller " textAlignment="CENTER">
             <font>
                 <Font size="18.0" />
             </font>
         </Label>
-        <Spinner id="age" fx:id="age" editable="true" layoutX="149.0" layoutY="39.0" prefHeight="26.0" prefWidth="87.0" />
+        <Spinner id="age" fx:id="ageSpinner" editable="true" layoutX="149.0" layoutY="39.0" prefHeight="26.0" prefWidth="87.0" />
         <Label contentDisplay="CENTER" layoutX="118.0" layoutY="43.0" prefHeight="18.0" prefWidth="31.0" text="Age" />
     </AnchorPane>
     <TabPane fx:id="tabs" prefHeight="440.0" prefWidth="471.0" tabClosingPolicy="UNAVAILABLE">

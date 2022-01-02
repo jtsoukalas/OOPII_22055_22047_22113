@@ -4,11 +4,12 @@ import gr.hua.oopii.travelAgency.Control;
 import gr.hua.oopii.travelAgency.exception.*;
 import javafx.beans.value.ChangeListener;
 import javafx.beans.value.ObservableValue;
+import javafx.event.ActionEvent;
 import javafx.event.Event;
 import javafx.event.EventHandler;
 import javafx.fxml.FXML;
 import javafx.fxml.Initializable;
-import javafx.geometry.Pos;
+import javafx.scene.Node;
 import javafx.scene.Scene;
 import javafx.scene.chart.CategoryAxis;
 import javafx.scene.chart.LineChart;
@@ -31,7 +32,7 @@ import java.util.*;
 
 public class GUIController implements Initializable {
 
-    public Spinner<Integer> age;
+    public Spinner<Integer> ageSpinner;
     public TextArea recommendationsTextArea;
     public CheckBox uppercaseCheckBox;
     public ChoiceBox<String> sortChoiceBox;
@@ -55,9 +56,15 @@ public class GUIController implements Initializable {
 
     @FXML
     protected void gainRecommendationsButtonAction() throws NoRecommendationException, StopRunningException {
-        recommendationsTextArea.setText(Control.recommendationToString(Control.runPerceptron(age.getValue(), uppercaseCheckBox.isSelected())));
+        recommendationsTextArea.setText(Control.recommendationToString(Control.runPerceptron(ageSpinner.getValue(), uppercaseCheckBox.isSelected())));
         sortChoiceBox.getSelectionModel().select(Control.retrieveDefaultSortingOption());
         tabs.getSelectionModel().select(recommendTab);
+    }
+
+    @FXML
+    protected void clearButtonAction(){
+        ageSpinner.getValueFactory().setValue(16);
+        recommendationsTextArea.clear();
     }
 
     @FXML
@@ -206,12 +213,11 @@ public class GUIController implements Initializable {
 
         SpinnerValueFactory<Integer> spinnerValueFactory = new SpinnerValueFactory.IntegerSpinnerValueFactory(16, 115);
         spinnerValueFactory.setValue(16);
-        age.setValueFactory(spinnerValueFactory);
+        ageSpinner.setValueFactory(spinnerValueFactory);
 
 
         sortChoiceBox.getItems().addAll(Control.retrieveSortingOptions());
         sortChoiceBox.getSelectionModel().selectedIndexProperty().addListener(new ChangeListener<>() {
-
             @Override
             public void changed(ObservableValue<? extends Number> observable, Number oldValue, Number newValue) {
                 try {
@@ -220,7 +226,7 @@ public class GUIController implements Initializable {
                     e.printStackTrace();
                 }
             }
-        }); //TODO: For optimization reasons, we can modify it so it want listen the auto value change (when new age added)
+        }); //TODO: For optimization reasons, we can modify it so it want listen the auto value change (when new ageSpinner added)
 
         addCandidateCityTab.setOnSelectionChanged(new EventHandler<Event>() {
             @Override
