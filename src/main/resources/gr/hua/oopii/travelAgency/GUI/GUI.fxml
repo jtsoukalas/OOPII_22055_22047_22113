@@ -39,7 +39,9 @@
             <MenuItem mnemonicParsing="false" text="Close" />
         </Menu>
         <Menu mnemonicParsing="false" text="Edit">
-            <MenuItem mnemonicParsing="false" text="Clear" />
+         <items>
+               <MenuItem mnemonicParsing="false" text="Clear" />
+         </items>
         </Menu>
         <Menu mnemonicParsing="false" text="Help">
             <MenuItem mnemonicParsing="false" text="About" />

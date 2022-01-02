@@ -151,6 +151,14 @@ public class GUIController implements Initializable {
 
     @Override
     public void initialize(URL url, ResourceBundle resourceBundle) {
+        try {
+            Control.init("Athens","GR");
+        } catch (StopRunningException e) {
+            e.printStackTrace();
+        } catch (NoSuchCityException e) {
+            e.printStackTrace();
+        }
+
         if (!Control.retrieveCitiesLibraryJson()) {
             final Stage dialog = new Stage();
 
