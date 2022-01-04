@@ -45,8 +45,8 @@ public class City implements Comparable<City>, Cloneable {
     private float[] features;
     private Date weatherDownloadTimestamp;
 
-    public static int WikiProcessCount =0;        //4 DEBUGGING reasons
-    public static int WeatherProcessCount =0;        //4 DEBUGGING reasons
+    public static int WikiProcessCount = 0;        //4 DEBUGGING reasons
+    public static int WeatherProcessCount = 0;        //4 DEBUGGING reasons
 
     /**
      * <h1> Empty constructor</h1>
@@ -141,7 +141,7 @@ public class City implements Comparable<City>, Cloneable {
                         min = 0;
                         max = MAX_DISTANCE;         //geodesicDistance athens-sydney
                     } else {
-                       throw new IllegalArgumentException();
+                        throw new IllegalArgumentException();
                     }
                 }
             }
@@ -200,7 +200,6 @@ public class City implements Comparable<City>, Cloneable {
      * <h1> Collects weather data for a city</h1>
      * Calls open weather map API for a city, sets the appropriate weather features after normalising them with {@link #normaliseFeature}
      *
-     *
      * @throws NoSuchCityException if city wasn't found at API(s)
      * @throws NoInternetException if there is no connection with API(s)
      */
@@ -236,6 +235,7 @@ public class City implements Comparable<City>, Cloneable {
     /**
      * <h1>Creates a {@link Runnable} object for downloading weather data</h1>
      * {@link Runnable#run()} method
+     *
      * @return
      */
     private Runnable createRunnableObjForWeatherDownload() {
@@ -294,6 +294,7 @@ public class City implements Comparable<City>, Cloneable {
     private Callable<Void> createCallableObjForWeatherDownload() {
         City city = this;
         int pid = WeatherProcessCount++;
+        
         return new Callable<Void>() {
             /**
              * Computes a result, or throws an exception if unable to do so.
@@ -303,9 +304,9 @@ public class City implements Comparable<City>, Cloneable {
              */
             @Override
             public Void call() throws Exception {
-                System.out.println("Hello from: " + pid +" openweather download data process");    //4 dubbing reasons
+                System.out.println("Hello from: " + pid + " openweather download data process");    //4 dubbing reasons
                 city.setWeatherData();
-                System.out.println("Goodbye from: " + pid +" openweather download data process");    //4 dubbing reasons
+                System.out.println("Goodbye from: " + pid + " openweather download data process");    //4 dubbing reasons
                 return null;
             }
         };
@@ -327,16 +328,23 @@ public class City implements Comparable<City>, Cloneable {
         }
 
         ExecutorService executorService = newCachedThreadPool();
+        ArrayList<Future<Void>> futures = new ArrayList<>();
+
+        //For each city, make a process and submit (add & execute) to the thread pool
         for (City city : citiesLibrary) {
             //executorService.submit(city.createRunnableObjForWeatherDownload());
-            Future<Void> future = executorService.submit(city.createCallableObjForWeatherDownload());   //FIXE: Runs faster if there is no .get() call. Now running serial!!!
+            futures.add(executorService.submit(city.createCallableObjForWeatherDownload()));
+        }
+
+        //For every process that submitted before, check the outcome (if any exception was thrown)
+        for (Future<Void> future : futures) {
             try {
                 future.get();
             } catch (InterruptedException | ExecutionException e) {
                 Throwable cause = e.getCause();
                 if (cause.getClass().isAssignableFrom(NoInternetException.class)) {
                     throw (NoInternetException) cause;
-                } else if (cause.getClass().isAssignableFrom(NoSuchCityException.class)){
+                } else if (cause.getClass().isAssignableFrom(NoSuchCityException.class)) {
                     throw (NoInternetException) cause;
                 }
             }
@@ -367,6 +375,7 @@ public class City implements Comparable<City>, Cloneable {
     private Callable<Void> createCallableObjForWikiDownload() {
         City city = this;
         int pid = WikiProcessCount++;
+
         return new Callable<Void>() {
             /**
              * Computes a result, or throws an exception if unable to do so.
@@ -376,9 +385,9 @@ public class City implements Comparable<City>, Cloneable {
              */
             @Override
             public Void call() throws Exception {
-                System.out.println("Hello from: " + pid +" wiki download data process");
+                System.out.println("Hello from: " + pid + " wiki download data process");
                 city.setWikiData();
-                System.out.println("Goodbye from: " + pid +" wiki download data process");
+                System.out.println("Goodbye from: " + pid + " wiki download data process");
                 return null;
             }
         };
@@ -403,16 +412,23 @@ public class City implements Comparable<City>, Cloneable {
         }
 
         ExecutorService executorService = newCachedThreadPool();
+        ArrayList<Future<Void>> futures = new ArrayList<>();
+
+        //For each city, make a process and submit (add & execute) to the thread pool
         for (City city : citiesLibrary) {
             //city.setWikiData();
-            Future<Void> future = executorService.submit(city.createCallableObjForWikiDownload());
+            futures.add(executorService.submit(city.createCallableObjForWikiDownload()));
+        }
+
+        //For every process that submitted before, check the outcome (if any exception was thrown)
+        for (Future<Void> future : futures) {
             try {
                 future.get();
             } catch (InterruptedException | ExecutionException e) {
                 Throwable cause = e.getCause();
                 if (cause.getClass().isAssignableFrom(NoInternetException.class)) {
                     throw (NoInternetException) cause;
-                } else if (cause.getClass().isAssignableFrom(NoSuchCityException.class)){
+                } else if (cause.getClass().isAssignableFrom(NoSuchCityException.class)) {
                     throw (NoInternetException) cause;
                 }
             }
@@ -515,8 +531,8 @@ public class City implements Comparable<City>, Cloneable {
             City clone = (City) super.clone();
             clone.name = name;
             clone.countryName = countryName;
-            clone.timestamp= (Date) timestamp.clone();
-            clone.features=features;
+            clone.timestamp = (Date) timestamp.clone();
+            clone.features = features;
             clone.weatherDownloadTimestamp = (Date) weatherDownloadTimestamp.clone();
             return clone;
         } catch (CloneNotSupportedException e) {
