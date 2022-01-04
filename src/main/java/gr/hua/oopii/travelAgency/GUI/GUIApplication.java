@@ -11,6 +11,7 @@ import javafx.stage.Stage;
 import javafx.stage.WindowEvent;
 
 import java.io.IOException;
+import java.util.Objects;
 
 public class GUIApplication extends Application {
     @Override
@@ -23,12 +24,13 @@ public class GUIApplication extends Application {
         stage.setOnCloseRequest(new EventHandler<WindowEvent>() {
             @Override
             public void handle(WindowEvent event) {
-                System.out.println("Saving Json when closing app: "+ Control.saveCitiesLibraryJson());
+                System.out.println("Saving Json when closing app: " + Control.saveCitiesLibraryJson());
+                Control.mainLogger.info("Logout");
             }
         });
         stage.setResizable(false);
 
-        Image icon = new Image(getClass().getResourceAsStream("travel-icon.png"));
+        Image icon = new Image(Objects.requireNonNull(getClass().getResourceAsStream("travel-icon.png")));
         stage.getIcons().add(icon);
     }
 
