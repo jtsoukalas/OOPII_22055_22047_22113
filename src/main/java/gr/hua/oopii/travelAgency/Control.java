@@ -109,7 +109,7 @@ public class Control {
      * Save the City names into a table of Strings
      * Save the ISO of each City in a parallel table of Strings
      * Adds each City object in an ArrayList
-     * Calls {@link #updateData()}
+     * Calls {@link #updateDataIfNeeded()}
      */
     public static void initCitiesLibrary() throws StopRunningException {
         if (citiesLibrary != null && !citiesLibrary.isEmpty()) {
@@ -126,7 +126,7 @@ public class Control {
         for (int cityIndex = 0; cityIndex < cityAmount; cityIndex++) {
             citiesLibrary.add(new City(cityNames[cityIndex], countryNames[cityIndex]));
         }
-        updateData();
+        updateDataIfNeeded();
     }
 
     /**
@@ -140,7 +140,7 @@ public class Control {
      * @throws NoInternetException if there is no Internet
      */
     public static Date addCandidateCity(String cityName, String countryName) throws NoSuchCityException, NoInternetException, IllegalArgumentException {
-        if (cityName == null /*|| countryName== null*/ || cityName.isEmpty() /*|| countryName.isEmpty()*/){ //TODO Talk about it
+        if (cityName == null /*|| countryName== null*/ || cityName.isEmpty() /*|| countryName.isEmpty()*/) { //TODO Talk about it
             throw new IllegalArgumentException("City name or ISO missing");
         }
 
@@ -153,10 +153,9 @@ public class Control {
             userCityRecommendation.setWikiData();
 
             int tmpIndex = citiesLibrary.indexOf(userCityRecommendation);
-            if (tmpIndex>=0){
+            if (tmpIndex >= 0) {
                 return citiesLibrary.get(tmpIndex).getTimestamp();
             }
-
 
             citiesLibrary.add(userCityRecommendation);
 //            //Update Json
@@ -205,7 +204,7 @@ public class Control {
      * @throws NoRecommendationException if there are no recommendations
      */
     public static ArrayList<City> runPerceptron(int age, boolean uppercase) throws StopRunningException, IllegalArgumentException, NoRecommendationException {
-        updateData();
+        updateDataIfNeeded();
 
         //Choose suitable perceptron
         PerceptronTraveler casePerceptron;
@@ -244,7 +243,7 @@ public class Control {
      *
      * @throws StopRunningException
      */
-    private static void updateData() throws StopRunningException {
+    private static void updateDataIfNeeded() throws StopRunningException {
         //System.out.println("Retrieve cities library from Json file res= " + retrieveCitiesLibraryJson());  //TODO: Talk about it
 
         boolean newData = false;
@@ -286,6 +285,26 @@ public class Control {
         }
     }
 
+    public static void updateData() throws StopRunningException {
+
+        try {
+            if (weatherDownloadTimestamp == null) {
+                initCitiesLibrary();
+            }
+
+            System.out.println("-Downloading Wiki data, please wait-");
+            City.setWikiData(citiesLibrary);
+            wikiDataDownloaded = true;
+
+            System.out.println("-Downloading Weather data, please wait-");
+            City.setWeatherData(Control.getCitiesLibrary());
+            weatherDownloadTimestamp = LocalDateTime.now();
+        } catch (CitiesLibraryEmptyException | NoSuchCityException | NoInternetException | StopRunningException e) {
+            System.err.println(e.getMessage());
+            throw new StopRunningException(e);
+        }
+    }
+
     /**
      * <h1>Saves the citiesLibrary to specified Json file</h1>
      * Takes the city Library objects and saves them to the specified Json file
@@ -312,7 +331,6 @@ public class Control {
     public static boolean saveCitiesLibraryJson() {
         return saveCitiesLibraryJson(new File("citiesLibrary.json"));
     }
-
 
 
     /**
@@ -343,6 +361,7 @@ public class Control {
             return false;
         }
     }
+
     /**
      * <h1>Retrieves data from the default Json file and creates CitiesLibrary</h1>
      * Retrieve the data of each city that saved in citiesLibrary.json
@@ -378,8 +397,8 @@ public class Control {
             Map.Entry<String, String> tmp = iter.next();
 
             //Count number of cities
-            StringTokenizer st = new StringTokenizer(tmp.getValue(),",");
-            res.put(tmp.getKey(),st.countTokens());
+            StringTokenizer st = new StringTokenizer(tmp.getValue(), ",");
+            res.put(tmp.getKey(), st.countTokens());
         }
         return res;
     }
@@ -397,7 +416,7 @@ public class Control {
             MONDAY, TUESDAY, WEDNESDAY, THURSDAY, FRIDAY, SATURDAY, SUNDAY
         }
         for (Days day : Days.values()) {
-            sb.append(day.ordinal() + 1).append(". ").append(day).append(": ").append(tree.get(day.toString())==null?"":tree.get(day.toString())).append("\n");
+            sb.append(day.ordinal() + 1).append(". ").append(day).append(": ").append(tree.get(day.toString()) == null ? "" : tree.get(day.toString())).append("\n");
         }
         return sb.toString();
     }

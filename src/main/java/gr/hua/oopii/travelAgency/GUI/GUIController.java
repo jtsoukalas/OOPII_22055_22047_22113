@@ -30,6 +30,8 @@ import java.io.File;
 import java.net.URL;
 import java.util.*;
 
+import static gr.hua.oopii.travelAgency.Control.updateData;
+
 public class GUIController implements Initializable {
 
     public Spinner<Integer> ageSpinner;
@@ -65,6 +67,11 @@ public class GUIController implements Initializable {
     protected void clearButtonAction(){
         ageSpinner.getValueFactory().setValue(16);
         recommendationsTextArea.clear();
+    }
+
+    @FXML
+    protected void updateDataButtonAction() throws Throwable {
+        Control.updateData();
     }
 
     @FXML

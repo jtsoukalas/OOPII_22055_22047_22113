@@ -29,12 +29,14 @@
 
 
     <MenuBar>
-        <Menu mnemonicParsing="false" text="File">
+        <Menu mnemonicParsing="false" text="Data">
             <MenuItem mnemonicParsing="false" onAction="#loadDataButtonAction" text="Load data" />
             <MenuItem mnemonicParsing="false" onAction="#loadAsButtonAction" text="Load data from ..." />
             <SeparatorMenuItem mnemonicParsing="false" />
             <MenuItem mnemonicParsing="false" onAction="#saveButtonAction" text="Save" />
             <MenuItem mnemonicParsing="false" onAction="#saveAsButtonAction" text="Save as ..." />
+         <SeparatorMenuItem mnemonicParsing="false" />
+         <MenuItem mnemonicParsing="false" onAction="#updateDataButtonAction" text="Update all data" />
         </Menu>
         <Menu mnemonicParsing="false" text="Edit">
          <items>
