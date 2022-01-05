@@ -1,13 +1,28 @@
-
-<<<<<<< HEAD
-.idea/uiDesigner.xml
-.idea/runConfigurations.xml
-=======
-*.xml
-*.iml
-.idea/misc.xml
+# Compiled class file
 *.class
->>>>>>> bf0166d88ba8176dedaf2c569b1584ad6a9de352
+
+# Log file
+*.log
+
+# BlueJ files
+*.ctxt
+
+# Mobile Tools for Java (J2ME)
+.mtj.tmp/
+
+# Package Files #
+*.jar
+*.war
+*.nar
+*.ear
+*.zip
+*.tar.gz
+.rar
+
+# virtual machine crash logs, see http://www.java.com/en/download/help/error_hotspot.xml
+hs_err_pid
+
+.idea/
 untitled.iml
 out/production/.DS_Store
 out/production/untitled/firstDeliverable/.DS_Store
