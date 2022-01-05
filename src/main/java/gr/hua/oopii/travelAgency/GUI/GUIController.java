@@ -32,6 +32,7 @@ import java.net.URL;
 import java.util.*;
 
 import static gr.hua.oopii.travelAgency.Control.updateData;
+import static jdk.internal.org.jline.terminal.Terminal.MouseTracking.Button;
 
 public class GUIController implements Initializable {
 
@@ -199,7 +200,7 @@ public class GUIController implements Initializable {
             dialog.setTitle("Warning");
             dialog.initModality(Modality.WINDOW_MODAL);
 
-            Control.mainLogger.warning("Error retreating data from default JSON file");
+            Control.mainLogger.warning("Error retrieving data from default JSON file");
 
             //dialog.initOwner(primaryStage);
             VBox dialogVbox = new VBox(20);
