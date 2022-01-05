@@ -16,7 +16,8 @@ module gr.hua.oopii.travelAgency {
     requires commons.lang;
     requires org.testng;
     requires junit;
-    requires java.sql;  //for json deserialization
+    requires java.sql;
+    requires jdk.internal.le;  //for json deserialization
 
 
     opens gr.hua.oopii.travelAgency.GUI to javafx.fxml;

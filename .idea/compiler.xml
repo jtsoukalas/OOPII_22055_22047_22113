@@ -13,4 +13,9 @@
       <module name="OOPII_22055_22047_22113" target="16" />
     </bytecodeTargetLevel>
   </component>
+  <component name="JavacSettings">
+    <option name="ADDITIONAL_OPTIONS_OVERRIDE">
+      <module name="OOPII_22055_22047_22113" options="--add-exports jdk.internal.le/jdk.internal.org.jline.terminal=gr.hua.oopii.travelAgency" />
+    </option>
+  </component>
 </project>

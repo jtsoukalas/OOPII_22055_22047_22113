@@ -24,7 +24,7 @@ hs_err_pid*
 
 
 *.iml
-.idea/misc.xml
+.idea/*
 untitled.iml
 out/production/.DS_Store
 out/production/untitled/firstDeliverable/.DS_Store
