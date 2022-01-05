@@ -60,10 +60,17 @@ public class GUIController implements Initializable {
 
     @FXML
     protected void gainRecommendationsButtonAction() throws NoRecommendationException, StopRunningException {
-        recommendationsTextArea.setText(Control.recommendationToString(Control.runPerceptron(ageSpinner.getValue(), uppercaseCheckBox.isSelected())));
-        sortChoiceBox.getSelectionModel().select(Control.retrieveDefaultSortingOption());
+        Control.mainLogger.info("GUI selection");
+        try {
+            recommendationsTextArea.setText(Control.recommendationToString(Control.runPerceptron(ageSpinner.getValue(), uppercaseCheckBox.isSelected())));
+            recommendationsTextArea.setStyle("-fx-text-fill: black;");
+            sortChoiceBox.getSelectionModel().select(Control.retrieveDefaultSortingOption());
+        } catch (NoRecommendationException e) {
+            recommendationsTextArea.setText("There are no recommendations at the time for the age of " + ageSpinner.getValue() + ".");
+            recommendationsTextArea.setStyle("-fx-text-fill: red;");
+            Control.mainLogger.warning("No recommendations for traveller with age: " + ageSpinner.getValue());
+        }
         tabs.getSelectionModel().select(recommendTab);
-        Control.mainLogger.finest("GUI selection");
     }
 
     @FXML
