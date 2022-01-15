@@ -12,6 +12,7 @@
 <?import javafx.scene.control.MenuBar?>
 <?import javafx.scene.control.MenuItem?>
 <?import javafx.scene.control.SeparatorMenuItem?>
+<?import javafx.scene.control.Slider?>
 <?import javafx.scene.control.Spinner?>
 <?import javafx.scene.control.Tab?>
 <?import javafx.scene.control.TabPane?>
@@ -97,6 +98,16 @@
                       <NumberAxis fx:id="y" side="LEFT" />
                     </yAxis>
                   </LineChart>
+               </children>
+            </AnchorPane>
+        </content>
+      </Tab>
+      <Tab text="Personal recommendation">
+        <content>
+          <AnchorPane minHeight="0.0" minWidth="0.0" prefHeight="180.0" prefWidth="200.0">
+               <children>
+                  <Slider fx:id="futureSlider0" layoutX="26.0" layoutY="28.0" onDragExited="#updateRealatedSpinnerAndSlider" orientation="VERTICAL" prefHeight="123.0" prefWidth="43.0" showTickLabels="true" showTickMarks="true" value="50.0" />
+                  <Spinner fx:id="futureSpinner0" editable="true" layoutX="14.0" layoutY="151.0" nodeOrientation="LEFT_TO_RIGHT" onDragExited="#updateRealatedSpinnerAndSlider" prefHeight="26.0" prefWidth="56.0" />
                </children>
             </AnchorPane>
         </content>

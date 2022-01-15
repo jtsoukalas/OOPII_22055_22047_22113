@@ -20,10 +20,12 @@ public class GUIApplication extends Application {
         stage.setTitle("Travel Agency");
         stage.setScene(scene);
         stage.show();
-        stage.setOnCloseRequest(new EventHandler<WindowEvent>() {
-            @Override
-            public void handle(WindowEvent event) {
-                System.out.println("Saving Json when closing app: "+ Control.saveCitiesLibraryJson());
+        stage.setOnCloseRequest(event -> {
+            boolean success = Control.saveCitiesLibraryJson();
+            if (success){
+                Control.mainLogger.info("Saving Json when closing app successful");
+            } else {
+                Control.mainLogger.warning("Saving Json when closing app: unsuccessful");
             }
         });
         stage.setResizable(false);

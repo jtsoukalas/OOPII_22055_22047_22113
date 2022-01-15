@@ -50,6 +50,30 @@ public class GUIController implements Initializable {
     public Text addCandidateCityNotification;
     public Tab addCandidateCityTab;
     public TextArea citiesLibraryByDays;
+
+
+    public Slider testSlider;
+    public Slider futureSlider0;
+    public Slider futureSlider1;
+    public Slider futureSlider2;
+    public Slider futureSlider3;
+    public Slider futureSlider4;
+    public Slider futureSlider5;
+    public Slider futureSlider6;
+
+    public Spinner<Integer> testSpinnner;
+    public Spinner<Integer> futureSpinner0;
+    public Spinner<Integer> futureSpinner1;
+    public Spinner<Integer> futureSpinner2;
+    public Spinner<Integer> futureSpinner3;
+    public Spinner<Integer> futureSpinner4;
+    public Spinner<Integer> futureSpinner5;
+    public Spinner<Integer> futureSpinner6;
+
+    private ArrayList<Spinner<Integer>> relatedSpinners;
+    private ArrayList<Slider> relatedSliders;
+
+
     @FXML
     private LineChart<String, Integer> lineChartCitiesLibrary;
     @FXML
@@ -74,7 +98,43 @@ public class GUIController implements Initializable {
     }
 
     @FXML
-    protected void clearButtonAction(){
+    protected void updateRealatedSpinnerAndSlider(Event event) {
+        if (event.getSource() instanceof Slider){
+            System.out.println("Its slider's event");
+        } else {
+            System.out.println("It's spinner's event");
+        }
+
+//        System.out.println(testSlider.getValue());
+//        testSpinnner.getValueFactory().setValue((int) testSlider.getValue());
+//        System.out.println(event.toString());
+//        if (event.getSource().equals(testSlider)) {
+//
+//        }
+    }
+
+    protected void mapRelatedSpinnerAndSlider() {       //TODO Optimization
+        relatedSpinners=new ArrayList<>(7);
+        relatedSpinners.add(futureSpinner0);
+        relatedSpinners.add(futureSpinner1);
+        relatedSpinners.add(futureSpinner2);
+        relatedSpinners.add(futureSpinner3);
+        relatedSpinners.add(futureSpinner4);
+        relatedSpinners.add(futureSpinner5);
+        relatedSpinners.add(futureSpinner6);
+
+        relatedSliders=new ArrayList<>(7);
+        relatedSliders.add(futureSlider0);
+        relatedSliders.add(futureSlider1);
+        relatedSliders.add(futureSlider2);
+        relatedSliders.add(futureSlider3);
+        relatedSliders.add(futureSlider4);
+        relatedSliders.add(futureSlider5);
+        relatedSliders.add(futureSlider6);
+    }
+
+    @FXML
+    protected void clearButtonAction() {
         ageSpinner.getValueFactory().setValue(16);
         recommendationsTextArea.clear();
         Control.mainLogger.info("GUI selection");
@@ -250,6 +310,19 @@ public class GUIController implements Initializable {
         SpinnerValueFactory<Integer> spinnerValueFactory = new SpinnerValueFactory.IntegerSpinnerValueFactory(16, 115);
         spinnerValueFactory.setValue(16);
         ageSpinner.setValueFactory(spinnerValueFactory);
+
+        SpinnerValueFactory<Integer> testspinnerValueFactory = new SpinnerValueFactory.IntegerSpinnerValueFactory(0, 100);
+        testspinnerValueFactory.setValue(50);
+        futureSpinner0.setValueFactory(testspinnerValueFactory);
+
+//        futureSpinner0.valueProperty().addListener(new ChangeListener<Integer>() {
+//            @Override
+//            public void changed(ObservableValue<? extends Integer> observable, Integer oldValue, Integer newValue) {
+//                    //todo
+//            }
+//        });
+
+        mapRelatedSpinnerAndSlider();
 
 
         sortChoiceBox.getItems().addAll(Control.retrieveSortingOptions());
