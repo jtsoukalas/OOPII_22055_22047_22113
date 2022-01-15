@@ -22,6 +22,7 @@ import java.text.SimpleDateFormat;
 import java.time.LocalDateTime;
 import java.time.ZoneId;
 import java.util.*;
+import java.util.logging.*;
 
 public class Control {
     /**
@@ -51,6 +52,11 @@ public class Control {
      * Coordination in order to find distance between user and candidate city
      */
     private static float userLon, userLat;
+
+    /**
+     * Logger object
+     */
+    public static Logger mainLogger;
 
     /**
      * @param userCity    user's city name
@@ -451,6 +457,30 @@ public class Control {
             recommendation.append(compatibleCity.getName()).append("\n");
         }
         return recommendation.deleteCharAt(recommendation.lastIndexOf("\n")).toString();
+    }
+
+    public static void initLogger() throws IOException {        //Source code from: https://www.vogella.com/tutorials/Logging/article.html
+        // get the global logger to configure it
+        mainLogger = Logger.getLogger(Logger.GLOBAL_LOGGER_NAME);
+
+        // suppress the logging output to the console
+        Logger rootLogger = Logger.getLogger("");
+        Handler[] handlers = rootLogger.getHandlers();
+        if (handlers[0] instanceof ConsoleHandler) {
+            rootLogger.removeHandler(handlers[0]);
+        }
+
+        // create a directory for logs if it doesn't exist
+        new File("./.logs").mkdir();
+
+        // create new log file
+        String dateAndTime = new SimpleDateFormat("-yyyy-MM-dd--HH-mm-ss").format(new Date());
+        FileHandler fileTxt = new FileHandler("./.logs/Logging" + dateAndTime + ".log");
+
+        // create a TXT formatter
+        SimpleFormatter formatterTxt = new SimpleFormatter();
+        fileTxt.setFormatter(formatterTxt);
+        mainLogger.addHandler(fileTxt);
     }
 
     public static String sortRecommendation(int option) throws NoRecommendationException {

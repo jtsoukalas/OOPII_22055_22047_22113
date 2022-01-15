@@ -27,10 +27,12 @@ import javafx.stage.Modality;
 import javafx.stage.Stage;
 
 import java.io.File;
+import java.io.IOException;
 import java.net.URL;
 import java.util.*;
 
 import static gr.hua.oopii.travelAgency.Control.updateData;
+//import static jdk.internal.org.jline.terminal.Terminal.MouseTracking.Button;
 
 public class GUIController implements Initializable {
 
@@ -58,8 +60,16 @@ public class GUIController implements Initializable {
 
     @FXML
     protected void gainRecommendationsButtonAction() throws NoRecommendationException, StopRunningException {
-        recommendationsTextArea.setText(Control.recommendationToString(Control.runPerceptron(ageSpinner.getValue(), uppercaseCheckBox.isSelected())));
-        sortChoiceBox.getSelectionModel().select(Control.retrieveDefaultSortingOption());
+        Control.mainLogger.info("GUI selection");
+        try {
+            recommendationsTextArea.setText(Control.recommendationToString(Control.runPerceptron(ageSpinner.getValue(), uppercaseCheckBox.isSelected())));
+            recommendationsTextArea.setStyle("-fx-text-fill: black;");
+            sortChoiceBox.getSelectionModel().select(Control.retrieveDefaultSortingOption());
+        } catch (NoRecommendationException e) {
+            recommendationsTextArea.setText("There are no recommendations at the time for the age of " + ageSpinner.getValue() + ".");
+            recommendationsTextArea.setStyle("-fx-text-fill: red;");
+            Control.mainLogger.warning("No recommendations for traveller with age: " + ageSpinner.getValue());
+        }
         tabs.getSelectionModel().select(recommendTab);
     }
 
@@ -67,31 +77,33 @@ public class GUIController implements Initializable {
     protected void clearButtonAction(){
         ageSpinner.getValueFactory().setValue(16);
         recommendationsTextArea.clear();
+        Control.mainLogger.info("GUI selection");
     }
 
     @FXML
     protected void updateDataButtonAction() throws Throwable {
         Control.updateData();
+        Control.mainLogger.info("GUI selection");
     }
 
     @FXML
     protected void saveButtonAction() {
-        System.out.println("Saving data to Json: " + Control.saveCitiesLibraryJson());                 //4 DEBUGGING reasons
+        Control.mainLogger.info("GUI selection");
+        Control.mainLogger.info("Saving data to Json: " + Control.saveCitiesLibraryJson());
     }
 
     @FXML
     protected void saveAsButtonAction() {
         FileChooser fileChooser = new FileChooser();
 
-
         fileChooser.setTitle("Select file to save data");
         fileChooser.getExtensionFilters().addAll(new FileChooser.ExtensionFilter("Json files", "*.json"));
 
         File file = fileChooser.showSaveDialog(new Stage());
         if (file != null) {
-            System.out.println("Saving data to Json res: " + Control.saveCitiesLibraryJson(file));                 //4 DEBUGGING reasons
+            Control.mainLogger.info("Saving data to " + file.getAbsolutePath() + ": " + Control.saveCitiesLibraryJson(file));                 //4 DEBUGGING reasons
         } else {
-            System.out.println("Saving data to Json res: false");                 //4 DEBUGGING reasons
+            Control.mainLogger.info("Saving data to custom JSON: false ");
         }
     }
 
@@ -105,25 +117,27 @@ public class GUIController implements Initializable {
 
         File file = fileChooser.showOpenDialog(new Stage());
         if (file != null) {
-            System.out.println("Loading data to Json res: " + Control.retrieveCitiesLibraryJson(file));                 //4 DEBUGGING reasons
+            Control.mainLogger.info("Loading data from " + file.getAbsolutePath() + ": " + Control.retrieveCitiesLibraryJson(file));                 //4 DEBUGGING reasons
         } else {
-            System.out.println("Loading data to Json res: false");                 //4 DEBUGGING reasons
+            Control.mainLogger.info("Loading data from custom JSON: false ");
         }
     }
 
 
     @FXML
     protected void loadDataButtonAction() {
-        System.out.println("Retrieving data from Json: " + Control.retrieveCitiesLibraryJson());    //4 DEBUGGING reasons
+        Control.mainLogger.info("Loading data from default JSON: " + Control.retrieveCitiesLibraryJson());    //4 DEBUGGING reasons
     }
 
     @FXML
     protected void updateCitiesLibraryTextArea() throws CitiesLibraryEmptyException {
         citiesLibraryTextArea.setText(Control.cityLibraryToString());
+        Control.mainLogger.info("GUI selection");
     }
 
     @FXML
     protected void addCandidateCityButtonAction() {
+        Control.mainLogger.info("GUI selection");
         addCandidateCityNotification.setText("Please wait ...");
         addCandidateCityNotification.setFill(Color.GRAY);
         addCandidateCityNotification.setVisible(true);
@@ -135,25 +149,30 @@ public class GUIController implements Initializable {
             addCandidateCityNotification.setText("We couldn't found " + candidateCityName.getText() + " at " + candidateCityISO.getText());
             addCandidateCityNotification.setFill(Color.RED);
             addCandidateCityNotification.setVisible(true);
+            Control.mainLogger.info("City: " + candidateCityName.getText() + " at " + candidateCityISO.getText() + " wasn't found");
             return;
         } catch (NoInternetException e) {
             addCandidateCityNotification.setText("Please check your internet connection and try again.");
             addCandidateCityNotification.setFill(Color.RED);
             addCandidateCityNotification.setVisible(true);
+            Control.mainLogger.warning(e.getMessage());
             return;
         } catch (IllegalArgumentException e) {
             addCandidateCityNotification.setText("Please insert city name and country ISO");
             addCandidateCityNotification.setFill(Color.RED);
             addCandidateCityNotification.setVisible(true);
+            Control.mainLogger.warning(e.getMessage());
             return;
         }
 
         if (res == null) {
             addCandidateCityNotification.setText(candidateCityName.getText() + " added successfully to Cities Library");
             addCandidateCityNotification.setFill(Color.GREEN);
+            Control.mainLogger.info(candidateCityName.getText() + " added successfully to Cities Library");
         } else {
             addCandidateCityNotification.setText(candidateCityName.getText() + " already exists in Cities Library since " + res + ".");
             addCandidateCityNotification.setFill(Color.GRAY);
+            Control.mainLogger.info(candidateCityName.getText() + " already exists in Cities Library since " + res);
         }
         addCandidateCityNotification.setVisible(true);
         try {
@@ -166,21 +185,29 @@ public class GUIController implements Initializable {
     @Override
     public void initialize(URL url, ResourceBundle resourceBundle) {
         try {
-            Control.init("Athens","GR");
+            Control.initLogger();
+        } catch (IOException e) {
+            e.printStackTrace();
+        }
+
+        try {
+            Control.init("Athens", "GR");
         } catch (StopRunningException e) {
             e.printStackTrace();
         } catch (NoSuchCityException e) {
-            e.printStackTrace();
+            Control.mainLogger.severe("GUI:" + e);
         }
 
         if (!Control.retrieveCitiesLibraryJson()) {
             final Stage dialog = new Stage();
 
-            Image icon = new Image(getClass().getResourceAsStream("warning-icon.png"));
+            Image icon = new Image(Objects.requireNonNull(getClass().getResourceAsStream("warning-icon.png")));
             dialog.getIcons().add(icon);
 
             dialog.setTitle("Warning");
             dialog.initModality(Modality.WINDOW_MODAL);
+
+            Control.mainLogger.warning("Error retrieving data from default JSON file");
 
             //dialog.initOwner(primaryStage);
             VBox dialogVbox = new VBox(20);
@@ -197,11 +224,13 @@ public class GUIController implements Initializable {
                     ex.printStackTrace();
                 }
                 dialog.hide();
+                Control.mainLogger.finest("GUI election: Download data from web");
             });
 
             loadDataButton.setOnAction(e -> {
                 loadAsButtonAction();
                 dialog.hide();
+                Control.mainLogger.finest("GUI election: Load data from Json file");
             });
 
             Text text = new Text("We couldn't load data from default file. \nPlease select an option to proceed:");
