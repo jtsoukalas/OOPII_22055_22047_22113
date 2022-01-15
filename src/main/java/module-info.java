@@ -14,7 +14,7 @@ module gr.hua.oopii.travelAgency {
     requires org.jetbrains.annotations;
     requires com.fasterxml.jackson.annotation;
     requires commons.lang;
-    requires org.testng;
+    //requires org.testng;
     requires junit;
     requires java.sql;  //for json deserialization
 
