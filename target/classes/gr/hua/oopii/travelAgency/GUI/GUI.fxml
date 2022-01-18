@@ -106,8 +106,8 @@
         <content>
           <AnchorPane minHeight="0.0" minWidth="0.0" prefHeight="180.0" prefWidth="200.0">
                <children>
-                  <Slider fx:id="futureSlider0" layoutX="26.0" layoutY="28.0" onDragExited="#updateRealatedSpinnerAndSlider" orientation="VERTICAL" prefHeight="123.0" prefWidth="43.0" showTickLabels="true" showTickMarks="true" value="50.0" />
-                  <Spinner fx:id="futureSpinner0" editable="true" layoutX="14.0" layoutY="151.0" nodeOrientation="LEFT_TO_RIGHT" onDragExited="#updateRealatedSpinnerAndSlider" prefHeight="26.0" prefWidth="56.0" />
+                  <Slider fx:id="futureSlider0" layoutX="26.0" layoutY="28.0" orientation="VERTICAL" prefHeight="123.0" prefWidth="43.0" showTickLabels="true" showTickMarks="true" value="50.0" />
+                  <Spinner fx:id="futureSpinner0" editable="true" layoutX="14.0" layoutY="151.0" nodeOrientation="LEFT_TO_RIGHT" prefHeight="26.0" prefWidth="56.0" />
                </children>
             </AnchorPane>
         </content>
