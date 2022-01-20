@@ -3,6 +3,7 @@ package gr.hua.oopii.travelAgency;
 import gr.hua.oopii.travelAgency.exception.NoRecommendationException;
 import gr.hua.oopii.travelAgency.exception.NoSuchCityException;
 import gr.hua.oopii.travelAgency.exception.StopRunningException;
+import gr.hua.oopii.travelAgency.perceptrons.PerceptronTraveler;
 
 import java.util.Date;
 

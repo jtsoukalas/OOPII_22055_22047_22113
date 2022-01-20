@@ -2,6 +2,7 @@ package gr.hua.oopii.travelAgency.GUI;
 
 import gr.hua.oopii.travelAgency.Control;
 import gr.hua.oopii.travelAgency.exception.*;
+import gr.hua.oopii.travelAgency.perceptrons.PerceptronTraveler;
 import javafx.beans.value.ChangeListener;
 import javafx.beans.value.ObservableValue;
 import javafx.fxml.FXML;
@@ -263,6 +264,7 @@ public class GUIController implements Initializable {
             } catch (NoSuchCityException e) {
                 Control.mainLogger.severe("GUI:" + e);
             }
+
         }
 
         //Loading data from JSON. If get trouble, inform the user to choose another file or download data
@@ -367,6 +369,15 @@ public class GUIController implements Initializable {
                 lineChartCitiesLibrary.getData().clear();
                 lineChartCitiesLibrary.getData().add(series);
             });
+
+        }
+        float[] customWeights={0.1F,0.1F,0.1F,0.1F,0.1F,0.1F,0.1F};
+        try {
+            System.out.println(PerceptronTraveler.personalizedRecommend(Control.getCitiesLibrary(),customWeights));
+        } catch (CitiesLibraryEmptyException e) {
+            e.printStackTrace();
+        } catch (NoRecommendationException e) {
+            e.printStackTrace();
         }
     }
 

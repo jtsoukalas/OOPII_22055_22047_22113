@@ -2,12 +2,17 @@ package gr.hua.oopii.travelAgency.perceptrons;
 
 import gr.hua.oopii.travelAgency.City;
 import gr.hua.oopii.travelAgency.Control;
+import gr.hua.oopii.travelAgency.comparators.GeodesicCompare;
 import gr.hua.oopii.travelAgency.exception.CitiesLibraryEmptyException;
 import gr.hua.oopii.travelAgency.exception.NoRecommendationException;
 import org.jetbrains.annotations.NotNull;
 
 import java.util.ArrayList;
 import java.util.Comparator;
+import java.util.List;
+import java.util.NoSuchElementException;
+import java.util.function.Function;
+import java.util.stream.Collectors;
 
 /**
  * <h1>PerceptronTraveler used to process {@link City} objects in order to produce recommendations</h1>
@@ -107,6 +112,30 @@ public abstract class PerceptronTraveler implements PerceptronTravelerInterface 
             }
         }
         return recommendation;
+    }
+
+    public static City personalizedRecommend(ArrayList<City> citiesLibrary,float[] customeWeights) throws CitiesLibraryEmptyException, NoRecommendationException {
+
+        //checking if the city library is empty
+        if(citiesLibrary==null || citiesLibrary.isEmpty()){
+            throw new CitiesLibraryEmptyException();
+        }
+
+        //converting citiesLibrary from collection to stream
+        //filter: filters all the objects we inserted to the stream(in put case all the cities)
+        try{
+            return citiesLibrary.stream().max((city1, city2) -> Float.compare(innerDot(city1.getFeatures(),customeWeights),innerDot(city2.getFeatures(),customeWeights))).orElseThrow();
+        }catch (NoSuchElementException e){
+            throw new NoRecommendationException();
+        }
+    }
+
+    //returns a "rete" for every city depending on the weights the user has give
+    private static float innerDot(float[] features, float[] weights) {
+        float sum=0;
+        for (int i=0; i<weights.length;i++)
+            sum+=features[i]*weights[i];
+        return sum;
     }
 
     /**
