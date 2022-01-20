@@ -5,6 +5,8 @@ import gr.hua.oopii.travelAgency.exception.*;
 import gr.hua.oopii.travelAgency.perceptrons.PerceptronTraveler;
 import javafx.beans.value.ChangeListener;
 import javafx.beans.value.ObservableValue;
+import javafx.event.ActionEvent;
+import javafx.event.Event;
 import javafx.fxml.FXML;
 import javafx.fxml.Initializable;
 import javafx.scene.chart.CategoryAxis;
@@ -16,6 +18,7 @@ import javafx.scene.paint.Color;
 import javafx.scene.text.Text;
 import javafx.stage.FileChooser;
 import javafx.stage.Stage;
+import org.w3c.dom.events.MouseEvent;
 
 import java.io.File;
 import java.io.IOException;
@@ -69,6 +72,8 @@ public class GUIController implements Initializable {
     private ArrayList<Spinner<Integer>> relatedSpinners;
     private ArrayList<Slider> relatedSliders;
 
+    private TitledPane personalRecPane;
+
     enum ObjectChanged {SLIDER, SPINNER}
 
 
@@ -98,13 +103,15 @@ public class GUIController implements Initializable {
     }
 
     @FXML
-    protected void updateRelatedSpinnerAndSlider(ObjectChanged obj) {
-        //TODO Work needed
+    protected void updateRelatedSpinnerAndSlider() {
+        System.out.println("hi");
+
+       /* //TODO Work needed
         if (obj == ObjectChanged.SLIDER) {
             System.out.println("Its slider's event");
         } else if (obj == ObjectChanged.SPINNER) {
             System.out.println("It's spinner's event");
-        }
+        }*/
 
 //        System.out.println(testSlider.getValue());
 //        testSpinnner.getValueFactory().setValue((int) testSlider.getValue());
@@ -305,15 +312,19 @@ public class GUIController implements Initializable {
             SpinnerValueFactory<Integer> testspinnerValueFactory = new SpinnerValueFactory.IntegerSpinnerValueFactory(0, 100);
             testspinnerValueFactory.setValue(50);
             futureSpinner0.setValueFactory(testspinnerValueFactory);
-            futureSpinner0.getValueFactory().valueProperty().addListener((obs, oldValue, newValue) -> {
-                updateRelatedSpinnerAndSlider(ObjectChanged.SPINNER);
-            });
+            /*futureSpinner0.getValueFactory().valueProperty().addListener((obs, oldValue, newValue) -> {
+                updateRelatedSpinnerAndSlider(obs.getValue());
+            });*/
 
-            futureSlider0 = new Slider();
-            futureSpinner0.valueProperty().addListener((observable, oldValue, newValue) ->
-                    updateRelatedSpinnerAndSlider(ObjectChanged.SPINNER));
-
-            mapRelatedSpinnerAndSlider();
+            futureSlider0 = new Slider(-100, 100, 50);
+//            futureSpinner0.addEventHandler(/*MouseEvent.MOUSE_DRAGGED*/);
+            /*futureSlider0.valueProperty().addListener((observable, oldValue, newValue) -> {
+                System.out.println("Slider's print");
+            });*/
+            /*futureSlider2.valueProperty().addListener((observable, oldValue, newValue) ->
+                            System.out.println("Slider's print"));
+                    //updateRelatedSpinnerAndSlider(ObjectChanged.SLIDER));
+            mapRelatedSpinnerAndSlider();*/
 
         }
 
@@ -371,9 +382,9 @@ public class GUIController implements Initializable {
             });
 
         }
-        float[] customWeights={0.1F,0.1F,0.1F,0.1F,0.1F,0.1F,0.1F};
+        float[] customWeights = {0.1F, 0.1F, 0.1F, 0.1F, 0.1F, 0.1F, 0.1F};
         try {
-            System.out.println(PerceptronTraveler.personalizedRecommend(Control.getCitiesLibrary(),customWeights));
+            System.out.println(PerceptronTraveler.personalizedRecommend(Control.getCitiesLibrary(), customWeights));
         } catch (CitiesLibraryEmptyException e) {
             e.printStackTrace();
         } catch (NoRecommendationException e) {

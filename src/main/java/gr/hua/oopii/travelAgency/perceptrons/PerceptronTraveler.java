@@ -114,7 +114,7 @@ public abstract class PerceptronTraveler implements PerceptronTravelerInterface 
         return recommendation;
     }
 
-    public static City personalizedRecommend(ArrayList<City> citiesLibrary,float[] customeWeights) throws CitiesLibraryEmptyException, NoRecommendationException {
+    public static City personalizedRecommend(ArrayList<City> citiesLibrary,float[] customWeights) throws CitiesLibraryEmptyException, NoRecommendationException {
 
         //checking if the city library is empty
         if(citiesLibrary==null || citiesLibrary.isEmpty()){
@@ -124,14 +124,14 @@ public abstract class PerceptronTraveler implements PerceptronTravelerInterface 
         //converting citiesLibrary from collection to stream
         //filter: filters all the objects we inserted to the stream(in put case all the cities)
         try{
-            return citiesLibrary.stream().max((city1, city2) -> Float.compare(innerDot(city1.getFeatures(),customeWeights),innerDot(city2.getFeatures(),customeWeights))).orElseThrow();
+            return citiesLibrary.stream().max((city1, city2) -> Float.compare(dotProduct(city1.getFeatures(),customWeights),dotProduct(city2.getFeatures(),customWeights))).orElseThrow();
         }catch (NoSuchElementException e){
             throw new NoRecommendationException();
         }
     }
 
     //returns a "rete" for every city depending on the weights the user has give
-    private static float innerDot(float[] features, float[] weights) {
+    private static float dotProduct(float[] features, float[] weights) {
         float sum=0;
         for (int i=0; i<weights.length;i++)
             sum+=features[i]*weights[i];
