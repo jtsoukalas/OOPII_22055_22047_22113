@@ -106,12 +106,11 @@ public class GUIController implements Initializable {
     protected void updateRelatedSpinnerAndSlider() {
         System.out.println("hi");
 
-       /* //TODO Work needed
-        if (obj == ObjectChanged.SLIDER) {
-            System.out.println("Its slider's event");
-        } else if (obj == ObjectChanged.SPINNER) {
-            System.out.println("It's spinner's event");
-        }*/
+//        if (event.getSource() instanceof Slider){
+//            System.out.println("Its slider's event");
+//        } else {
+//            System.out.println("It's spinner's event");
+//        }
 
 //        System.out.println(testSlider.getValue());
 //        testSpinnner.getValueFactory().setValue((int) testSlider.getValue());
@@ -312,19 +311,12 @@ public class GUIController implements Initializable {
             SpinnerValueFactory<Integer> testspinnerValueFactory = new SpinnerValueFactory.IntegerSpinnerValueFactory(0, 100);
             testspinnerValueFactory.setValue(50);
             futureSpinner0.setValueFactory(testspinnerValueFactory);
-            /*futureSpinner0.getValueFactory().valueProperty().addListener((obs, oldValue, newValue) -> {
-                updateRelatedSpinnerAndSlider(obs.getValue());
-            });*/
 
-            futureSlider0 = new Slider(-100, 100, 50);
-//            futureSpinner0.addEventHandler(/*MouseEvent.MOUSE_DRAGGED*/);
-            /*futureSlider0.valueProperty().addListener((observable, oldValue, newValue) -> {
-                System.out.println("Slider's print");
-            });*/
-            /*futureSlider2.valueProperty().addListener((observable, oldValue, newValue) ->
-                            System.out.println("Slider's print"));
-                    //updateRelatedSpinnerAndSlider(ObjectChanged.SLIDER));
-            mapRelatedSpinnerAndSlider();*/
+            futureSlider0.valueProperty().addListener((obs, oldValue, newValue) -> {
+
+                updateRelatedSpinnerAndSlider();
+//
+            });
 
         }
 
