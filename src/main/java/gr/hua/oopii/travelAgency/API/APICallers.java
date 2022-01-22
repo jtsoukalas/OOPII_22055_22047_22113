@@ -1,47 +1,30 @@
 package gr.hua.oopii.travelAgency.API;
 
-import com.amadeus.Params;
-import com.amadeus.exceptions.ResponseException;
-import com.amadeus.resources.FlightOfferSearch;
-import com.amadeus.resources.Location;
-import com.fasterxml.jackson.core.type.TypeReference;
 import com.fasterxml.jackson.databind.ObjectMapper;
-import gr.hua.oopii.travelAgency.API.airportsRadar.AirportsRadar;
-import gr.hua.oopii.travelAgency.API.airportsRadar.SummariseAirport;
-import gr.hua.oopii.travelAgency.API.iata.Airport;
-import gr.hua.oopii.travelAgency.API.iata.Welcome;
+import gr.hua.oopii.travelAgency.API.cityIATA.CityIATum;
 import gr.hua.oopii.travelAgency.API.openData.MediaWiki;
 import gr.hua.oopii.travelAgency.API.openWeather.OpenWeatherMap;
 import gr.hua.oopii.travelAgency.City;
 import gr.hua.oopii.travelAgency.exception.NoIataException;
-import org.jetbrains.annotations.NotNull;
-import gr.hua.oopii.travelAgency.API.airportsRadar.SummariseAirport;
 
 import java.io.IOException;
-import java.lang.reflect.Array;
 import java.net.URL;
-import java.text.SimpleDateFormat;
-import java.util.ArrayList;
-import java.util.Arrays;
-import java.util.Date;
-import java.util.Map;
-import java.util.logging.FileHandler;
 
 public class APICallers implements APICredentials {
 
     public static void main(String[] args) throws Exception {
-        City origin = new City("Athens","GR");
+        City origin = new City("Athens", "GR");
         origin.setWeatherData();
-        City destination = new City("Rome","IT");
+        City destination = new City("Rome", "IT");
         destination.setWeatherData();
-      //  AirportsRadar test = retrieveIata(origin);
+        retrieveCityIataCode(destination);
 
 //        System.out.println(test.toString());
         //System.out.println(((Map<String,Object>)test.getAdditionalProperties().get("response")));
 //        System.out.println("2"+test.getCities());
 //        System.out.println("3"+test.getAirports());
-        System.out.println(retrieveFlightData(origin,destination).toString());
-        //retrieveIata(origin);
+        // System.out.println(retrieveFlightData(origin,destination).toString());
+        //retrieveCityIataCode(origin);
     }
 
     public static OpenWeatherMap retrieveWeatherData(String city, String country) throws IOException {
@@ -54,29 +37,41 @@ public class APICallers implements APICredentials {
         return mapper.readValue(new URL("https://en.wikipedia.org/w/api.php?action=query&prop=extracts&titles=" + city + "&format=json&formatversion=2"), MediaWiki.class);
     }
 
-    public static String retrieveIata(City city) throws IOException, NoIataException {
+    public static CityNode retrieveCityIataCode(City city) throws IOException, NoIataException {
         ObjectMapper mapper = new ObjectMapper();
 
-        AirportsRadar test = mapper.readValue(new URL("https://airlabs.co/api/v9/nearby?lat="+city.getLat()+"&lng="+city.getLon()+"&distance=100"+"&api_key="+airLabsID), AirportsRadar.class);;
+        CityIATum test = mapper.readValue(new URL("https://airlabs.co/api/v9/cities?country_code=" + city.getCountryName() + "&api_key=" + airLabsID), CityIATum.class);
 
-        String src = ((Map<String,Object>)test.getAdditionalProperties().get("response")).get("airports").toString();
-        System.out.println(src);
+        String src = (test.getAdditionalProperties().get("response").toString());
+
         String[] subStrings = src.split(",");
-        for (int i = 0; i < subStrings.length; i++){
-            if (subStrings[i].contains("iata_code")){
-                return subStrings[i].split("=")[1];
+
+        for (int i = 0; i < subStrings.length; i++) {
+            CityNode node = new CityNode();
+            if (subStrings[i].contains("name") && subStrings[i].contains(city.getName())) {
+                node.setName(subStrings[i].split("=")[1]);
+            }
+            try {
+                if (subStrings[i + 1].contains("city_code")) {
+                    node.setIataCode(subStrings[i + 1].split("=")[1]);
+                }
+            } catch (IndexOutOfBoundsException e) {
+                break;
+            }
+            if (node.getName() != null && node.getIataCode() != null) {
+                return node;
             }
         }
-        throw new NoIataException("No IATA code found for "+city.getName());
+        throw new NoIataException("No IATA code found for " + city.getCountryName());
     }
 
-    public static FlightOfferSearch retrieveFlightData(@NotNull City originLocation, @NotNull City destinationLocation) throws ResponseException, IOException, NoIataException {
+    /*public static FlightOfferSearch retrieveFlightData(@NotNull City originLocation, @NotNull City destinationLocation) throws ResponseException, IOException, NoIataException {
 
-        String originAirportIata = retrieveIata(originLocation);
-        String destinationAirportIata = retrieveIata(destinationLocation);
+        String originAirportIata = retrieveCityIataCode(originLocation);
+        String destinationAirportIata = retrieveCityIataCode(destinationLocation);
         String date = new SimpleDateFormat("yyyy-MM-dd").format(new Date());
 
-        System.out.println("Origin "+originAirportIata+" dest "+destinationAirportIata);
+        System.out.println("Origin " + originAirportIata + " dest " + destinationAirportIata);
 
         FlightOfferSearch[] flightOffersSearches = amadeus.shopping.flightOffersSearch.get(
                 Params.with("originLocationCode", originAirportIata)
@@ -89,5 +84,42 @@ public class APICallers implements APICredentials {
             throw new ResponseException(flightOffersSearches[0].getResponse());
         }
         return flightOffersSearches[0];
+    }*/
+
+    private static class CityNode {
+        private String name;
+        private String iataCode;
+
+        public CityNode() {
+        }
+
+        public CityNode(String name, String iataCode) {
+            this.name = name;
+            this.iataCode = iataCode;
+        }
+
+        public String getName() {
+            return name;
+        }
+
+        public void setName(String name) {
+            this.name = name;
+        }
+
+        public String getIataCode() {
+            return iataCode;
+        }
+
+        public void setIataCode(String iataCode) {
+            this.iataCode = iataCode;
+        }
+
+        @Override
+        public String toString() {
+            return "CityNode{" +
+                    "name='" + name + '\'' +
+                    ", iataCode='" + iataCode + '\'' +
+                    '}';
+        }
     }
 }

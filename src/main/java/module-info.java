@@ -33,6 +33,9 @@ module gr.hua.oopii.travelAgency {
     exports gr.hua.oopii.travelAgency.exception;
     exports gr.hua.oopii.travelAgency.API.iata;
 
+    exports gr.hua.oopii.travelAgency.API.cityIATA to com.fasterxml.jackson.databind;
+
+
     exports gr.hua.oopii.travelAgency.API.airportsRadar to com.fasterxml.jackson.databind;
 
     //opens java.time to com.fasterxml.jackson.databind;
