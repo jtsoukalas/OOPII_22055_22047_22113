@@ -2,7 +2,7 @@ package gr.hua.oopii.travelAgency.exception;
 
 import java.io.Serial;
 
-public class NoIataException extends Exception{
+public class NoAirportException extends Exception{
 
     @Serial
     private static final long serialVersionUID = 1L;
@@ -14,7 +14,7 @@ public class NoIataException extends Exception{
      * The cause is not initialized, and may subsequently be initialized by a
      * call to {@link #initCause}.
      */
-    public NoIataException() {
+    public NoAirportException() {
         numExceptions++;
     }
 
@@ -26,7 +26,7 @@ public class NoIataException extends Exception{
      * @param message the detail message. The detail message is saved for
      *                later retrieval by the {@link #getMessage()} method.
      */
-    public NoIataException(String message) {
+    public NoAirportException(String message) {
         numExceptions++;
         this.message = message;
     }

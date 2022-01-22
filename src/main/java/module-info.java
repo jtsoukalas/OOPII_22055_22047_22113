@@ -32,6 +32,7 @@ module gr.hua.oopii.travelAgency {
     opens gr.hua.oopii.travelAgency;
     exports gr.hua.oopii.travelAgency.exception;
     exports gr.hua.oopii.travelAgency.API.iata;
+    exports gr.hua.oopii.travelAgency.API.covidRestrictions;
 
     exports gr.hua.oopii.travelAgency.API.airportsRadar to com.fasterxml.jackson.databind;
 
