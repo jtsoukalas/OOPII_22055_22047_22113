@@ -1,5 +1,5 @@
 
-package gr.hua.oopii.travelAgency.openWeather;
+package gr.hua.oopii.travelAgency.API.openWeather;
 
 import com.fasterxml.jackson.annotation.*;
 
@@ -8,15 +8,15 @@ import java.util.Map;
 
 @JsonInclude(JsonInclude.Include.NON_NULL)
 @JsonPropertyOrder({
-    "speed",
-    "deg"
+    "lon",
+    "lat"
 })
-public class Wind {
+public class Coord {
 
-    @JsonProperty("speed")
-    private Double speed;
-    @JsonProperty("deg")
-    private Integer deg;
+    @JsonProperty("lon")
+    private Double lon;
+    @JsonProperty("lat")
+    private Double lat;
     @JsonIgnore
     private Map<String, Object> additionalProperties = new HashMap<String, Object>();
 
@@ -24,38 +24,38 @@ public class Wind {
      * No args constructor for use in serialization
      * 
      */
-    public Wind() {
+    public Coord() {
     }
 
     /**
      * 
-     * @param deg
-     * @param speed
+     * @param lon
+     * @param lat
      */
-    public Wind(Double speed, Integer deg) {
+    public Coord(Double lon, Double lat) {
         super();
-        this.speed = speed;
-        this.deg = deg;
+        this.lon = lon;
+        this.lat = lat;
     }
 
-    @JsonProperty("speed")
-    public Double getSpeed() {
-        return speed;
+    @JsonProperty("lon")
+    public double getLon() {
+        return lon;
     }
 
-    @JsonProperty("speed")
-    public void setSpeed(Double speed) {
-        this.speed = speed;
+    @JsonProperty("lon")
+    public void setLon(Double lon) {
+        this.lon = lon;
     }
 
-    @JsonProperty("deg")
-    public Integer getDeg() {
-        return deg;
+    @JsonProperty("lat")
+    public double getLat() {
+        return lat;
     }
 
-    @JsonProperty("deg")
-    public void setDeg(Integer deg) {
-        this.deg = deg;
+    @JsonProperty("lat")
+    public void setLat(Double lat) {
+        this.lat = lat;
     }
 
     @JsonAnyGetter

@@ -1,5 +1,5 @@
 
-package gr.hua.oopii.travelAgency.openWeather;
+package gr.hua.oopii.travelAgency.API.openWeather;
 
 import com.fasterxml.jackson.annotation.*;
 

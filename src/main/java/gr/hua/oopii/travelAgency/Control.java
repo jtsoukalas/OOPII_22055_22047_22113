@@ -4,12 +4,12 @@ package gr.hua.oopii.travelAgency;
 
 import com.fasterxml.jackson.core.type.TypeReference;
 import com.fasterxml.jackson.databind.ObjectMapper;
+import gr.hua.oopii.travelAgency.API.APICallers;
 import gr.hua.oopii.travelAgency.comparators.GeodesicCompare;
 import gr.hua.oopii.travelAgency.comparators.TimestampCompare;
 import gr.hua.oopii.travelAgency.comparators.WeekDayCompare;
 import gr.hua.oopii.travelAgency.exception.*;
-import gr.hua.oopii.travelAgency.openData.OpenData;
-import gr.hua.oopii.travelAgency.openWeather.OpenWeatherMap;
+import gr.hua.oopii.travelAgency.API.openWeather.OpenWeatherMap;
 import gr.hua.oopii.travelAgency.perceptrons.PerceptronElderTraveler;
 import gr.hua.oopii.travelAgency.perceptrons.PerceptronMiddleTraveler;
 import gr.hua.oopii.travelAgency.perceptrons.PerceptronTraveler;
@@ -66,7 +66,7 @@ public class Control {
      */
     public static void init(String userCity, String userCountry) throws StopRunningException, NoSuchCityException {
         try {
-            OpenWeatherMap tempWeatherObj = OpenData.retrieveWeatherData(userCity, userCountry);
+            OpenWeatherMap tempWeatherObj = APICallers.retrieveWeatherData(userCity, userCountry);
             userLat = (float) tempWeatherObj.getCoord().getLat();
             userLon = (float) tempWeatherObj.getCoord().getLon();
         } catch (FileNotFoundException e) {

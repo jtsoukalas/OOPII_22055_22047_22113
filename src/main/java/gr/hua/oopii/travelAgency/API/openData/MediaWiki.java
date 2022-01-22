@@ -1,5 +1,5 @@
 
-package gr.hua.oopii.travelAgency.openData;
+package gr.hua.oopii.travelAgency.API.openData;
 
 import com.fasterxml.jackson.annotation.*;
 import org.apache.commons.lang.builder.ToStringBuilder;

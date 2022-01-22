@@ -1,5 +1,5 @@
 
-package gr.hua.oopii.travelAgency.openWeather;
+package gr.hua.oopii.travelAgency.API.openWeather;
 
 import com.fasterxml.jackson.annotation.*;
 
@@ -8,15 +8,12 @@ import java.util.Map;
 
 @JsonInclude(JsonInclude.Include.NON_NULL)
 @JsonPropertyOrder({
-    "lon",
-    "lat"
+    "all"
 })
-public class Coord {
+public class Clouds {
 
-    @JsonProperty("lon")
-    private Double lon;
-    @JsonProperty("lat")
-    private Double lat;
+    @JsonProperty("all")
+    private Integer all;
     @JsonIgnore
     private Map<String, Object> additionalProperties = new HashMap<String, Object>();
 
@@ -24,38 +21,26 @@ public class Coord {
      * No args constructor for use in serialization
      * 
      */
-    public Coord() {
+    public Clouds() {
     }
 
     /**
      * 
-     * @param lon
-     * @param lat
+     * @param all
      */
-    public Coord(Double lon, Double lat) {
+    public Clouds(Integer all) {
         super();
-        this.lon = lon;
-        this.lat = lat;
+        this.all = all;
     }
 
-    @JsonProperty("lon")
-    public double getLon() {
-        return lon;
+    @JsonProperty("all")
+    public Integer getAll() {
+        return all;
     }
 
-    @JsonProperty("lon")
-    public void setLon(Double lon) {
-        this.lon = lon;
-    }
-
-    @JsonProperty("lat")
-    public double getLat() {
-        return lat;
-    }
-
-    @JsonProperty("lat")
-    public void setLat(Double lat) {
-        this.lat = lat;
+    @JsonProperty("all")
+    public void setAll(Integer all) {
+        this.all = all;
     }
 
     @JsonAnyGetter

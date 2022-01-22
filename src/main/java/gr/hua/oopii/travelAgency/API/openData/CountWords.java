@@ -1,4 +1,4 @@
-package gr.hua.oopii.travelAgency.openData;
+package gr.hua.oopii.travelAgency.API.openData;
 
 import java.util.ArrayList;
 
@@ -45,15 +45,4 @@ public class CountWords {
         }
         return count;
     }
-
-
-    public static void main (String args[]){
-        String text="Museums History Car Bike House Museums Bike Mountain Cafe History";
-        System.out.println("The number of distinct words is: "+countDistinctWords(text));
-        System.out.println("The number of total words is: "+countTotalWords(text));
-        System.out.println(""+countCriterionfCity(text,"history"));
-    }
-
-
-
 }

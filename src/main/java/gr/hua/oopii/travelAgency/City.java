@@ -1,10 +1,12 @@
 package gr.hua.oopii.travelAgency;
 
+import gr.hua.oopii.travelAgency.API.APICallers;
+import gr.hua.oopii.travelAgency.API.APICredentials;
 import gr.hua.oopii.travelAgency.exception.*;
-import gr.hua.oopii.travelAgency.openData.CountWords;
-import gr.hua.oopii.travelAgency.openData.MediaWiki;
-import gr.hua.oopii.travelAgency.openData.OpenData;
-import gr.hua.oopii.travelAgency.openWeather.OpenWeatherMap;
+import gr.hua.oopii.travelAgency.API.openData.CountWords;
+import gr.hua.oopii.travelAgency.API.openData.MediaWiki;
+import gr.hua.oopii.travelAgency.API.openData.OpenData;
+import gr.hua.oopii.travelAgency.API.openWeather.OpenWeatherMap;
 import gr.hua.oopii.travelAgency.perceptrons.PerceptronTraveler;
 import org.jetbrains.annotations.NotNull;
 
@@ -34,9 +36,9 @@ public class City implements Comparable<City>, Cloneable {
     private static final String[] wikiFeatures = new String[]{"cafe", "sea", "museum", "temple", "stadium", "bar", "park"};
     private static final float MAX_DISTANCE = 9517;             //Athens - Sydney distance
 
-
     private String name;
     private String countryName;
+    private Double lon,lat;
 
     /**
      * Timestamp is the point of time when a city is created
@@ -61,12 +63,14 @@ public class City implements Comparable<City>, Cloneable {
      * @param name
      * @param countryName
      */
-    public City(float[] features, String name, String countryName) {
+    public City(float[] features, String name, String countryName, Double lon, Double lat) {
         this.features = features;
         this.name = name;
         this.countryName = countryName;
         this.timestamp = new Date();
         this.weatherDownloadTimestamp = new Date();
+        this.lon=lon;
+        this.lat=lat;
     }
 
     /**
@@ -76,7 +80,7 @@ public class City implements Comparable<City>, Cloneable {
      * @param geodesicDist float
      */
     public City(float geodesicDist) {
-        this(new float[]{0F, 0F, 0F, 0F, 0F, 0F, 0F, 0F, 0F, geodesicDist}, null, null);
+        this(new float[]{0F, 0F, 0F, 0F, 0F, 0F, 0F, 0F, 0F, geodesicDist}, null, null,null,null);
     }
 
     /**
@@ -86,7 +90,7 @@ public class City implements Comparable<City>, Cloneable {
      * @param countryName
      */
     public City(String name, String countryName) {
-        this(new float[]{0F, 0F, 0F, 0F, 0F, 0F, 0F, 0F, 0F, 0F}, name, countryName);
+        this(new float[]{0F, 0F, 0F, 0F, 0F, 0F, 0F, 0F, 0F, 0F}, name, countryName,null,null);
     }
 
     /**
@@ -206,7 +210,7 @@ public class City implements Comparable<City>, Cloneable {
     public void setWeatherData() throws NoSuchCityException, NoInternetException {
         try {
             //Gathering weather data
-            OpenWeatherMap tempWeatherObj = OpenData.retrieveWeatherData(this.name, this.countryName);
+            OpenWeatherMap tempWeatherObj = APICallers.retrieveWeatherData(this.name, this.countryName);
 
             //Name formatting if needed
             if (!this.name.equals(tempWeatherObj.getName())) {
@@ -217,11 +221,13 @@ public class City implements Comparable<City>, Cloneable {
             }
 
             float[] tempFeatures = this.features;
+            this.lon = tempWeatherObj.getCoord().getLon();
+            this.lat = tempWeatherObj.getCoord().getLat();
 
             //Setting normalised data at feature[] of city object
             tempFeatures[7] = normaliseFeature((float) tempWeatherObj.getMain().getTemp(), 1);
             tempFeatures[8] = normaliseFeature((float) tempWeatherObj.getClouds().getAll(), 2);
-            tempFeatures[9] = normaliseFeature((float) geodesicDistance(Control.getUserLat(), Control.getUserLon(), tempWeatherObj.getCoord().getLat(), tempWeatherObj.getCoord().getLon()), 3);
+            tempFeatures[9] = normaliseFeature((float) geodesicDistance(Control.getUserLat(), Control.getUserLon(), lat, lon), 3);
             this.features = tempFeatures;
             this.weatherDownloadTimestamp = new Date();
 
@@ -449,7 +455,7 @@ public class City implements Comparable<City>, Cloneable {
      */
     public static int[] countWikiKeywords(String city) throws NoSuchCityException, NoInternetException {
         try {
-            MediaWiki wikiObj = OpenData.retrieveWikiData(city);
+            MediaWiki wikiObj = APICallers.retrieveWikiData(city);
             int[] tempFeature = new int[wikiFeatures.length];
             for (int featureIndex = 0; featureIndex < wikiFeatures.length; featureIndex++) {
                 tempFeature[featureIndex] = CountWords.countCriterionfCity(wikiObj.toString(), wikiFeatures[featureIndex]);
@@ -466,6 +472,8 @@ public class City implements Comparable<City>, Cloneable {
     public float[] getFeatures() {
         return features;
     }
+
+
 
     public void setFeatures(float[] features) {
         this.features = features;
@@ -501,6 +509,14 @@ public class City implements Comparable<City>, Cloneable {
 
     public void setWeatherDownloadTimestamp(Date weatherDownloadTimestamp) {
         this.weatherDownloadTimestamp = weatherDownloadTimestamp;
+    }
+
+    public Double getLon() {
+        return lon;
+    }
+
+    public Double getLat() {
+        return lat;
     }
 
     @Override

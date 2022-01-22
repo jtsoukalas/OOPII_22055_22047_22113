@@ -1,21 +1,20 @@
 
-package gr.hua.oopii.travelAgency.openData;
+package gr.hua.oopii.travelAgency.API.openData;
 
 import com.fasterxml.jackson.annotation.*;
 import org.apache.commons.lang.builder.ToStringBuilder;
 
 import java.util.HashMap;
-import java.util.List;
 import java.util.Map;
 
 @JsonInclude(JsonInclude.Include.NON_NULL)
 @JsonPropertyOrder({
-    "pages"
+    "extracts"
 })
-public class Query {
+public class Warnings {
 
-    @JsonProperty("pages")
-    private List<Page> pages = null;
+    @JsonProperty("extracts")
+    private Extracts extracts;
     @JsonIgnore
     private Map<String, Object> additionalProperties = new HashMap<String, Object>();
 
@@ -23,26 +22,26 @@ public class Query {
      * No args constructor for use in serialization
      * 
      */
-    public Query() {
+    public Warnings() {
     }
 
     /**
      * 
-     * @param pages
+     * @param extracts
      */
-    public Query(List<Page> pages) {
+    public Warnings(Extracts extracts) {
         super();
-        this.pages = pages;
+        this.extracts = extracts;
     }
 
-    @JsonProperty("pages")
-    public List<Page> getPages() {
-        return pages;
+    @JsonProperty("extracts")
+    public Extracts getExtracts() {
+        return extracts;
     }
 
-    @JsonProperty("pages")
-    public void setPages(List<Page> pages) {
-        this.pages = pages;
+    @JsonProperty("extracts")
+    public void setExtracts(Extracts extracts) {
+        this.extracts = extracts;
     }
 
     @JsonAnyGetter
@@ -57,7 +56,7 @@ public class Query {
 
     @Override
     public String toString() {
-        return new ToStringBuilder(this).append("pages", pages).append("additionalProperties", additionalProperties).toString();
+        return new ToStringBuilder(this).append("extracts", extracts).append("additionalProperties", additionalProperties).toString();
     }
 
 }
