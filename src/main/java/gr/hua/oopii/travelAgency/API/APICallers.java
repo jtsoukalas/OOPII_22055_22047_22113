@@ -1,14 +1,21 @@
 package gr.hua.oopii.travelAgency.API;
 
+import com.amadeus.Params;
+import com.amadeus.exceptions.ResponseException;
+import com.amadeus.resources.FlightDate;
+import com.amadeus.resources.FlightOfferSearch;
 import com.fasterxml.jackson.databind.ObjectMapper;
 import gr.hua.oopii.travelAgency.API.cityIATA.CityIATum;
 import gr.hua.oopii.travelAgency.API.openData.MediaWiki;
 import gr.hua.oopii.travelAgency.API.openWeather.OpenWeatherMap;
 import gr.hua.oopii.travelAgency.City;
 import gr.hua.oopii.travelAgency.exception.NoIataException;
+import org.jetbrains.annotations.NotNull;
 
 import java.io.IOException;
 import java.net.URL;
+import java.text.SimpleDateFormat;
+import java.util.Date;
 
 public class APICallers implements APICredentials {
 
@@ -17,13 +24,9 @@ public class APICallers implements APICredentials {
         origin.setWeatherData();
         City destination = new City("Rome", "IT");
         destination.setWeatherData();
-        retrieveCityIataCode(destination);
 
-//        System.out.println(test.toString());
-        //System.out.println(((Map<String,Object>)test.getAdditionalProperties().get("response")));
-//        System.out.println("2"+test.getCities());
-//        System.out.println("3"+test.getAirports());
-        // System.out.println(retrieveFlightData(origin,destination).toString());
+
+        System.out.println(retrieveFlightData(origin,destination).toString());
         //retrieveCityIataCode(origin);
     }
 
@@ -65,26 +68,26 @@ public class APICallers implements APICredentials {
         throw new NoIataException("No IATA code found for " + city.getCountryName());
     }
 
-    /*public static FlightOfferSearch retrieveFlightData(@NotNull City originLocation, @NotNull City destinationLocation) throws ResponseException, IOException, NoIataException {
+    public static FlightOfferSearch retrieveFlightData(@NotNull City originLocation, @NotNull City destinationLocation) throws ResponseException, IOException, NoIataException {
 
-        String originAirportIata = retrieveCityIataCode(originLocation);
-        String destinationAirportIata = retrieveCityIataCode(destinationLocation);
+        CityNode originCityIata = retrieveCityIataCode(originLocation);
+        CityNode destinationCityIata = retrieveCityIataCode(destinationLocation);
         String date = new SimpleDateFormat("yyyy-MM-dd").format(new Date());
 
-        System.out.println("Origin " + originAirportIata + " dest " + destinationAirportIata);
+        System.out.println("Origin " + originCityIata + " dest " + destinationCityIata);
 
-        FlightOfferSearch[] flightOffersSearches = amadeus.shopping.flightOffersSearch.get(
-                Params.with("originLocationCode", originAirportIata)
-                        .and("destinationLocationCode", destinationAirportIata)
-                        .and("departureDate", "2022-01-24")
-                        .and("adults", 1)
-                        .and("max", 1));
+        FlightDate[] flightDates = amadeus.shopping.flightDates.get(Params
+                .with("origin", originCityIata)
+                .and("destination", destinationCityIata));
 
-        if (flightOffersSearches[0].getResponse().getStatusCode() != 200) {
-            throw new ResponseException(flightOffersSearches[0].getResponse());
+        if (flightDates[0].getResponse().getStatusCode() != 200) {
+            System.out.println("Wrong status code: " + (flightDates[0].getResponse().getStatusCode()));
+            System.exit(-1);
         }
-        return flightOffersSearches[0];
-    }*/
+        System.out.println((flightDates[0]));
+        return null;
+    }
+
 
     private static class CityNode {
         private String name;
