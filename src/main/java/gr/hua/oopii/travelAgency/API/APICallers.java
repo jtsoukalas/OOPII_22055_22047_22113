@@ -1,5 +1,6 @@
 package gr.hua.oopii.travelAgency.API;
 
+import com.amadeus.Amadeus;
 import com.amadeus.Params;
 import com.amadeus.exceptions.ResponseException;
 import com.amadeus.resources.FlightDate;
@@ -11,6 +12,7 @@ import gr.hua.oopii.travelAgency.API.openData.MediaWiki;
 import gr.hua.oopii.travelAgency.API.openWeather.OpenWeatherMap;
 import gr.hua.oopii.travelAgency.City;
 import gr.hua.oopii.travelAgency.exception.NoAirportException;
+import gr.hua.oopii.travelAgency.exception.NoCovidRestrictionsExceptions;
 import gr.hua.oopii.travelAgency.exception.NoFlightException;
 import org.jetbrains.annotations.NotNull;
 
@@ -26,9 +28,11 @@ import java.util.ArrayList;
 import java.util.Date;
 import java.util.Iterator;
 import java.util.Map;
+import java.util.function.Consumer;
 import java.util.stream.Collectors;
 
 public class APICallers implements APICredentials {
+
 
     public static void main(String[] args) throws Exception {
         City origin = new City("New York", "US");
@@ -43,7 +47,7 @@ public class APICallers implements APICredentials {
 //        System.out.println("3"+test.getAirports());
         //System.out.println(retrieveFlightData(origin, destination).toString());
         //retrieveIata(origin);
-        test();
+        System.out.println(retrieveCovidRestrictions(origin).toString());
 
     }
 
@@ -75,6 +79,7 @@ public class APICallers implements APICredentials {
 
     /**
      * Retrieves every nearby airport's IATA code for given city
+     *
      * @param city to search aiports
      * @return IATA codes for airports
      * @throws IOException
@@ -121,7 +126,8 @@ public class APICallers implements APICredentials {
     /**
      * Retrieves a flight offer for given cities.
      * Tries different combinations of origin and destination airports until a flight is found
-     * @param originLocation t
+     *
+     * @param originLocation      t
      * @param destinationLocation
      * @return a flight offer
      * @throws IOException
@@ -171,7 +177,7 @@ public class APICallers implements APICredentials {
                 .with("origin", "DCW")
                 .and("destination", "NYC"));
 
-        if(flightDates[0].getResponse().getStatusCode() != 200) {
+        if (flightDates[0].getResponse().getStatusCode() != 200) {
             System.out.println("Wrong status code: " + flightDates[0].getResponse().getStatusCode());
             System.exit(-1);
         }
@@ -182,37 +188,37 @@ public class APICallers implements APICredentials {
         //throw new NoFlightException(originLocation.getName(), destinationLocation.getName());
     }
 
-    public static void test() throws IOException {
-        URL url = new URL("https://test.api.amadeus.com/v1/duty-of-care/diseases/covid19-area-report?countryCode=US");
-        HttpURLConnection http = (HttpURLConnection)url.openConnection();
+    public static CovidRestrictions retrieveCovidRestrictions(City city) throws IOException, NoCovidRestrictionsExceptions {
+        URL url = new URL("https://test.api.amadeus.com/v1/duty-of-care/diseases/covid19-area-report?countryCode=" + city.getCountryName());
+        HttpURLConnection http = (HttpURLConnection) url.openConnection();
         http.setRequestProperty("Accept", "application/json");
-        http.setRequestProperty("Authorization", "Bearer s4QnJvdialGF2TZwGKoUKrcMwxNK");
+        http.setRequestProperty("Authorization", "Bearer " + amadeusAPIToken);
 
-        BufferedReader br = null;
-        if (100 <= http.getResponseCode() && http.getResponseCode() <= 399) {
-            br = new BufferedReader(new InputStreamReader(http.getInputStream()));
+        byte[] response;
+        if (http.getResponseCode() == 200) {
+            response = http.getInputStream().readAllBytes();
         } else {
-            br = new BufferedReader(new InputStreamReader(http.getErrorStream()));
+            throw new NoCovidRestrictionsExceptions(city.getName(),new InputStreamReader(http.getErrorStream()).toString());
         }
 
         ObjectMapper mapper = new ObjectMapper();
-
-        CovidRestrictions covidRestrictions = mapper.readValue(br, CovidRestrictions.class);
-
-        System.out.println(covidRestrictions.toString());
-
-
-
-        /*System.out.println(http.getResponseCode() + " " + http.getResponseMessage());
-        http.getInputStream();*/
+        CovidRestrictions covidRestrictions = mapper.readValue(response, CovidRestrictions.class);
         http.disconnect();
+        return covidRestrictions;
     }
 
-    public CovidRestrictions retrieveCovidRestrictions (City city) throws IOException {
+    //TODO
+    /*public CovidRestrictions retrieveCovidRestrictions (City city) throws IOException {
         ObjectMapper mapper = new ObjectMapper();
 
         AirportsRadar airports = mapper.readValue(new URL("https://airlabs.co/api/v9/nearby?lat=" + city.getLat() + "&lng=" + city.getLon() + "&distance=100" + "&api_key=" + airLabsID), AirportsRadar.class);
         return null;
     }
+
+    public static void updateAmadeusToken(){
+        ObjectMapper mapper = new ObjectMapper();
+
+        Amadeus amadeusConfig = mapper.readValue(new URL("https://airlabs.co/api/v9/nearby?lat=" + city.getLat() + "&lng=" + city.getLon() + "&distance=100" + "&api_key=" + airLabsID), AirportsRadar.class);
+    }*/
 
 }

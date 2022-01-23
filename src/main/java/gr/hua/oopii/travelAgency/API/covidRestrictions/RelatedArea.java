@@ -2,6 +2,7 @@
 package gr.hua.oopii.travelAgency.API.covidRestrictions;
 
 import java.util.HashMap;
+import java.util.List;
 import java.util.Map;
 import javax.annotation.Generated;
 import com.fasterxml.jackson.annotation.JsonAnyGetter;
@@ -13,50 +14,37 @@ import com.fasterxml.jackson.annotation.JsonPropertyOrder;
 
 @JsonInclude(JsonInclude.Include.NON_NULL)
 @JsonPropertyOrder({
-    "date",
-    "deaths",
-    "confirmed"
+    "methods",
+    "rel"
 })
 @Generated("jsonschema2pojo")
-public class DiseaseCases {
+public class RelatedArea {
 
-    @JsonProperty("date")
-    private String date;
-    @JsonProperty("deaths")
-    private Integer deaths;
-    @JsonProperty("confirmed")
-    private Integer confirmed;
+    @JsonProperty("methods")
+    private List<String> methods = null;
+    @JsonProperty("rel")
+    private String rel;
     @JsonIgnore
     private Map<String, Object> additionalProperties = new HashMap<String, Object>();
 
-    @JsonProperty("date")
-    public String getDate() {
-        return date;
+    @JsonProperty("methods")
+    public List<String> getMethods() {
+        return methods;
     }
 
-    @JsonProperty("date")
-    public void setDate(String date) {
-        this.date = date;
+    @JsonProperty("methods")
+    public void setMethods(List<String> methods) {
+        this.methods = methods;
     }
 
-    @JsonProperty("deaths")
-    public Integer getDeaths() {
-        return deaths;
+    @JsonProperty("rel")
+    public String getRel() {
+        return rel;
     }
 
-    @JsonProperty("deaths")
-    public void setDeaths(Integer deaths) {
-        this.deaths = deaths;
-    }
-
-    @JsonProperty("confirmed")
-    public Integer getConfirmed() {
-        return confirmed;
-    }
-
-    @JsonProperty("confirmed")
-    public void setConfirmed(Integer confirmed) {
-        this.confirmed = confirmed;
+    @JsonProperty("rel")
+    public void setRel(String rel) {
+        this.rel = rel;
     }
 
     @JsonAnyGetter
@@ -72,18 +60,14 @@ public class DiseaseCases {
     @Override
     public String toString() {
         StringBuilder sb = new StringBuilder();
-        sb.append(DiseaseCases.class.getName()).append('@').append(Integer.toHexString(System.identityHashCode(this))).append('[');
-        sb.append("date");
+        sb.append(RelatedArea.class.getName()).append('@').append(Integer.toHexString(System.identityHashCode(this))).append('[');
+        sb.append("methods");
         sb.append('=');
-        sb.append(((this.date == null)?"<null>":this.date));
+        sb.append(((this.methods == null)?"<null>":this.methods));
         sb.append(',');
-        sb.append("deaths");
+        sb.append("rel");
         sb.append('=');
-        sb.append(((this.deaths == null)?"<null>":this.deaths));
-        sb.append(',');
-        sb.append("confirmed");
-        sb.append('=');
-        sb.append(((this.confirmed == null)?"<null>":this.confirmed));
+        sb.append(((this.rel == null)?"<null>":this.rel));
         sb.append(',');
         sb.append("additionalProperties");
         sb.append('=');

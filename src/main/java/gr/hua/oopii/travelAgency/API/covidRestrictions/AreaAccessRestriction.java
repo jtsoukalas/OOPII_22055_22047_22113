@@ -1,7 +1,12 @@
 
 package gr.hua.oopii.travelAgency.API.covidRestrictions;
 
+import java.util.HashMap;
+import java.util.Map;
 import javax.annotation.Generated;
+import com.fasterxml.jackson.annotation.JsonAnyGetter;
+import com.fasterxml.jackson.annotation.JsonAnySetter;
+import com.fasterxml.jackson.annotation.JsonIgnore;
 import com.fasterxml.jackson.annotation.JsonInclude;
 import com.fasterxml.jackson.annotation.JsonProperty;
 import com.fasterxml.jackson.annotation.JsonPropertyOrder;
@@ -9,22 +14,23 @@ import com.fasterxml.jackson.annotation.JsonPropertyOrder;
 @JsonInclude(JsonInclude.Include.NON_NULL)
 @JsonPropertyOrder({
     "transportation",
-    "declarartionDocumentations",
+    "declarationDocuments",
     "entry",
     "diseaseTesting",
     "tracingApplication",
     "quarantineModality",
-    "masks",
+    "mask",
     "exit",
-    "otherRestrictions"
+    "otherRestriction",
+    "diseaseVaccination"
 })
 @Generated("jsonschema2pojo")
-public class AreaAccessRestrictions {
+public class AreaAccessRestriction {
 
     @JsonProperty("transportation")
     private Transportation transportation;
-    @JsonProperty("declarartionDocumentations")
-    private DeclarartionDocumentations declarartionDocumentations;
+    @JsonProperty("declarationDocuments")
+    private DeclarationDocuments declarationDocuments;
     @JsonProperty("entry")
     private Entry entry;
     @JsonProperty("diseaseTesting")
@@ -33,12 +39,16 @@ public class AreaAccessRestrictions {
     private TracingApplication tracingApplication;
     @JsonProperty("quarantineModality")
     private QuarantineModality quarantineModality;
-    @JsonProperty("masks")
-    private Masks masks;
+    @JsonProperty("mask")
+    private Mask mask;
     @JsonProperty("exit")
     private Exit exit;
-    @JsonProperty("otherRestrictions")
-    private OtherRestrictions otherRestrictions;
+    @JsonProperty("otherRestriction")
+    private OtherRestriction otherRestriction;
+    @JsonProperty("diseaseVaccination")
+    private DiseaseVaccination diseaseVaccination;
+    @JsonIgnore
+    private Map<String, Object> additionalProperties = new HashMap<String, Object>();
 
     @JsonProperty("transportation")
     public Transportation getTransportation() {
@@ -50,14 +60,14 @@ public class AreaAccessRestrictions {
         this.transportation = transportation;
     }
 
-    @JsonProperty("declarartionDocumentations")
-    public DeclarartionDocumentations getDeclarartionDocumentations() {
-        return declarartionDocumentations;
+    @JsonProperty("declarationDocuments")
+    public DeclarationDocuments getDeclarationDocuments() {
+        return declarationDocuments;
     }
 
-    @JsonProperty("declarartionDocumentations")
-    public void setDeclarartionDocumentations(DeclarartionDocumentations declarartionDocumentations) {
-        this.declarartionDocumentations = declarartionDocumentations;
+    @JsonProperty("declarationDocuments")
+    public void setDeclarationDocuments(DeclarationDocuments declarationDocuments) {
+        this.declarationDocuments = declarationDocuments;
     }
 
     @JsonProperty("entry")
@@ -100,14 +110,14 @@ public class AreaAccessRestrictions {
         this.quarantineModality = quarantineModality;
     }
 
-    @JsonProperty("masks")
-    public Masks getMasks() {
-        return masks;
+    @JsonProperty("mask")
+    public Mask getMask() {
+        return mask;
     }
 
-    @JsonProperty("masks")
-    public void setMasks(Masks masks) {
-        this.masks = masks;
+    @JsonProperty("mask")
+    public void setMask(Mask mask) {
+        this.mask = mask;
     }
 
     @JsonProperty("exit")
@@ -120,27 +130,47 @@ public class AreaAccessRestrictions {
         this.exit = exit;
     }
 
-    @JsonProperty("otherRestrictions")
-    public OtherRestrictions getOtherRestrictions() {
-        return otherRestrictions;
+    @JsonProperty("otherRestriction")
+    public OtherRestriction getOtherRestriction() {
+        return otherRestriction;
     }
 
-    @JsonProperty("otherRestrictions")
-    public void setOtherRestrictions(OtherRestrictions otherRestrictions) {
-        this.otherRestrictions = otherRestrictions;
+    @JsonProperty("otherRestriction")
+    public void setOtherRestriction(OtherRestriction otherRestriction) {
+        this.otherRestriction = otherRestriction;
+    }
+
+    @JsonProperty("diseaseVaccination")
+    public DiseaseVaccination getDiseaseVaccination() {
+        return diseaseVaccination;
+    }
+
+    @JsonProperty("diseaseVaccination")
+    public void setDiseaseVaccination(DiseaseVaccination diseaseVaccination) {
+        this.diseaseVaccination = diseaseVaccination;
+    }
+
+    @JsonAnyGetter
+    public Map<String, Object> getAdditionalProperties() {
+        return this.additionalProperties;
+    }
+
+    @JsonAnySetter
+    public void setAdditionalProperty(String name, Object value) {
+        this.additionalProperties.put(name, value);
     }
 
     @Override
     public String toString() {
         StringBuilder sb = new StringBuilder();
-        sb.append(AreaAccessRestrictions.class.getName()).append('@').append(Integer.toHexString(System.identityHashCode(this))).append('[');
+        sb.append(AreaAccessRestriction.class.getName()).append('@').append(Integer.toHexString(System.identityHashCode(this))).append('[');
         sb.append("transportation");
         sb.append('=');
         sb.append(((this.transportation == null)?"<null>":this.transportation));
         sb.append(',');
-        sb.append("declarartionDocumentations");
+        sb.append("declarationDocuments");
         sb.append('=');
-        sb.append(((this.declarartionDocumentations == null)?"<null>":this.declarartionDocumentations));
+        sb.append(((this.declarationDocuments == null)?"<null>":this.declarationDocuments));
         sb.append(',');
         sb.append("entry");
         sb.append('=');
@@ -158,17 +188,25 @@ public class AreaAccessRestrictions {
         sb.append('=');
         sb.append(((this.quarantineModality == null)?"<null>":this.quarantineModality));
         sb.append(',');
-        sb.append("masks");
+        sb.append("mask");
         sb.append('=');
-        sb.append(((this.masks == null)?"<null>":this.masks));
+        sb.append(((this.mask == null)?"<null>":this.mask));
         sb.append(',');
         sb.append("exit");
         sb.append('=');
         sb.append(((this.exit == null)?"<null>":this.exit));
         sb.append(',');
-        sb.append("otherRestrictions");
+        sb.append("otherRestriction");
         sb.append('=');
-        sb.append(((this.otherRestrictions == null)?"<null>":this.otherRestrictions));
+        sb.append(((this.otherRestriction == null)?"<null>":this.otherRestriction));
+        sb.append(',');
+        sb.append("diseaseVaccination");
+        sb.append('=');
+        sb.append(((this.diseaseVaccination == null)?"<null>":this.diseaseVaccination));
+        sb.append(',');
+        sb.append("additionalProperties");
+        sb.append('=');
+        sb.append(((this.additionalProperties == null)?"<null>":this.additionalProperties));
         sb.append(',');
         if (sb.charAt((sb.length()- 1)) == ',') {
             sb.setCharAt((sb.length()- 1), ']');

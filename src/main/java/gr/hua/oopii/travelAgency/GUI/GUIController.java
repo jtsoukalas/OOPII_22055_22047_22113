@@ -1,12 +1,9 @@
 package gr.hua.oopii.travelAgency.GUI;
 
+import gr.hua.oopii.travelAgency.City;
 import gr.hua.oopii.travelAgency.Control;
 import gr.hua.oopii.travelAgency.exception.*;
 import gr.hua.oopii.travelAgency.perceptrons.PerceptronTraveler;
-import javafx.beans.value.ChangeListener;
-import javafx.beans.value.ObservableValue;
-import javafx.event.ActionEvent;
-import javafx.event.Event;
 import javafx.fxml.FXML;
 import javafx.fxml.Initializable;
 import javafx.scene.chart.CategoryAxis;
@@ -14,17 +11,21 @@ import javafx.scene.chart.LineChart;
 import javafx.scene.chart.NumberAxis;
 import javafx.scene.chart.XYChart;
 import javafx.scene.control.*;
+import javafx.scene.layout.AnchorPane;
 import javafx.scene.paint.Color;
 import javafx.scene.text.Text;
+import javafx.scene.web.WebView;
 import javafx.stage.FileChooser;
 import javafx.stage.Stage;
-import org.w3c.dom.events.MouseEvent;
 
 import java.io.File;
 import java.io.IOException;
 import java.net.URL;
 import java.util.*;
+import java.util.concurrent.Callable;
+import java.util.concurrent.ExecutionException;
 import java.util.concurrent.ExecutorService;
+import java.util.concurrent.Future;
 
 import static java.lang.System.exit;
 import static java.lang.Thread.sleep;
@@ -33,6 +34,9 @@ import static java.util.concurrent.Executors.newCachedThreadPool;
 
 public class GUIController implements Initializable {
 
+    public WebView personalRecPanel;
+    public Accordion personalRecommendationAccordion;
+    public Tab personalRecommendationTab;
     ExecutorService executorService = newCachedThreadPool();
 
     public Spinner<Integer> ageSpinner;
@@ -51,7 +55,6 @@ public class GUIController implements Initializable {
     public TextArea citiesLibraryByDays;
 
 
-    public Slider testSlider;
     public Slider futureSlider0;
     public Slider futureSlider1;
     public Slider futureSlider2;
@@ -60,7 +63,6 @@ public class GUIController implements Initializable {
     public Slider futureSlider5;
     public Slider futureSlider6;
 
-    public Spinner<Integer> testSpinnner;
     public Spinner<Integer> futureSpinner0;
     public Spinner<Integer> futureSpinner1;
     public Spinner<Integer> futureSpinner2;
@@ -72,9 +74,12 @@ public class GUIController implements Initializable {
     private ArrayList<Spinner<Integer>> relatedSpinners;
     private ArrayList<Slider> relatedSliders;
 
-    private TitledPane personalRecPane;
+    @FXML
+    private TitledPane personalRecPaneTitle;
 
     enum ObjectChanged {SLIDER, SPINNER}
+
+    enum RecommendationTab {AGE_RECOMMENDATION, PERSONAL_RECOMMENDATION}
 
 
     @FXML
@@ -86,38 +91,76 @@ public class GUIController implements Initializable {
 
 
     @FXML
-    protected void gainRecommendationsButtonAction() {
+    protected void gainRecommendationsButtonAction() throws StopRunningException, NoCovidRestrictionsExceptions, IOException {
         Control.mainLogger.info("GUI selection");
         try {
-            recommendationsTextArea.setText(Control.recommendationToString(Control.runPerceptron(ageSpinner.getValue(), uppercaseCheckBox.isSelected())));
-            recommendationsTextArea.setStyle("-fx-text-fill: black;");
-            sortChoiceBox.getSelectionModel().select(Control.retrieveDefaultSortingOption());
+            ArrayList<City> recommendations = Control.runPerceptron(ageSpinner.getValue(), false);
+
+            ArrayList<Future<Void>> futures = new ArrayList<>();
+            for (City recommendation : recommendations) {
+                futures.add(executorService.submit(new Callable<Void>() {
+                    /**
+                     * Computes a result, or throws an exception if unable to do so.
+                     *
+                     * @return computed result
+                     * @throws Exception if unable to compute a result
+                     */
+                    @Override
+                    public Void call() throws NoCovidRestrictionsExceptions, IOException {
+                        WebView webView = new WebView();
+                        webView.getEngine().loadContent(recommendation.presentRecommendation());
+
+                        AnchorPane anchorPane = new AnchorPane(webView);
+
+                        TitledPane titledPane = new TitledPane(recommendation.getName(), anchorPane);
+
+                        personalRecommendationAccordion.getPanes().add(titledPane);
+                        return null;
+
+                    }
+                }));
+
+                for (Future<Void> future : futures) {
+                    try {
+                        future.get();
+                    } catch (InterruptedException | ExecutionException e) {
+                        Throwable cause = e.getCause();
+                        if (cause.getClass().isAssignableFrom(NoCovidRestrictionsExceptions.class)) {
+                            throw (NoCovidRestrictionsExceptions) cause;
+                        } else if (cause.getClass().isAssignableFrom(NoSuchCityException.class)) {
+                            throw (IOException) cause;
+                        }
+                    }
+                }
+            }
         } catch (NoRecommendationException e) {
-            recommendationsTextArea.setText("There are no recommendations at the time for the age of " + ageSpinner.getValue() + ".");
-            recommendationsTextArea.setStyle("-fx-text-fill: red;");
-            Control.mainLogger.warning("No recommendations for traveller with age: " + ageSpinner.getValue());
-        } catch (StopRunningException e) {
-            stopRunningExceptionHandling(e);
+            noRecommendationExceptionHandling(e, RecommendationTab.AGE_RECOMMENDATION);
         }
-        tabs.getSelectionModel().select(recommendTab);
     }
 
+
+//                recommendationsTextArea.setText(Control.presentRecommendations(Control.runPerceptron(ageSpinner.getValue(),uppercaseCheckBox.isSelected())));
+//                recommendationsTextArea.setStyle("-fx-text-fill: black;");
+//                sortChoiceBox.getSelectionModel().
+
+    //select(Control.retrieveDefaultSortingOption());
+                /*} catch(NoRecommendationException e){
+                    recommendationsTextArea.setText("There are no recommendations at the time for the age of " + ageSpinner.getValue() + ".");
+                    recommendationsTextArea.setStyle("-fx-text-fill: red;");
+                    Control.mainLogger.warning("No recommendations for traveller with age: " + ageSpinner.getValue());
+                } catch(StopRunningException e){
+                    stopRunningExceptionHandling(e);
+                }
+                tabs.getSelectionModel().select(recommendTab);*/
+
+
     @FXML
-    protected void updateRelatedSpinnerAndSlider() {
-        System.out.println("hi");
-
-//        if (event.getSource() instanceof Slider){
-//            System.out.println("Its slider's event");
-//        } else {
-//            System.out.println("It's spinner's event");
-//        }
-
-//        System.out.println(testSlider.getValue());
-//        testSpinnner.getValueFactory().setValue((int) testSlider.getValue());
-//        System.out.println(event.toString());
-//        if (event.getSource().equals(testSlider)) {
-//
-//        }
+    protected void updateRelatedSpinnerAndSlider(ObjectChanged objectChanged, int id, int newValue) {
+        if (objectChanged == ObjectChanged.SPINNER) {
+            relatedSliders.get(id).setValue((double) Double.valueOf(newValue));
+        } else {
+            relatedSpinners.get(id).getValueFactory().setValue(newValue);
+        }
     }
 
     protected void mapRelatedSpinnerAndSlider() {       //TODO Optimization
@@ -151,6 +194,34 @@ public class GUIController implements Initializable {
     protected void updateDataButtonAction() throws Throwable {
         Control.updateData();
         Control.mainLogger.info("GUI selection");
+    }
+
+    @FXML
+    protected void gainPersonalRecommendation() throws CitiesLibraryEmptyException {
+        float[] customWeights = new float[7];
+
+        for (int i = 0; i < relatedSliders.size(); i++) {
+            customWeights[i] = (float) relatedSliders.get(i).getValue();
+        }
+
+        City rec = null;
+        try {
+            rec = PerceptronTraveler.personalizedRecommend(Control.getCitiesLibrary(), customWeights);
+        } catch (NoRecommendationException e) {
+            noRecommendationExceptionHandling(e, RecommendationTab.PERSONAL_RECOMMENDATION);
+        }
+        // Disable the context menu
+//        webView.setContextMenuEnabled(false);
+
+        personalRecPaneTitle.setText(rec.getName());
+        try {
+            personalRecPanel.getEngine().loadContent(rec.presentRecommendation());
+        } catch (NoCovidRestrictionsExceptions | IOException e) {
+            personalRecPanel.getEngine().loadContent("Trouble loading covid restrictions");
+            Control.mainLogger.warning("Trouble loading covid restrictions. Info:" + e);
+        }
+        personalRecPaneTitle.setVisible(true);
+        personalRecommendationAccordion.setExpandedPane(personalRecPaneTitle);
     }
 
     @FXML
@@ -253,17 +324,14 @@ public class GUIController implements Initializable {
     public void initialize(URL url, ResourceBundle resourceBundle) {
 
         //Logger init
-        {
-            try {
+        try {
                 Control.initLogger();
             } catch (IOException e) {
                 e.printStackTrace();
             }
-        }
 
         //Control obj init
-        {
-            try {
+        try {
                 Control.init("Athens", "GR");
             } catch (StopRunningException e) {
                 stopRunningExceptionHandling(e);
@@ -271,116 +339,189 @@ public class GUIController implements Initializable {
                 Control.mainLogger.severe("GUI:" + e);
             }
 
-        }
-
         //Loading data from JSON. If get trouble, inform the user to choose another file or download data
-        {
-            if (!Control.retrieveCitiesLibraryJson()) {
-                Alert alert = new Alert(Alert.AlertType.WARNING);           //Code reference: https://code.makery.ch/blog/javafx-dialogs-official/
-                alert.setTitle("Data warning");
-                alert.setHeaderText("Error retrieving data from default JSON file");
+        try {
+            if (!(executorService.submit(new Callable<Boolean>() {
+                /**
+                 * Computes a result, or throws an exception if unable to do so.
+                 *
+                 * @return computed result
+                 * @throws Exception if unable to compute a result
+                 */
+                @Override
+                public Boolean call() {
+                    return Control.retrieveCitiesLibraryJson();
+                }
+            })).get()) {
+                {
+                    Alert alert = new Alert(Alert.AlertType.WARNING);           //Code reference: https://code.makery.ch/blog/javafx-dialogs-official/
+                    alert.setTitle("Data warning");
+                    alert.setHeaderText("Error retrieving data from default JSON file");
 
-                ButtonType downloadButton = new ButtonType("Download data from web");
-                ButtonType loadDataButton = new ButtonType("Load data from JSON file");
-                alert.getButtonTypes().setAll(downloadButton, loadDataButton);
+                    ButtonType downloadButton = new ButtonType("Download data from web");
+                    ButtonType loadDataButton = new ButtonType("Load data from JSON file");
+                    alert.getButtonTypes().setAll(downloadButton, loadDataButton);
 
-                Optional<ButtonType> result = alert.showAndWait();
+                    Optional<ButtonType> result = alert.showAndWait();
 
+                    if (result.isPresent() && result.get() == downloadButton) {
+                        Alert downloadingDataInfo = new Alert(Alert.AlertType.INFORMATION, "Please press OK and wait for the data to get downloaded");
+                        downloadingDataInfo.setHeaderText("Data download");
+                        downloadingDataInfo.showAndWait();
 
-                if (result.isPresent() && result.get() == downloadButton) {
-                    Alert downloadingDataInfo = new Alert(Alert.AlertType.INFORMATION, "Please press OK and wait for the data to get downloaded");
-                    downloadingDataInfo.setHeaderText("Data download");
-                    downloadingDataInfo.showAndWait();
-
-                    try {
-                        Control.initCitiesLibrary();
-                    } catch (StopRunningException e) {
-                        stopRunningExceptionHandling(e);
+                        try {
+                            Control.initCitiesLibrary();
+                        } catch (StopRunningException e) {
+                            stopRunningExceptionHandling(e);
+                        }
+                        Control.mainLogger.finest("GUI election: Download data from web");
+                    } else {
+                        loadAsButtonAction();
+                        Control.mainLogger.finest("GUI election: Load data from Json file");
                     }
-                    Control.mainLogger.finest("GUI election: Download data from web");
-                } else {
-                    loadAsButtonAction();
-                    Control.mainLogger.finest("GUI election: Load data from Json file");
                 }
             }
+        } catch (InterruptedException e) {
+            e.printStackTrace();
+        } catch (ExecutionException e) {
+            e.printStackTrace();
         }
 
         //Personal recommendation tab inits
-        {
-            //TODO Work needed
-            SpinnerValueFactory<Integer> testspinnerValueFactory = new SpinnerValueFactory.IntegerSpinnerValueFactory(0, 100);
-            testspinnerValueFactory.setValue(50);
-            futureSpinner0.setValueFactory(testspinnerValueFactory);
+        executorService.submit(new Runnable() {
+            /**
+             * When an object implementing interface {@code Runnable} is used
+             * to create a thread, starting the thread causes the object's
+             * {@code run} method to be called in that separately executing
+             * thread.
+             * <p>
+             * The general contract of the method {@code run} is that it may
+             * take any action whatsoever.
+             *
+             * @see Thread#run()
+             */
+            @Override
+            public void run() {
+                personalRecPaneTitle.setVisible(false);
+                mapRelatedSpinnerAndSlider();
+                //FIXME all objects are connected - ORESTIS: "Spaghetti code"!
 
-            futureSlider0.valueProperty().addListener((obs, oldValue, newValue) -> {
 
-                updateRelatedSpinnerAndSlider();
-//
-            });
+                for (Spinner<Integer> spinner : relatedSpinners) {
+                    SpinnerValueFactory<Integer> spinnerValueFactory = new SpinnerValueFactory.IntegerSpinnerValueFactory(0, 100);
+                    spinnerValueFactory.setWrapAround(true);
+                    spinnerValueFactory.setValue(50);
+                    spinner.setValueFactory(spinnerValueFactory);
+                    spinner.valueProperty().addListener((obs, oldValue, newValue) -> {
+                        updateRelatedSpinnerAndSlider(ObjectChanged.SPINNER, relatedSpinners.indexOf(spinner), newValue);
+                    });
+                }
 
-        }
+                for (int i = 0; i < relatedSliders.size(); i++) {
+                    int finalI = i;
+                    relatedSliders.get(i).valueProperty().addListener((observable, oldValue, newValue) -> updateRelatedSpinnerAndSlider(ObjectChanged.SLIDER, finalI, newValue.intValue()));
+                }
+            }
+        });
 
         //Recommend destination tab inits
-        {
-            SpinnerValueFactory<Integer> spinnerValueFactory = new SpinnerValueFactory.IntegerSpinnerValueFactory(16, 115);
-            spinnerValueFactory.setValue(16);
-            ageSpinner.setValueFactory(spinnerValueFactory);
+        executorService.submit(new Callable<Void>() {
+                                   /**
+                                    * Computes a result, or throws an exception if unable to do so.
+                                    *
+                                    * @return computed result
+                                    * @throws Exception if unable to compute a result
+                                    */
+                                   @Override
+                                   public Void call() {
+                                       SpinnerValueFactory<Integer> spinnerValueFactory = new SpinnerValueFactory.IntegerSpinnerValueFactory(16, 115);
+                                       spinnerValueFactory.setValue(16);
+                                       ageSpinner.setValueFactory(spinnerValueFactory);
 
-            sortChoiceBox.getItems().addAll(Control.retrieveSortingOptions());
-            sortChoiceBox.getSelectionModel().selectedIndexProperty().addListener((observable, oldValue, newValue) -> {
-                try {
-                    recommendationsTextArea.setText(Control.sortRecommendation((int) newValue));
-                } catch (NoRecommendationException e) {
-                    e.printStackTrace();
-                }
-            }); //TODO: For optimization reasons, we can modify it so it want listen the auto value change (when new ageSpinner added)
+                                       sortChoiceBox.getItems().addAll(Control.retrieveSortingOptions());
+                                       sortChoiceBox.getSelectionModel().selectedIndexProperty().addListener((observable, oldValue, newValue) -> {
+                                           try {
+                                               recommendationsTextArea.setText(Control.sortRecommendation((int) newValue));
+                                           } catch (NoRecommendationException e) {
+                                               noRecommendationExceptionHandling(e, RecommendationTab.AGE_RECOMMENDATION);
+                                           }
 
-            addCandidateCityTab.setOnSelectionChanged(event -> {
-                candidateCityName.clear();
-                candidateCityISO.clear();
-                addCandidateCityNotification.setVisible(false);
-                try {
-                    updateCitiesLibraryTextArea();
-                } catch (CitiesLibraryEmptyException e) {
-                    try {
-                        Control.initCitiesLibrary();
-                    } catch (StopRunningException e2) {
-                        stopRunningExceptionHandling(e2);
-                    }
-                }
-            });
-        }
+                                       }); //TODO: For optimization reasons, we can modify it so it want listen the auto value change (when new ageSpinner added)
+
+                                       addCandidateCityTab.setOnSelectionChanged(event -> {
+                                           candidateCityName.clear();
+                                           candidateCityISO.clear();
+                                           addCandidateCityNotification.setVisible(false);
+                                           try {
+                                               updateCitiesLibraryTextArea();
+                                           } catch (CitiesLibraryEmptyException e) {
+                                               try {
+                                                   Control.initCitiesLibrary();
+                                               } catch (StopRunningException e2) {
+                                                   stopRunningExceptionHandling(e2);
+                                               }
+                                           }
+                                       });
+
+                                       return null;
+                                   }
+                               });
 
         //Cities library tab inits
-        {
-            citiesLibraryTab.setOnSelectionChanged(event -> {
-                XYChart.Series series = new XYChart.Series();
-                TreeMap<String, String> weekCityCatalogue = Control.makeWeekCityCatalogue();
-                citiesLibraryByDays.setText(Control.presentWeekCityCatalogue(weekCityCatalogue));
+        executorService.submit(new Runnable() {
+            /**
+             * When an object implementing interface {@code Runnable} is used
+             * to create a thread, starting the thread causes the object's
+             * {@code run} method to be called in that separately executing
+             * thread.
+             * <p>
+             * The general contract of the method {@code run} is that it may
+             * take any action whatsoever.
+             *
+             * @see Thread#run()
+             */
+            @Override
+            public void run() {
+                citiesLibraryTab.setOnSelectionChanged(event -> {
+                    XYChart.Series series = new XYChart.Series();
+                    TreeMap<String, String> weekCityCatalogue = Control.makeWeekCityCatalogue();
+                    citiesLibraryByDays.setText(Control.presentWeekCityCatalogue(weekCityCatalogue));
 
-                TreeMap<String, Integer> weekCityCatalogueStatistics;
-                weekCityCatalogueStatistics = Control.statisticsWeekCityCatalogue(weekCityCatalogue);
-                Iterator<Map.Entry<String, Integer>> it = weekCityCatalogueStatistics.entrySet().iterator();
+                    TreeMap<String, Integer> weekCityCatalogueStatistics;
+                    weekCityCatalogueStatistics = Control.statisticsWeekCityCatalogue(weekCityCatalogue);
+                    Iterator<Map.Entry<String, Integer>> it = weekCityCatalogueStatistics.entrySet().iterator();
 
-                for (Iterator<Map.Entry<String, Integer>> iter = it; iter.hasNext(); ) {
-                    Map.Entry<String, Integer> tmp = it.next();
-                    series.getData().add(new XYChart.Data(tmp.getKey().substring(0, 3), tmp.getValue()));
-                }
-                System.out.println(Control.statisticsWeekCityCatalogue(weekCityCatalogue).toString());
-                lineChartCitiesLibrary.setLegendVisible(false);
-                lineChartCitiesLibrary.setAnimated(false);
-                lineChartCitiesLibrary.getData().clear();
-                lineChartCitiesLibrary.getData().add(series);
-            });
+                    for (Iterator<Map.Entry<String, Integer>> iter = it; iter.hasNext(); ) {
+                        Map.Entry<String, Integer> tmp = it.next();
+                        series.getData().add(new XYChart.Data(tmp.getKey().substring(0, 3), tmp.getValue()));
+                    }
+                    lineChartCitiesLibrary.setLegendVisible(false);
+                    lineChartCitiesLibrary.setAnimated(false);
+                    lineChartCitiesLibrary.getData().clear();
+                    lineChartCitiesLibrary.getData().add(series);
+                });
+            }
+        });
+    }
 
+    private void noRecommendationExceptionHandling(NoRecommendationException e, RecommendationTab recommendationTab) {
+        Control.mainLogger.warning("No recommendation exception. INFO:" + e);
+        Alert alert = new Alert(Alert.AlertType.INFORMATION);           //Code reference: https://code.makery.ch/blog/javafx-dialogs-official/
+        alert.setTitle("No recommendations");
+
+        alert.setHeaderText("There is no recommendations for you at the time, please try again later.");
+        ButtonType personalRecommendation = new ButtonType("Personal recommendation");
+
+        if (recommendationTab == RecommendationTab.AGE_RECOMMENDATION) {
+            alert.setContentText("Feel free to try the personal recommendation engine!");
+            alert.getButtonTypes().add(personalRecommendation);
         }
-        float[] customWeights = {0.1F, 0.1F, 0.1F, 0.1F, 0.1F, 0.1F, 0.1F};
-        try {
-            System.out.println(PerceptronTraveler.personalizedRecommend(Control.getCitiesLibrary(), customWeights));
-        } catch (CitiesLibraryEmptyException e) {
-            e.printStackTrace();
-        } catch (NoRecommendationException e) {
-            e.printStackTrace();
+
+        Optional<ButtonType> result = alert.showAndWait();
+
+        if (result.isPresent() && result.get() == personalRecommendation) {
+            tabs.getSelectionModel().select(personalRecommendationTab);
+            Control.mainLogger.info("GUI Selection: Personal recommendation tab");
         }
     }
 
@@ -391,7 +532,7 @@ public class GUIController implements Initializable {
         error.setContentText("Error info: " + e.getMessage());
         error.getButtonTypes().add(ButtonType.CLOSE);
         error.showAndWait();
-
+        Control.mainLogger.severe("StopRunningException info: " + e);
         if (error.getResult() == ButtonType.CLOSE) {
             exit(1);
         }

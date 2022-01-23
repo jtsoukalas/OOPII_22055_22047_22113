@@ -14,18 +14,18 @@ import com.fasterxml.jackson.annotation.JsonPropertyOrder;
 @JsonInclude(JsonInclude.Include.NON_NULL)
 @JsonPropertyOrder({
     "date",
-    "deaths",
-    "confirmed"
+    "text",
+    "isRequired"
 })
 @Generated("jsonschema2pojo")
-public class DiseaseCases {
+public class Mask {
 
     @JsonProperty("date")
     private String date;
-    @JsonProperty("deaths")
-    private Integer deaths;
-    @JsonProperty("confirmed")
-    private Integer confirmed;
+    @JsonProperty("text")
+    private String text;
+    @JsonProperty("isRequired")
+    private String isRequired;
     @JsonIgnore
     private Map<String, Object> additionalProperties = new HashMap<String, Object>();
 
@@ -39,24 +39,24 @@ public class DiseaseCases {
         this.date = date;
     }
 
-    @JsonProperty("deaths")
-    public Integer getDeaths() {
-        return deaths;
+    @JsonProperty("text")
+    public String getText() {
+        return text;
     }
 
-    @JsonProperty("deaths")
-    public void setDeaths(Integer deaths) {
-        this.deaths = deaths;
+    @JsonProperty("text")
+    public void setText(String text) {
+        this.text = text;
     }
 
-    @JsonProperty("confirmed")
-    public Integer getConfirmed() {
-        return confirmed;
+    @JsonProperty("isRequired")
+    public String getIsRequired() {
+        return isRequired;
     }
 
-    @JsonProperty("confirmed")
-    public void setConfirmed(Integer confirmed) {
-        this.confirmed = confirmed;
+    @JsonProperty("isRequired")
+    public void setIsRequired(String isRequired) {
+        this.isRequired = isRequired;
     }
 
     @JsonAnyGetter
@@ -72,18 +72,18 @@ public class DiseaseCases {
     @Override
     public String toString() {
         StringBuilder sb = new StringBuilder();
-        sb.append(DiseaseCases.class.getName()).append('@').append(Integer.toHexString(System.identityHashCode(this))).append('[');
+        sb.append(Mask.class.getName()).append('@').append(Integer.toHexString(System.identityHashCode(this))).append('[');
         sb.append("date");
         sb.append('=');
         sb.append(((this.date == null)?"<null>":this.date));
         sb.append(',');
-        sb.append("deaths");
+        sb.append("text");
         sb.append('=');
-        sb.append(((this.deaths == null)?"<null>":this.deaths));
+        sb.append(((this.text == null)?"<null>":this.text));
         sb.append(',');
-        sb.append("confirmed");
+        sb.append("isRequired");
         sb.append('=');
-        sb.append(((this.confirmed == null)?"<null>":this.confirmed));
+        sb.append(((this.isRequired == null)?"<null>":this.isRequired));
         sb.append(',');
         sb.append("additionalProperties");
         sb.append('=');

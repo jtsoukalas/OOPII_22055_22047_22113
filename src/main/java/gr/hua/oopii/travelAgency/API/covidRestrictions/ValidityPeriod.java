@@ -13,50 +13,37 @@ import com.fasterxml.jackson.annotation.JsonPropertyOrder;
 
 @JsonInclude(JsonInclude.Include.NON_NULL)
 @JsonPropertyOrder({
-    "date",
-    "deaths",
-    "confirmed"
+    "delay",
+    "referenceDateType"
 })
 @Generated("jsonschema2pojo")
-public class DiseaseCases {
+public class ValidityPeriod {
 
-    @JsonProperty("date")
-    private String date;
-    @JsonProperty("deaths")
-    private Integer deaths;
-    @JsonProperty("confirmed")
-    private Integer confirmed;
+    @JsonProperty("delay")
+    private String delay;
+    @JsonProperty("referenceDateType")
+    private String referenceDateType;
     @JsonIgnore
     private Map<String, Object> additionalProperties = new HashMap<String, Object>();
 
-    @JsonProperty("date")
-    public String getDate() {
-        return date;
+    @JsonProperty("delay")
+    public String getDelay() {
+        return delay;
     }
 
-    @JsonProperty("date")
-    public void setDate(String date) {
-        this.date = date;
+    @JsonProperty("delay")
+    public void setDelay(String delay) {
+        this.delay = delay;
     }
 
-    @JsonProperty("deaths")
-    public Integer getDeaths() {
-        return deaths;
+    @JsonProperty("referenceDateType")
+    public String getReferenceDateType() {
+        return referenceDateType;
     }
 
-    @JsonProperty("deaths")
-    public void setDeaths(Integer deaths) {
-        this.deaths = deaths;
-    }
-
-    @JsonProperty("confirmed")
-    public Integer getConfirmed() {
-        return confirmed;
-    }
-
-    @JsonProperty("confirmed")
-    public void setConfirmed(Integer confirmed) {
-        this.confirmed = confirmed;
+    @JsonProperty("referenceDateType")
+    public void setReferenceDateType(String referenceDateType) {
+        this.referenceDateType = referenceDateType;
     }
 
     @JsonAnyGetter
@@ -72,18 +59,14 @@ public class DiseaseCases {
     @Override
     public String toString() {
         StringBuilder sb = new StringBuilder();
-        sb.append(DiseaseCases.class.getName()).append('@').append(Integer.toHexString(System.identityHashCode(this))).append('[');
-        sb.append("date");
+        sb.append(ValidityPeriod.class.getName()).append('@').append(Integer.toHexString(System.identityHashCode(this))).append('[');
+        sb.append("delay");
         sb.append('=');
-        sb.append(((this.date == null)?"<null>":this.date));
+        sb.append(((this.delay == null)?"<null>":this.delay));
         sb.append(',');
-        sb.append("deaths");
+        sb.append("referenceDateType");
         sb.append('=');
-        sb.append(((this.deaths == null)?"<null>":this.deaths));
-        sb.append(',');
-        sb.append("confirmed");
-        sb.append('=');
-        sb.append(((this.confirmed == null)?"<null>":this.confirmed));
+        sb.append(((this.referenceDateType == null)?"<null>":this.referenceDateType));
         sb.append(',');
         sb.append("additionalProperties");
         sb.append('=');

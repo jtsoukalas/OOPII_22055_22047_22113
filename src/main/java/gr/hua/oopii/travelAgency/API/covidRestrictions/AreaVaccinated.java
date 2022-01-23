@@ -14,18 +14,18 @@ import com.fasterxml.jackson.annotation.JsonPropertyOrder;
 @JsonInclude(JsonInclude.Include.NON_NULL)
 @JsonPropertyOrder({
     "date",
-    "deaths",
-    "confirmed"
+    "vaccinationDoseStatus",
+    "percentage"
 })
 @Generated("jsonschema2pojo")
-public class DiseaseCases {
+public class AreaVaccinated {
 
     @JsonProperty("date")
     private String date;
-    @JsonProperty("deaths")
-    private Integer deaths;
-    @JsonProperty("confirmed")
-    private Integer confirmed;
+    @JsonProperty("vaccinationDoseStatus")
+    private String vaccinationDoseStatus;
+    @JsonProperty("percentage")
+    private Double percentage;
     @JsonIgnore
     private Map<String, Object> additionalProperties = new HashMap<String, Object>();
 
@@ -39,24 +39,24 @@ public class DiseaseCases {
         this.date = date;
     }
 
-    @JsonProperty("deaths")
-    public Integer getDeaths() {
-        return deaths;
+    @JsonProperty("vaccinationDoseStatus")
+    public String getVaccinationDoseStatus() {
+        return vaccinationDoseStatus;
     }
 
-    @JsonProperty("deaths")
-    public void setDeaths(Integer deaths) {
-        this.deaths = deaths;
+    @JsonProperty("vaccinationDoseStatus")
+    public void setVaccinationDoseStatus(String vaccinationDoseStatus) {
+        this.vaccinationDoseStatus = vaccinationDoseStatus;
     }
 
-    @JsonProperty("confirmed")
-    public Integer getConfirmed() {
-        return confirmed;
+    @JsonProperty("percentage")
+    public Double getPercentage() {
+        return percentage;
     }
 
-    @JsonProperty("confirmed")
-    public void setConfirmed(Integer confirmed) {
-        this.confirmed = confirmed;
+    @JsonProperty("percentage")
+    public void setPercentage(Double percentage) {
+        this.percentage = percentage;
     }
 
     @JsonAnyGetter
@@ -72,18 +72,18 @@ public class DiseaseCases {
     @Override
     public String toString() {
         StringBuilder sb = new StringBuilder();
-        sb.append(DiseaseCases.class.getName()).append('@').append(Integer.toHexString(System.identityHashCode(this))).append('[');
+        sb.append(AreaVaccinated.class.getName()).append('@').append(Integer.toHexString(System.identityHashCode(this))).append('[');
         sb.append("date");
         sb.append('=');
         sb.append(((this.date == null)?"<null>":this.date));
         sb.append(',');
-        sb.append("deaths");
+        sb.append("vaccinationDoseStatus");
         sb.append('=');
-        sb.append(((this.deaths == null)?"<null>":this.deaths));
+        sb.append(((this.vaccinationDoseStatus == null)?"<null>":this.vaccinationDoseStatus));
         sb.append(',');
-        sb.append("confirmed");
+        sb.append("percentage");
         sb.append('=');
-        sb.append(((this.confirmed == null)?"<null>":this.confirmed));
+        sb.append(((this.percentage == null)?"<null>":this.percentage));
         sb.append(',');
         sb.append("additionalProperties");
         sb.append('=');

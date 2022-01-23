@@ -13,50 +13,37 @@ import com.fasterxml.jackson.annotation.JsonPropertyOrder;
 
 @JsonInclude(JsonInclude.Include.NON_NULL)
 @JsonPropertyOrder({
-    "date",
-    "deaths",
-    "confirmed"
+    "borderType",
+    "status"
 })
 @Generated("jsonschema2pojo")
-public class DiseaseCases {
+public class BorderBan {
 
-    @JsonProperty("date")
-    private String date;
-    @JsonProperty("deaths")
-    private Integer deaths;
-    @JsonProperty("confirmed")
-    private Integer confirmed;
+    @JsonProperty("borderType")
+    private String borderType;
+    @JsonProperty("status")
+    private String status;
     @JsonIgnore
     private Map<String, Object> additionalProperties = new HashMap<String, Object>();
 
-    @JsonProperty("date")
-    public String getDate() {
-        return date;
+    @JsonProperty("borderType")
+    public String getBorderType() {
+        return borderType;
     }
 
-    @JsonProperty("date")
-    public void setDate(String date) {
-        this.date = date;
+    @JsonProperty("borderType")
+    public void setBorderType(String borderType) {
+        this.borderType = borderType;
     }
 
-    @JsonProperty("deaths")
-    public Integer getDeaths() {
-        return deaths;
+    @JsonProperty("status")
+    public String getStatus() {
+        return status;
     }
 
-    @JsonProperty("deaths")
-    public void setDeaths(Integer deaths) {
-        this.deaths = deaths;
-    }
-
-    @JsonProperty("confirmed")
-    public Integer getConfirmed() {
-        return confirmed;
-    }
-
-    @JsonProperty("confirmed")
-    public void setConfirmed(Integer confirmed) {
-        this.confirmed = confirmed;
+    @JsonProperty("status")
+    public void setStatus(String status) {
+        this.status = status;
     }
 
     @JsonAnyGetter
@@ -72,18 +59,14 @@ public class DiseaseCases {
     @Override
     public String toString() {
         StringBuilder sb = new StringBuilder();
-        sb.append(DiseaseCases.class.getName()).append('@').append(Integer.toHexString(System.identityHashCode(this))).append('[');
-        sb.append("date");
+        sb.append(BorderBan.class.getName()).append('@').append(Integer.toHexString(System.identityHashCode(this))).append('[');
+        sb.append("borderType");
         sb.append('=');
-        sb.append(((this.date == null)?"<null>":this.date));
+        sb.append(((this.borderType == null)?"<null>":this.borderType));
         sb.append(',');
-        sb.append("deaths");
+        sb.append("status");
         sb.append('=');
-        sb.append(((this.deaths == null)?"<null>":this.deaths));
-        sb.append(',');
-        sb.append("confirmed");
-        sb.append('=');
-        sb.append(((this.confirmed == null)?"<null>":this.confirmed));
+        sb.append(((this.status == null)?"<null>":this.status));
         sb.append(',');
         sb.append("additionalProperties");
         sb.append('=');

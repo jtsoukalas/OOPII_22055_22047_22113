@@ -447,7 +447,7 @@ public class Control {
      * @return a string with all the recommendations
      * @throws NoRecommendationException
      */
-    public static String recommendationToString(ArrayList<City> compatibleCities) throws NoRecommendationException {
+    public static String presentRecommendations(ArrayList<City> compatibleCities) throws NoRecommendationException {
         if (compatibleCities.isEmpty()) {
             throw new NoRecommendationException();
         }
@@ -501,7 +501,7 @@ public class Control {
             default -> null;
         };
 
-        return recommendationToString(lastPerceptronUsed.sortRecommendation(caseComparator));
+        return presentRecommendations(lastPerceptronUsed.sortRecommendation(caseComparator));
     }
 
     /**

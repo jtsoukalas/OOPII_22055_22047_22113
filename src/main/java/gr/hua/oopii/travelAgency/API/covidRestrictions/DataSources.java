@@ -1,23 +1,27 @@
 
 package gr.hua.oopii.travelAgency.API.covidRestrictions;
 
+import java.util.HashMap;
+import java.util.Map;
 import javax.annotation.Generated;
+import com.fasterxml.jackson.annotation.JsonAnyGetter;
+import com.fasterxml.jackson.annotation.JsonAnySetter;
+import com.fasterxml.jackson.annotation.JsonIgnore;
 import com.fasterxml.jackson.annotation.JsonInclude;
 import com.fasterxml.jackson.annotation.JsonProperty;
 import com.fasterxml.jackson.annotation.JsonPropertyOrder;
 
 @JsonInclude(JsonInclude.Include.NON_NULL)
 @JsonPropertyOrder({
-    "governmentSiteLink",
-    "healthDepartmentSiteLink"
+    "governmentSiteLink"
 })
 @Generated("jsonschema2pojo")
 public class DataSources {
 
     @JsonProperty("governmentSiteLink")
     private String governmentSiteLink;
-    @JsonProperty("healthDepartmentSiteLink")
-    private String healthDepartmentSiteLink;
+    @JsonIgnore
+    private Map<String, Object> additionalProperties = new HashMap<String, Object>();
 
     @JsonProperty("governmentSiteLink")
     public String getGovernmentSiteLink() {
@@ -29,14 +33,14 @@ public class DataSources {
         this.governmentSiteLink = governmentSiteLink;
     }
 
-    @JsonProperty("healthDepartmentSiteLink")
-    public String getHealthDepartmentSiteLink() {
-        return healthDepartmentSiteLink;
+    @JsonAnyGetter
+    public Map<String, Object> getAdditionalProperties() {
+        return this.additionalProperties;
     }
 
-    @JsonProperty("healthDepartmentSiteLink")
-    public void setHealthDepartmentSiteLink(String healthDepartmentSiteLink) {
-        this.healthDepartmentSiteLink = healthDepartmentSiteLink;
+    @JsonAnySetter
+    public void setAdditionalProperty(String name, Object value) {
+        this.additionalProperties.put(name, value);
     }
 
     @Override
@@ -47,9 +51,9 @@ public class DataSources {
         sb.append('=');
         sb.append(((this.governmentSiteLink == null)?"<null>":this.governmentSiteLink));
         sb.append(',');
-        sb.append("healthDepartmentSiteLink");
+        sb.append("additionalProperties");
         sb.append('=');
-        sb.append(((this.healthDepartmentSiteLink == null)?"<null>":this.healthDepartmentSiteLink));
+        sb.append(((this.additionalProperties == null)?"<null>":this.additionalProperties));
         sb.append(',');
         if (sb.charAt((sb.length()- 1)) == ',') {
             sb.setCharAt((sb.length()- 1), ']');

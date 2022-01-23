@@ -2,6 +2,7 @@ package gr.hua.oopii.travelAgency;
 
 import gr.hua.oopii.travelAgency.API.APICallers;
 import gr.hua.oopii.travelAgency.API.APICredentials;
+import gr.hua.oopii.travelAgency.API.covidRestrictions.CovidRestrictions;
 import gr.hua.oopii.travelAgency.exception.*;
 import gr.hua.oopii.travelAgency.API.openData.CountWords;
 import gr.hua.oopii.travelAgency.API.openData.MediaWiki;
@@ -20,6 +21,7 @@ import java.util.concurrent.ExecutionException;
 import java.util.concurrent.ExecutorService;
 import java.util.concurrent.Future;
 
+import static gr.hua.oopii.travelAgency.API.APICallers.retrieveCovidRestrictions;
 import static java.util.concurrent.Executors.newCachedThreadPool;
 
 /**
@@ -198,6 +200,24 @@ public class City implements Comparable<City>, Cloneable {
             dist = dist * 60 * 1.1515;
             return (dist);
         }
+    }
+
+    /** //todo needs update
+     * <h1>Creates a string to represent the recommendations<h1/>
+     * Takes compatible cities names from each city Object and appends them to a string
+     *
+     * @return a string with all the recommendations
+     * @throws NoRecommendationException
+     */
+    public String presentRecommendation() throws NoCovidRestrictionsExceptions, IOException {
+        StringBuilder recommendation = new StringBuilder();
+
+        CovidRestrictions covidRestrictions = APICallers.retrieveCovidRestrictions(this);
+        recommendation.append("<h1 style=\"display: inline;float:left;\">&#128227;</h1>");
+        recommendation.append("<h4 style=\"display: inline;float:right;\">Covid Restrictions</h4>");
+        recommendation.append(covidRestrictions.getData().getSummary());
+
+        return recommendation.toString();
     }
 
     /**

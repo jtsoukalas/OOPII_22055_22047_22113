@@ -3,7 +3,6 @@ package gr.hua.oopii.travelAgency;
 import gr.hua.oopii.travelAgency.exception.NoRecommendationException;
 import gr.hua.oopii.travelAgency.exception.NoSuchCityException;
 import gr.hua.oopii.travelAgency.exception.StopRunningException;
-import gr.hua.oopii.travelAgency.perceptrons.PerceptronTraveler;
 
 import java.util.Date;
 
@@ -17,7 +16,7 @@ public class Main {
                 System.out.println("Please enter traveler's age:");
                 int age = Input.readAge();
                 try {
-                    System.out.println("Recommendations: " + Control.recommendationToString(Control.runPerceptron(age,false)));
+                    System.out.println("Recommendations: " + Control.presentRecommendations(Control.runPerceptron(age,false)));
                 } catch (NoRecommendationException e) {
                     System.err.println(e.getMessage());
                 }
