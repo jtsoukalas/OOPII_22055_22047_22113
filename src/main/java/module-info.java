@@ -21,6 +21,7 @@ module gr.hua.oopii.travelAgency {
     //requires GMapsFX;  //for json deserialization
     requires  java.base;
     requires json.simple;
+    requires java.annotation;
     //requires javax.annotation;
 
 
