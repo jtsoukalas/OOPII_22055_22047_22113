@@ -106,35 +106,47 @@ public abstract class PerceptronTraveler implements PerceptronTravelerInterface 
 //            }
 //        }
 
-        if (uppercase){
-            for (City city : recommendation){
+        if (uppercase) {
+            for (City city : recommendation) {
                 city.setName(city.getName().toUpperCase());
             }
         }
         return recommendation;
     }
 
-    public static City personalizedRecommend(ArrayList<City> citiesLibrary,float[] customWeights) throws CitiesLibraryEmptyException, NoRecommendationException {
+    /**
+     * Personal Recommendation with
+     * @param citiesLibrary
+     * @param customWeights
+     * @return
+     * @throws CitiesLibraryEmptyException
+     * @throws NoRecommendationException
+     */
+    public static City personalizedRecommend(ArrayList<City> citiesLibrary, float[] customWeights) throws CitiesLibraryEmptyException, NoRecommendationException {
 
         //checking if the city library is empty
-        if(citiesLibrary==null || citiesLibrary.isEmpty()){
+        if (citiesLibrary == null || citiesLibrary.isEmpty()) {
             throw new CitiesLibraryEmptyException();
         }
 
         //converting citiesLibrary from collection to stream
         //filter: filters all the objects we inserted to the stream(in put case all the cities)
-        try{
-            return citiesLibrary.stream().max((city1, city2) -> Float.compare(dotProduct(city1.getFeatures(),customWeights),dotProduct(city2.getFeatures(),customWeights))).orElseThrow();
-        }catch (NoSuchElementException e){
+        for (int i = 0; i < customWeights.length; i++) {
+            customWeights[i] = City.normaliseFeature(customWeights[i], 4);
+        }
+
+        try {
+            return citiesLibrary.stream().max((city1, city2) -> Float.compare(dotProduct(city1.getFeatures(), customWeights), dotProduct(city2.getFeatures(), customWeights))).orElseThrow();
+        } catch (NoSuchElementException e) {
             throw new NoRecommendationException();
         }
     }
 
     //returns a "rete" for every city depending on the weights the user has give
     private static float dotProduct(float[] features, float[] weights) {
-        float sum=0;
-        for (int i=0; i<weights.length;i++)
-            sum+=features[i]*weights[i];
+        float sum = 0;
+        for (int i = 0; i < weights.length; i++)
+            sum += features[i] * weights[i];
         return sum;
     }
 

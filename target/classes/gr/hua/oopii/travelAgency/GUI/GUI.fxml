@@ -67,7 +67,7 @@
                 <ChoiceBox fx:id="sortChoiceBox" layoutX="101.0" layoutY="14.0" prefWidth="150.0" />
                 <Label contentDisplay="CENTER" layoutX="53.0" layoutY="19.0" prefHeight="18.0" prefWidth="46.0" text="Sort by" />
                 <CheckBox fx:id="uppercaseCheckBox" layoutX="314.0" layoutY="18.0" mnemonicParsing="false" onAction="#gainRecommendationsButtonAction" text="Uppercase" />
-            <Accordion layoutX="3.0" layoutY="45.0" prefHeight="334.0" prefWidth="471.0" />
+            <Accordion fx:id="recommendationsAccordion" layoutX="3.0" layoutY="55.0" prefHeight="358.0" prefWidth="471.0" />
             </AnchorPane>
         </Tab>
         <Tab fx:id="addCandidateCityTab" onSelectionChanged="#updateCitiesLibraryTextArea" text="Add city">
@@ -149,5 +149,4 @@
         </content>
       </Tab>
     </TabPane>
-   <Accordion />
 </VBox>

@@ -37,6 +37,7 @@ public class GUIController implements Initializable {
     public WebView personalRecPanel;
     public Accordion personalRecommendationAccordion;
     public Tab personalRecommendationTab;
+    public Accordion recommendationsAccordion;
     ExecutorService executorService = newCachedThreadPool();
 
     public Spinner<Integer> ageSpinner;
@@ -93,34 +94,37 @@ public class GUIController implements Initializable {
     @FXML
     protected void gainRecommendationsButtonAction() throws StopRunningException, NoCovidRestrictionsExceptions, IOException {
         Control.mainLogger.info("GUI selection");
+        System.out.println(personalRecommendationAccordion.getPanes());
         try {
             ArrayList<City> recommendations = Control.runPerceptron(ageSpinner.getValue(), false);
 
             ArrayList<Future<Void>> futures = new ArrayList<>();
             for (City recommendation : recommendations) {
-                futures.add(executorService.submit(new Callable<Void>() {
-                    /**
-                     * Computes a result, or throws an exception if unable to do so.
-                     *
-                     * @return computed result
-                     * @throws Exception if unable to compute a result
-                     */
+                /*futures.add(executorService.submit(new Callable<Void>() {
+                 *//**
+                 * Computes a result, or throws an exception if unable to do so.
+                 *
+                 * @return computed result
+                 * @throws Exception if unable to compute a result
+                 *//*
                     @Override
-                    public Void call() throws NoCovidRestrictionsExceptions, IOException {
-                        WebView webView = new WebView();
-                        webView.getEngine().loadContent(recommendation.presentRecommendation());
+                    public Void call() throws NoCovidRestrictionsExceptions, IOException { */
+                WebView webView = new WebView();
+                webView.getEngine().loadContent(recommendation.presentRecommendation());
 
-                        AnchorPane anchorPane = new AnchorPane(webView);
+                AnchorPane anchorPane = new AnchorPane(webView);
 
-                        TitledPane titledPane = new TitledPane(recommendation.getName(), anchorPane);
+                TitledPane titledPane = new TitledPane(recommendation.getName(), anchorPane);
 
-                        personalRecommendationAccordion.getPanes().add(titledPane);
-                        return null;
+                recommendationsAccordion.getPanes().add(titledPane);
+                //return null;
 
-                    }
-                }));
+            //}
 
-                for (Future<Void> future : futures) {
+               // }));
+
+
+           /*     for (Future<Void> future : futures) {
                     try {
                         future.get();
                     } catch (InterruptedException | ExecutionException e) {
@@ -131,7 +135,8 @@ public class GUIController implements Initializable {
                             throw (IOException) cause;
                         }
                     }
-                }
+                }*/
+                recommendationsAccordion.setVisible(true);
             }
         } catch (NoRecommendationException e) {
             noRecommendationExceptionHandling(e, RecommendationTab.AGE_RECOMMENDATION);

@@ -40,7 +40,7 @@ public class City implements Comparable<City>, Cloneable {
 
     private String name;
     private String countryName;
-    private Double lon,lat;
+    private Double lon, lat;
 
     /**
      * Timestamp is the point of time when a city is created
@@ -71,8 +71,8 @@ public class City implements Comparable<City>, Cloneable {
         this.countryName = countryName;
         this.timestamp = new Date();
         this.weatherDownloadTimestamp = new Date();
-        this.lon=lon;
-        this.lat=lat;
+        this.lon = lon;
+        this.lat = lat;
     }
 
     /**
@@ -82,7 +82,7 @@ public class City implements Comparable<City>, Cloneable {
      * @param geodesicDist float
      */
     public City(float geodesicDist) {
-        this(new float[]{0F, 0F, 0F, 0F, 0F, 0F, 0F, 0F, 0F, geodesicDist}, null, null,null,null);
+        this(new float[]{0F, 0F, 0F, 0F, 0F, 0F, 0F, 0F, 0F, geodesicDist}, null, null, null, null);
     }
 
     /**
@@ -92,7 +92,7 @@ public class City implements Comparable<City>, Cloneable {
      * @param countryName
      */
     public City(String name, String countryName) {
-        this(new float[]{0F, 0F, 0F, 0F, 0F, 0F, 0F, 0F, 0F, 0F}, name, countryName,null,null);
+        this(new float[]{0F, 0F, 0F, 0F, 0F, 0F, 0F, 0F, 0F, 0F}, name, countryName, null, null);
     }
 
     /**
@@ -121,7 +121,7 @@ public class City implements Comparable<City>, Cloneable {
      * <h1> Normalise one term </h1>
      *
      * @param mode defines the type of normalisation:
-     *             <u>0==Wiki, 1==Weather, 2==Clouds, 3==GeodesicDistance </u>
+     *             <u>0==Wiki, 1==Weather, 2==Clouds, 3==GeodesicDistance, 4==Custom Weights </u>
      * @param term float that will be normalised
      */
     public static float normaliseFeature(float term, int mode) {
@@ -139,7 +139,7 @@ public class City implements Comparable<City>, Cloneable {
                 min = 184;
                 max = 331;
             } else {
-                if (mode == 2) {                    //clouds normalisation
+                if (mode == 2 || mode == 4) {                    //clouds normalisation or weight normalisation from gui
                     min = 0;
                     max = 100;
                 } else {
@@ -202,7 +202,8 @@ public class City implements Comparable<City>, Cloneable {
         }
     }
 
-    /** //todo needs update
+    /**
+     * //todo needs update
      * <h1>Creates a string to represent the recommendations<h1/>
      * Takes compatible cities names from each city Object and appends them to a string
      *
@@ -320,7 +321,7 @@ public class City implements Comparable<City>, Cloneable {
     private Callable<Void> createCallableObjForWeatherDownload() {
         City city = this;
         int pid = WeatherProcessCount++;
-        
+
         return new Callable<Void>() {
             /**
              * Computes a result, or throws an exception if unable to do so.
@@ -492,7 +493,6 @@ public class City implements Comparable<City>, Cloneable {
     public float[] getFeatures() {
         return features;
     }
-
 
 
     public void setFeatures(float[] features) {
