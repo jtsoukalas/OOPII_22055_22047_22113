@@ -340,52 +340,18 @@ public class GUIController implements Initializable {
             }
 
         //Loading data from JSON. If get trouble, inform the user to choose another file or download data
-        try {
-            if (!(executorService.submit(new Callable<Boolean>() {
-                /**
-                 * Computes a result, or throws an exception if unable to do so.
-                 *
-                 * @return computed result
-                 * @throws Exception if unable to compute a result
-                 */
-                @Override
-                public Boolean call() {
-                    return Control.retrieveCitiesLibraryJson();
-                }
-            })).get()) {
-                {
-                    Alert alert = new Alert(Alert.AlertType.WARNING);           //Code reference: https://code.makery.ch/blog/javafx-dialogs-official/
-                    alert.setTitle("Data warning");
-                    alert.setHeaderText("Error retrieving data from default JSON file");
-
-                    ButtonType downloadButton = new ButtonType("Download data from web");
-                    ButtonType loadDataButton = new ButtonType("Load data from JSON file");
-                    alert.getButtonTypes().setAll(downloadButton, loadDataButton);
-
-                    Optional<ButtonType> result = alert.showAndWait();
-
-                    if (result.isPresent() && result.get() == downloadButton) {
-                        Alert downloadingDataInfo = new Alert(Alert.AlertType.INFORMATION, "Please press OK and wait for the data to get downloaded");
-                        downloadingDataInfo.setHeaderText("Data download");
-                        downloadingDataInfo.showAndWait();
-
-                        try {
-                            Control.initCitiesLibrary();
-                        } catch (StopRunningException e) {
-                            stopRunningExceptionHandling(e);
-                        }
-                        Control.mainLogger.finest("GUI election: Download data from web");
-                    } else {
-                        loadAsButtonAction();
-                        Control.mainLogger.finest("GUI election: Load data from Json file");
-                    }
-                }
+        Future<Boolean> jsonLoadRes = executorService.submit(new Callable<Boolean>() {
+            /**
+             * Computes a result, or throws an exception if unable to do so.
+             *
+             * @return computed result
+             * @throws Exception if unable to compute a result
+             */
+            @Override
+            public Boolean call() {
+                return Control.retrieveCitiesLibraryJson();
             }
-        } catch (InterruptedException e) {
-            e.printStackTrace();
-        } catch (ExecutionException e) {
-            e.printStackTrace();
-        }
+        });
 
         //Personal recommendation tab inits
         executorService.submit(new Runnable() {
@@ -489,11 +455,9 @@ public class GUIController implements Initializable {
 
                     TreeMap<String, Integer> weekCityCatalogueStatistics;
                     weekCityCatalogueStatistics = Control.statisticsWeekCityCatalogue(weekCityCatalogue);
-                    Iterator<Map.Entry<String, Integer>> it = weekCityCatalogueStatistics.entrySet().iterator();
 
-                    for (Iterator<Map.Entry<String, Integer>> iter = it; iter.hasNext(); ) {
-                        Map.Entry<String, Integer> tmp = it.next();
-                        series.getData().add(new XYChart.Data(tmp.getKey().substring(0, 3), tmp.getValue()));
+                    for (Map.Entry<String, Integer> entry: weekCityCatalogueStatistics.entrySet() ) {
+                        series.getData().add(new XYChart.Data(entry.getKey().substring(0, 3), entry.getValue()));
                     }
                     lineChartCitiesLibrary.setLegendVisible(false);
                     lineChartCitiesLibrary.setAnimated(false);
@@ -502,6 +466,42 @@ public class GUIController implements Initializable {
                 });
             }
         });
+
+        try {
+            if (!jsonLoadRes.get()) {
+                {
+                    Alert alert = new Alert(Alert.AlertType.WARNING);           //Code reference: https://code.makery.ch/blog/javafx-dialogs-official/
+                    alert.setTitle("Data warning");
+                    alert.setHeaderText("Error retrieving data from default JSON file");
+
+                    ButtonType downloadButton = new ButtonType("Download data from web");
+                    ButtonType loadDataButton = new ButtonType("Load data from JSON file");
+                    alert.getButtonTypes().setAll(downloadButton, loadDataButton);
+
+                    Optional<ButtonType> result = alert.showAndWait();
+
+                    if (result.isPresent() && result.get() == downloadButton) {
+                        Alert downloadingDataInfo = new Alert(Alert.AlertType.INFORMATION, "Please press OK and wait for the data to get downloaded");
+                        downloadingDataInfo.setHeaderText("Data download");
+                        downloadingDataInfo.showAndWait();
+
+                        try {
+                            Control.initCitiesLibrary();
+                        } catch (StopRunningException e) {
+                            stopRunningExceptionHandling(e);
+                        }
+                        Control.mainLogger.finest("GUI election: Download data from web");
+                    } else {
+                        loadAsButtonAction();
+                        Control.mainLogger.finest("GUI election: Load data from Json file");
+                    }
+                }
+            }
+        } catch (InterruptedException e) {
+            e.printStackTrace();
+        } catch (ExecutionException e) {
+            e.printStackTrace();
+        }
     }
 
     private void noRecommendationExceptionHandling(NoRecommendationException e, RecommendationTab recommendationTab) {
