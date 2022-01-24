@@ -9,5 +9,5 @@ public interface APICredentials {
      String airLabsID = "6af5994d-091b-4231-b3e3-087fcc8745a1";
      String amadeusAPIKey = "AxfOt4SwYsfHvBKoZgCTbc7PLtTyucVm";
      String amadeusAPISecret = "jMV9i4ZxaKUuaAvO";
-     String amadeusAPIToken = "nRMUMJf5MaL2MVZvTYM9FxmJEWCK";
+     String amadeusAPIToken = "fG51EOWfgt8z3l3GLortN0Uj2VoU";
 }

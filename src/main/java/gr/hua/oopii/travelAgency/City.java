@@ -235,32 +235,32 @@ public class City implements Comparable<City>, Cloneable {
 
         String[] res = new String[Recommendation_Present_Headers.values().length];
         CovidRestrictions covidRestrictions = null;
-        //try {
+        try {
             StringBuilder recommendation = new StringBuilder();
-//            covidRestrictions = APICallers.retrieveCovidRestrictions(this);
-//
-//
-//            res[Recommendation_Present_Headers.RISK_LEVEL.index] = covidRestrictions.getData().getDiseaseRiskLevel();
-//
-//            res[Recommendation_Present_Headers.TRANSPORTATION_BAN.index] = covidRestrictions.getData().getAreaAccessRestriction().getTransportation().getIsBanned();
-//            res[Recommendation_Present_Headers.TRANSPORTATION_TEXT.index] = covidRestrictions.getData().getAreaAccessRestriction().getTransportation().getText();
-//            try {
-//                res[Recommendation_Present_Headers.QUARANTINE_DURATION.index] = covidRestrictions.getData().getAreaAccessRestriction().getQuarantineModality().getAdditionalProperties().get("duration").toString();
-//            } catch (NullPointerException e) {
-//                res[Recommendation_Present_Headers.QUARANTINE_DURATION.index] = "";
-//            }
-//
-//            res[Recommendation_Present_Headers.MASK_REQUIRED.index] = covidRestrictions.getData().getAreaAccessRestriction().getMask().getIsRequired();
-//            try {
-//                res[Recommendation_Present_Headers.MASK_TEXT.index] = covidRestrictions.getData().getAreaAccessRestriction().getMask().getText();
-//            } catch (NullPointerException e) {
-//                res[Recommendation_Present_Headers.MASK_TEXT.index] = "";
-//            }
-//            res[Recommendation_Present_Headers.QUARANTINE_LINK.index] = covidRestrictions.getData().getAreaAccessRestriction().getQuarantineModality().getRules();
-//            res[Recommendation_Present_Headers.QUARANTINE_TEXT.index] = covidRestrictions.getData().getAreaAccessRestriction().getQuarantineModality().getText();
-//            res[Recommendation_Present_Headers.ENTRY_TEXT.index] = covidRestrictions.getData().getAreaAccessRestriction().getEntry().getText();
-//            res[Recommendation_Present_Headers.ENTRY_BAN.index] = covidRestrictions.getData().getAreaAccessRestriction().getEntry().getBan();
-//            res[Recommendation_Present_Headers.ENTRY_LINK.index] = covidRestrictions.getData().getAreaAccessRestriction().getEntry().getRules();
+            covidRestrictions = APICallers.retrieveCovidRestrictions(this);
+
+
+            res[Recommendation_Present_Headers.RISK_LEVEL.index] = covidRestrictions.getData().getDiseaseRiskLevel();
+
+            res[Recommendation_Present_Headers.TRANSPORTATION_BAN.index] = covidRestrictions.getData().getAreaAccessRestriction().getTransportation().getIsBanned();
+            res[Recommendation_Present_Headers.TRANSPORTATION_TEXT.index] = covidRestrictions.getData().getAreaAccessRestriction().getTransportation().getText();
+            try {
+                res[Recommendation_Present_Headers.QUARANTINE_DURATION.index] = covidRestrictions.getData().getAreaAccessRestriction().getQuarantineModality().getAdditionalProperties().get("duration").toString();
+            } catch (NullPointerException e) {
+                res[Recommendation_Present_Headers.QUARANTINE_DURATION.index] = "";
+            }
+
+            res[Recommendation_Present_Headers.MASK_REQUIRED.index] = covidRestrictions.getData().getAreaAccessRestriction().getMask().getIsRequired();
+            try {
+                res[Recommendation_Present_Headers.MASK_TEXT.index] = covidRestrictions.getData().getAreaAccessRestriction().getMask().getText();
+            } catch (NullPointerException e) {
+                res[Recommendation_Present_Headers.MASK_TEXT.index] = "";
+            }
+            res[Recommendation_Present_Headers.QUARANTINE_LINK.index] = covidRestrictions.getData().getAreaAccessRestriction().getQuarantineModality().getRules();
+            res[Recommendation_Present_Headers.QUARANTINE_TEXT.index] = covidRestrictions.getData().getAreaAccessRestriction().getQuarantineModality().getText();
+            res[Recommendation_Present_Headers.ENTRY_TEXT.index] = covidRestrictions.getData().getAreaAccessRestriction().getEntry().getText();
+            res[Recommendation_Present_Headers.ENTRY_BAN.index] = covidRestrictions.getData().getAreaAccessRestriction().getEntry().getBan();
+            res[Recommendation_Present_Headers.ENTRY_LINK.index] = covidRestrictions.getData().getAreaAccessRestriction().getEntry().getRules();
 
             recommendation.append("<!DOCTYPE html>\n" +
                     "<html lang=\"en\">\n" +
@@ -337,19 +337,19 @@ public class City implements Comparable<City>, Cloneable {
                     "    <table>\n" +
                     "        <tr>\n" +
                     "            <td class=\"first_column\">Covid Risk Level</td>\n" +
-                    "            <td class=\"second_column\">Statsdbdgb</td>\n" +
+                    "            <td class=\"second_column\">"+res[Recommendation_Present_Headers.RISK_LEVEL.index]+"</td>\n" +
                     "        </tr>\n" +
                     "        <tr>\n" +
                     "            <td class=\"first_column\">Entry Ban</td>\n" +
-                    "            <td class=\"second_column\">Statsdbdgb</td>\n" +
+                    "            <td class=\"second_column\">"+res[Recommendation_Present_Headers.ENTRY_BAN.index]+"</td>\n" +
                     "        </tr>\n" +
                     "        <tr>\n" +
-                    "            <td class=\"first_column\">Carantine Duration</td>\n" +
-                    "            <td class=\"second_column\">Statsdbdgb</td>\n" +
+                    "            <td class=\"first_column\">Quarantine Duration</td>\n" +
+                    "            <td class=\"second_column\">"+res[Recommendation_Present_Headers.QUARANTINE_DURATION.index]+"</td>\n" +
                     "        </tr>\n" +
                     "        <tr>\n" +
                     "            <td class=\"first_column\">Mask Requirement</td>\n" +
-                    "            <td class=\"second_column\">Statsdbdgb</td>\n" +
+                    "            <td class=\"second_column\">"+res[Recommendation_Present_Headers.MASK_REQUIRED.index]+"</td>\n" +
                     "        </tr>\n" +
                     "        <tr>\n" +
                     "            <td class=\"first_column\">Infection Map</td>\n" +
@@ -357,36 +357,28 @@ public class City implements Comparable<City>, Cloneable {
                     "        </tr>\n" +
                     "    </table>\n" +
                     "    <h4 class=\"subtitle\" id=\"transportation\" >\n" +
-                    "        <a class=\"subtitle\" href=\"http://\"> Transportation</a>\n" +
+                    "         Transportation\n" +
                     "    </h4>\n" +
                     "    <p style=\"margin-top: 0px\">\n" +
-                    "        (The Extremes of Good and Evil) by Cicero, written in 45 BC. This book is a treatise on the theory of ethics, very popular during the Renaissance. The first line of Lorem Ipsum, \"Lorem ipsum dolor sit amet.. \", comes from a line in section 1.10.32. The\n" +
-                    "        standard chunk of Lorem Ipsum used since the 1500s is reproduced below for those interested. Sections 1.10.32 and 1.10.33 from \"de Finibus Bonorum et Malorum \" by Cicero are also reproduced in their exact original form, accompanied by English\n" +
-                    "        versions from the 1914 translation by H. Rackham.\n" +
+                    "        "+res[Recommendation_Present_Headers.TRANSPORTATION_TEXT.index]+
                     "    </p>\n" +
                     "    <h4 class=\"subtitle\">\n" +
-                    "        <a class=\"subtitle\" href=\"http://\">Entry</a>\n" +
+                    "        <a class=\"subtitle\" href=\""+res[Recommendation_Present_Headers.ENTRY_LINK.index]+"\">Entry</a>\n" +
                     "    </h4>\n" +
                     "    <p>\n" +
-                    "        (The Extremes of Good and Evil) by Cicero, written in 45 BC. This book is a treatise on the theory of ethics, very popular during the Renaissance. The first line of Lorem Ipsum, \"Lorem ipsum dolor sit amet.. \", comes from a line in section 1.10.32. The\n" +
-                    "        standard chunk of Lorem Ipsum used since the 1500s is reproduced below for those interested. Sections 1.10.32 and 1.10.33 from \"de Finibus Bonorum et Malorum \" by Cicero are also reproduced in their exact original form, accompanied by English\n" +
-                    "        versions from the 1914 translation by H. Rackham.\n" +
+                    "        "+res[Recommendation_Present_Headers.ENTRY_TEXT.index]+
                     "    </p>\n" +
                     "    <h4 class=\"subtitle\">\n" +
-                    "        <a class=\"subtitle\" href=\"http://\">Carantine</a>\n" +
+                    "        <a class=\"subtitle\""+res[Recommendation_Present_Headers.QUARANTINE_LINK.index]+"\">Quarantine</a>\n" +
                     "    </h4>\n" +
                     "    <p style=\"margin-top: 0px\">\n" +
-                    "        (The Extremes of Good and Evil) by Cicero, written in 45 BC. This book is a treatise on the theory of ethics, very popular during the Renaissance. The first line of Lorem Ipsum, \"Lorem ipsum dolor sit amet.. \", comes from a line in section 1.10.32. The\n" +
-                    "        standard chunk of Lorem Ipsum used since the 1500s is reproduced below for those interested. Sections 1.10.32 and 1.10.33 from \"de Finibus Bonorum et Malorum \" by Cicero are also reproduced in their exact original form, accompanied by English\n" +
-                    "        versions from the 1914 translation by H. Rackham.\n" +
+                    "        "+res[Recommendation_Present_Headers.QUARANTINE_TEXT.index]+
                     "    </p>\n" +
                     "    <h4 class=\"subtitle\">\n" +
-                    "        <a class=\"subtitle\" href=\"http://\">Mask Restrictions</a>\n" +
+                    "        Mask Restrictions\n" +
                     "    </h4>\n" +
                     "    <p>\n" +
-                    "        (The Extremes of Good and Evil) by Cicero, written in 45 BC. This book is a treatise on the theory of ethics, very popular during the Renaissance. The first line of Lorem Ipsum, \"Lorem ipsum dolor sit amet.. \", comes from a line in section 1.10.32. The\n" +
-                    "        standard chunk of Lorem Ipsum used since the 1500s is reproduced below for those interested. Sections 1.10.32 and 1.10.33 from \"de Finibus Bonorum et Malorum \" by Cicero are also reproduced in their exact original form, accompanied by English\n" +
-                    "        versions from the 1914 translation by H. Rackham.\n" +
+                    "        "+res[Recommendation_Present_Headers.MASK_TEXT.index]+
                     "    </p>\n" +
                     "</body>\n" +
                     "\n" +
@@ -394,11 +386,11 @@ public class City implements Comparable<City>, Cloneable {
 
             res[Recommendation_Present_Headers.BODY.index] = recommendation.toString();
 
-//        } catch (NoCovidRestrictionsExceptions e) {
-//            Control.mainLogger.warning("Retrieving covid restrictions failed: " + e.getCity());
-//        } catch (IOException e) {
-//            Control.mainLogger.warning("Retrieving covid restrictions failed: " + e.getMessage());
-//        }
+        } catch (NoCovidRestrictionsExceptions e) {
+            Control.mainLogger.warning("Retrieving covid restrictions failed: " + e.getCity());
+        } catch (IOException e) {
+            Control.mainLogger.warning("Retrieving covid restrictions failed: " + e.getMessage());
+        }
 
         return res;
     }

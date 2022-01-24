@@ -116,19 +116,19 @@ public class GUIController implements Initializable {
 
                 Paint paint = Paint.valueOf("#000000");
                 System.out.println(recommendation.getCountryName()+" "+covidRestrictions[City.Recommendation_Present_Headers.RISK_LEVEL.getIndex()]);
-//                if (covidRestrictions[City.Recommendation_Present_Headers.RISK_LEVEL.getIndex()].equalsIgnoreCase("low")) {
-//                    paint = Paint.valueOf("#61d942");
-//                } else {
-//                    if (covidRestrictions[City.Recommendation_Present_Headers.RISK_LEVEL.getIndex()].equalsIgnoreCase("medium")) {
-//                        paint = Paint.valueOf("#ecc00e");
-//                    } else {
-//                        if (covidRestrictions[City.Recommendation_Present_Headers.RISK_LEVEL.getIndex()].equalsIgnoreCase("high")) {
-//                            paint = Paint.valueOf("#ff7830");
-//                        } else if (covidRestrictions[City.Recommendation_Present_Headers.RISK_LEVEL.getIndex()].equalsIgnoreCase("extreme")) {
-//                            paint = Paint.valueOf("#cb2727");
-//                        }
-//                    }
-//                }
+                if (covidRestrictions[City.Recommendation_Present_Headers.RISK_LEVEL.getIndex()].equalsIgnoreCase("low")) {
+                    paint = Paint.valueOf("#61d942");
+                } else {
+                    if (covidRestrictions[City.Recommendation_Present_Headers.RISK_LEVEL.getIndex()].equalsIgnoreCase("medium")) {
+                        paint = Paint.valueOf("#ecc00e");
+                    } else {
+                        if (covidRestrictions[City.Recommendation_Present_Headers.RISK_LEVEL.getIndex()].equalsIgnoreCase("high")) {
+                            paint = Paint.valueOf("#ff7830");
+                        } else if (covidRestrictions[City.Recommendation_Present_Headers.RISK_LEVEL.getIndex()].equalsIgnoreCase("extreme")) {
+                            paint = Paint.valueOf("#cb2727");
+                        }
+                    }
+                }
 
                 titledPane.setTextFill(paint);
 
