@@ -47,13 +47,10 @@
                <MenuItem mnemonicParsing="false" onAction="#clearButtonAction" text="Clear" />
          </items>
         </Menu>
-        <Menu mnemonicParsing="false" text="Help">
-            <MenuItem mnemonicParsing="false" text="About" />
-        </Menu>
     </MenuBar>
     <AnchorPane prefHeight="100.0" prefWidth="471.0" style="-fx-scale-shape: YES;">
         <Button layoutX="261.0" layoutY="39.0" mnemonicParsing="false" onAction="#gainRecommendationsButtonAction" text="Gain recommendations" />
-        <Label layoutX="208.0" layoutY="3.0" prefHeight="23.0" prefWidth="106.0" text="New traveller " textAlignment="CENTER">
+        <Label layoutX="193.0" layoutY="1.0" prefHeight="27.0" prefWidth="121.0" text="New traveller " textAlignment="JUSTIFY">
             <font>
                 <Font size="18.0" />
             </font>
@@ -67,7 +64,8 @@
                 <ChoiceBox fx:id="sortChoiceBox" layoutX="101.0" layoutY="14.0" prefWidth="150.0" />
                 <Label contentDisplay="CENTER" layoutX="53.0" layoutY="19.0" prefHeight="18.0" prefWidth="46.0" text="Sort by" />
                 <CheckBox fx:id="uppercaseCheckBox" layoutX="314.0" layoutY="18.0" mnemonicParsing="false" onAction="#gainRecommendationsButtonAction" text="Uppercase" />
-            <Accordion fx:id="recommendationsAccordion" layoutY="54.0" prefHeight="333.0" prefWidth="465.0" />
+            <Accordion fx:id="recommendationsAccordion" layoutY="54.0" prefHeight="332.0" prefWidth="465.0" />
+            <Button fx:id="backToRecommendationButton" layoutX="212.0" layoutY="391.0" mnemonicParsing="false" onAction="#gainRecommendationsButtonAction" text="Back" textFill="#221d1d" />
             </AnchorPane>
         </Tab>
         <Tab fx:id="addCandidateCityTab" onSelectionChanged="#updateCitiesLibraryTextArea" text="Add city">
@@ -134,7 +132,7 @@
                   <Button layoutX="164.0" layoutY="361.0" mnemonicParsing="false" onAction="#gainPersonalRecommendation" text="Show recommendation" />
                   <Accordion fx:id="personalRecommendationAccordion" layoutX="13.0" layoutY="225.0" prefHeight="128.0" prefWidth="446.0">
                      <panes>
-                      <TitledPane fx:id="personalRecPaneTitle" animated="false" prefHeight="128.0" prefWidth="447.0" text="untitled 1" >
+                      <TitledPane fx:id="personalRecPaneTitle" animated="false" prefHeight="128.0" prefWidth="447.0" text="untitled 1">
                         <content>
                           <AnchorPane minHeight="0.0" minWidth="0.0" prefHeight="91.0" prefWidth="422.0">
                                  <children>

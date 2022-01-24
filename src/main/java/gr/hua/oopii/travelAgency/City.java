@@ -60,7 +60,7 @@ public class City implements Comparable<City>, Cloneable {
         TRANSPORTATION_BAN(2), ENTRY_TEXT(3),
         ENTRY_BAN(4), ENTRY_LINK(5),
         QUARANTINE_TEXT(6), QUARANTINE_DURATION(7),
-        QUARANTINE_LINK(8), MASK_TEXT(9), MASK_REQUIRED(10), BODY(11),;
+        QUARANTINE_LINK(8), MASK_TEXT(9), MASK_REQUIRED(10), BODY(11), INFECTION_MAP_LINK(12);
 
         private int index;
 
@@ -114,6 +114,10 @@ public class City implements Comparable<City>, Cloneable {
      */
     public City(String name, String countryName) {
         this(new float[]{0F, 0F, 0F, 0F, 0F, 0F, 0F, 0F, 0F, 0F}, name, countryName, null, null);
+    }
+
+    public City(String name ) {
+        this(new float[]{0F, 0F, 0F, 0F, 0F, 0F, 0F, 0F, 0F, 0F}, name, null, null, null);
     }
 
     /**
@@ -261,6 +265,7 @@ public class City implements Comparable<City>, Cloneable {
             res[Recommendation_Present_Headers.ENTRY_TEXT.index] = covidRestrictions.getData().getAreaAccessRestriction().getEntry().getText();
             res[Recommendation_Present_Headers.ENTRY_BAN.index] = covidRestrictions.getData().getAreaAccessRestriction().getEntry().getBan();
             res[Recommendation_Present_Headers.ENTRY_LINK.index] = covidRestrictions.getData().getAreaAccessRestriction().getEntry().getRules();
+            res[Recommendation_Present_Headers.INFECTION_MAP_LINK.index] = covidRestrictions.getData().getDiseaseInfection().getInfectionMapLink();
 
             recommendation.append("<!DOCTYPE html>\n" +
                     "<html lang=\"en\">\n" +
@@ -353,7 +358,7 @@ public class City implements Comparable<City>, Cloneable {
                     "        </tr>\n" +
                     "        <tr>\n" +
                     "            <td class=\"first_column\">Infection Map</td>\n" +
-                    "            <td class=\"second_column\"><a href=\"http://\">View</a></td>\n" +
+                    "            <td class=\"second_column\"><a href=\""+res[Recommendation_Present_Headers.INFECTION_MAP_LINK.index]+"\">View</a></td>\n" +
                     "        </tr>\n" +
                     "    </table>\n" +
                     "    <h4 class=\"subtitle\" id=\"transportation\" >\n" +
@@ -718,7 +723,7 @@ public class City implements Comparable<City>, Cloneable {
         if (getClass() != obj.getClass()) {
             return false;
         }
-        return this.getName().equalsIgnoreCase(((City) obj).getName()) && this.getCountryName().equalsIgnoreCase(((City) obj).getCountryName());
+        return this.getName().equalsIgnoreCase(((City) obj).getName());
     }
 
     @Override

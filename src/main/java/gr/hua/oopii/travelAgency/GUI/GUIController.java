@@ -2,6 +2,8 @@ package gr.hua.oopii.travelAgency.GUI;
 
 import gr.hua.oopii.travelAgency.City;
 import gr.hua.oopii.travelAgency.Control;
+import gr.hua.oopii.travelAgency.comparators.GeodesicCompare;
+import gr.hua.oopii.travelAgency.comparators.TimestampCompare;
 import gr.hua.oopii.travelAgency.exception.*;
 import gr.hua.oopii.travelAgency.perceptrons.PerceptronTraveler;
 import javafx.event.Event;
@@ -43,6 +45,7 @@ public class GUIController implements Initializable {
     public Accordion personalRecommendationAccordion;
     public Tab personalRecommendationTab;
     public Accordion recommendationsAccordion;
+    public Button backToRecommendationButton;
     ExecutorService executorService = newCachedThreadPool();
 
     public Spinner<Integer> ageSpinner;
@@ -111,11 +114,11 @@ public class GUIController implements Initializable {
                 webView.getEngine().loadContent(covidRestrictions[City.Recommendation_Present_Headers.BODY.getIndex()]);
 
                 AnchorPane anchorPane = new AnchorPane(webView);
-                TitledPane titledPane = new TitledPane(recommendation.getName(), anchorPane);
+                TitledPane titledPane = new TitledPane(uppercaseCheckBox.isSelected()? recommendation.getName().toUpperCase(): recommendation.getName(), anchorPane);
                 titledPane.setMaxSize(465, 250);
 
                 Paint paint = Paint.valueOf("#000000");
-                System.out.println(recommendation.getCountryName()+" "+covidRestrictions[City.Recommendation_Present_Headers.RISK_LEVEL.getIndex()]);
+
                 if (covidRestrictions[City.Recommendation_Present_Headers.RISK_LEVEL.getIndex()].equalsIgnoreCase("low")) {
                     paint = Paint.valueOf("#61d942");
                 } else {
@@ -406,11 +409,26 @@ public class GUIController implements Initializable {
 
                 sortChoiceBox.getItems().addAll(Control.retrieveSortingOptions());
                 sortChoiceBox.getSelectionModel().selectedIndexProperty().addListener((observable, oldValue, newValue) -> {
-                    try {
-                        recommendationsTextArea.setText(Control.sortRecommendation((int) newValue));
-                    } catch (NoRecommendationException e) {
-                        noRecommendationExceptionHandling(e, RecommendationTab.AGE_RECOMMENDATION);
-                    }
+                    Comparator<City> caseComparator = switch ((int) newValue) {
+                        case 0 -> new GeodesicCompare();
+                        case 1 -> new GeodesicCompare().reversed();
+                        case 2 -> new TimestampCompare();
+                        default -> null;
+                    };
+
+                    recommendationsAccordion.getPanes().sort(new Comparator<TitledPane>() {
+                        @Override
+                        public int compare(TitledPane o1, TitledPane o2) {
+                            ArrayList<City> lastRecommendation = Control.getLastPerceptronUsed().getLastRecommendation();
+                            return caseComparator.compare(lastRecommendation.get(lastRecommendation.indexOf(new City(o1.getText()))),
+                                    lastRecommendation.get(lastRecommendation.indexOf(new City(o2.getText()))));
+                        }
+                    });
+//                    try {
+//                        recommendationsTextArea.setText(Control.sortRecommendation((int) newValue));
+//                    } catch (NoRecommendationException e) {
+//                        noRecommendationExceptionHandling(e, RecommendationTab.AGE_RECOMMENDATION);
+//                    }
 
                 }); //TODO: For optimization reasons, we can modify it so it want listen the auto value change (when new ageSpinner added)
 
