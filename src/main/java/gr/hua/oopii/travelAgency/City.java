@@ -2,7 +2,9 @@ package gr.hua.oopii.travelAgency;
 
 import gr.hua.oopii.travelAgency.API.APICallers;
 import gr.hua.oopii.travelAgency.API.APICredentials;
+import gr.hua.oopii.travelAgency.API.covidRestrictions.AreaRestriction;
 import gr.hua.oopii.travelAgency.API.covidRestrictions.CovidRestrictions;
+import gr.hua.oopii.travelAgency.GUI.GUIApplication;
 import gr.hua.oopii.travelAgency.exception.*;
 import gr.hua.oopii.travelAgency.API.openData.CountWords;
 import gr.hua.oopii.travelAgency.API.openData.MediaWiki;
@@ -16,6 +18,7 @@ import java.io.IOException;
 import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.Date;
+import java.util.List;
 import java.util.concurrent.Callable;
 import java.util.concurrent.ExecutionException;
 import java.util.concurrent.ExecutorService;
@@ -51,6 +54,24 @@ public class City implements Comparable<City>, Cloneable {
 
     public static int WikiProcessCount = 0;        //4 DEBUGGING reasons
     public static int WeatherProcessCount = 0;        //4 DEBUGGING reasons
+
+    public enum Recommendation_Present_Headers {
+        RISK_LEVEL(0), TRANSPORTATION_TEXT(1),
+        TRANSPORTATION_BAN(2), ENTRY_TEXT(3),
+        ENTRY_BAN(4), ENTRY_LINK(5),
+        QUARANTINE_TEXT(6), QUARANTINE_DURATION(7),
+        QUARANTINE_LINK(8), MASK_TEXT(9), MASK_REQUIRED(10), BODY(11),;
+
+        private int index;
+
+        Recommendation_Present_Headers(int index) {
+            this.index = index;
+        }
+
+        public int getIndex() {
+            return this.index;
+        }
+    }
 
     /**
      * <h1> Empty constructor</h1>
@@ -210,15 +231,176 @@ public class City implements Comparable<City>, Cloneable {
      * @return a string with all the recommendations
      * @throws NoRecommendationException
      */
-    public String presentRecommendation() throws NoCovidRestrictionsExceptions, IOException {
-        StringBuilder recommendation = new StringBuilder();
+    public String[] presentRecommendation() {
 
-        CovidRestrictions covidRestrictions = APICallers.retrieveCovidRestrictions(this);
-        recommendation.append("<h1 style=\"display: inline;float:left;\">&#128227;</h1>");
-        recommendation.append("<h4 style=\"display: inline;float:right;\">Covid Restrictions</h4>");
-        recommendation.append(covidRestrictions.getData().getSummary());
+        String[] res = new String[Recommendation_Present_Headers.values().length];
+        CovidRestrictions covidRestrictions = null;
+        //try {
+            StringBuilder recommendation = new StringBuilder();
+//            covidRestrictions = APICallers.retrieveCovidRestrictions(this);
+//
+//
+//            res[Recommendation_Present_Headers.RISK_LEVEL.index] = covidRestrictions.getData().getDiseaseRiskLevel();
+//
+//            res[Recommendation_Present_Headers.TRANSPORTATION_BAN.index] = covidRestrictions.getData().getAreaAccessRestriction().getTransportation().getIsBanned();
+//            res[Recommendation_Present_Headers.TRANSPORTATION_TEXT.index] = covidRestrictions.getData().getAreaAccessRestriction().getTransportation().getText();
+//            try {
+//                res[Recommendation_Present_Headers.QUARANTINE_DURATION.index] = covidRestrictions.getData().getAreaAccessRestriction().getQuarantineModality().getAdditionalProperties().get("duration").toString();
+//            } catch (NullPointerException e) {
+//                res[Recommendation_Present_Headers.QUARANTINE_DURATION.index] = "";
+//            }
+//
+//            res[Recommendation_Present_Headers.MASK_REQUIRED.index] = covidRestrictions.getData().getAreaAccessRestriction().getMask().getIsRequired();
+//            try {
+//                res[Recommendation_Present_Headers.MASK_TEXT.index] = covidRestrictions.getData().getAreaAccessRestriction().getMask().getText();
+//            } catch (NullPointerException e) {
+//                res[Recommendation_Present_Headers.MASK_TEXT.index] = "";
+//            }
+//            res[Recommendation_Present_Headers.QUARANTINE_LINK.index] = covidRestrictions.getData().getAreaAccessRestriction().getQuarantineModality().getRules();
+//            res[Recommendation_Present_Headers.QUARANTINE_TEXT.index] = covidRestrictions.getData().getAreaAccessRestriction().getQuarantineModality().getText();
+//            res[Recommendation_Present_Headers.ENTRY_TEXT.index] = covidRestrictions.getData().getAreaAccessRestriction().getEntry().getText();
+//            res[Recommendation_Present_Headers.ENTRY_BAN.index] = covidRestrictions.getData().getAreaAccessRestriction().getEntry().getBan();
+//            res[Recommendation_Present_Headers.ENTRY_LINK.index] = covidRestrictions.getData().getAreaAccessRestriction().getEntry().getRules();
 
-        return recommendation.toString();
+            recommendation.append("<!DOCTYPE html>\n" +
+                    "<html lang=\"en\">\n" +
+                    "\n" +
+                    "<head>\n" +
+                    "    <meta charset=\"UTF-8\" />\n" +
+                    "    <meta name=\"viewport\" content=\"width=device-width, initial-scale=1.0\" />\n" +
+                    "    <meta http-equiv=\"X-UA-Compatible\" content=\"ie=edge\" />\n" +
+                    "    <link rel=\"stylesheet\" href=\"index.css\" />\n" +
+                    "    <title>OOPI Java II</title>\n" +
+                    "    <style>\n" +
+                    "        body {\n" +
+                    "            background-color: lightgray;\n" +
+                    "            font-family: \"Segoe UI\", Tahoma, Geneva, Verdana, sans-serif;\n" +
+                    "            font-size: 12px; "+
+                    "        }\n" +
+                    "        \n" +
+                    "        p {\n" +
+                    "            margin-top: 0px;\n" +
+                    "            color: rgb(48, 57, 59);\n" +
+                    "        }\n" +
+                    "        \n" +
+                    "        table {\n" +
+                    "            border: 1px solid rgb(48, 57, 59);\n" +
+                    "            border-color: 1px solid rgb(121, 48, 48);\n" +
+                    "            width: 50%;\n" +
+                    "            float: right;\n" +
+                    "            margin-left: 1%;\n" +
+                    "            margin-right: 9px;\n" +
+                    "            margin-bottom: 1%;\n" +
+                    "            margin-top: 10%;\n" +
+                    "            color: rgb(48, 57, 59);\n" +
+                    "        }\n" +
+                    "        \n" +
+                    "        .first_column {\n" +
+                    "            margin: 0px;\n" +
+                    "            border: solid black;\n" +
+                    "        }\n" +
+                    "        \n" +
+                    "        .second_column {\n" +
+                    "            margin: 0px;\n" +
+                    "            border: solid black;\n" +
+                    "            text-align: center;\n" +
+                    "        }\n" +
+                    "        \n" +
+                    "        .subtitle {\n" +
+                    "            color: black;\n" +
+                    "            margin-bottom: 5px"+
+                    "        }\n" +
+                    "        \n" +
+                    "        #alert_emoji {\n" +
+                    "            position: absolute;\n" +
+                    "            float: left;\n" +
+                    "            top: -25px;\n" +
+                    "            font-size: 30px"+
+                    "        }\n" +
+                    "        \n" +
+                    "        #covid_restriction_title {\n" +
+                    "            position: absolute;\n" +
+                    "            top: -3px;\n" +
+                    "            text-align: left;\n" +
+                    "            margin-left: 16px;\n" +
+                    "        }\n" +
+                    "       #transportation{\n" +
+                    "            margin-top: 5px;\n" +
+                    "        }\n" +
+                    "    </style>\n" +
+                    "</head>\n" +
+                    "\n" +
+                    "<body>\n" +
+                    "    <h1 id=\"alert_emoji\">&#128680;</h1>\n" +
+                    "    <h3 id=\"covid_restriction_title\">Covid Restrictions</h3>\n" +
+                    "    <br /><br />\n" +
+                    "    <table>\n" +
+                    "        <tr>\n" +
+                    "            <td class=\"first_column\">Covid Risk Level</td>\n" +
+                    "            <td class=\"second_column\">Statsdbdgb</td>\n" +
+                    "        </tr>\n" +
+                    "        <tr>\n" +
+                    "            <td class=\"first_column\">Entry Ban</td>\n" +
+                    "            <td class=\"second_column\">Statsdbdgb</td>\n" +
+                    "        </tr>\n" +
+                    "        <tr>\n" +
+                    "            <td class=\"first_column\">Carantine Duration</td>\n" +
+                    "            <td class=\"second_column\">Statsdbdgb</td>\n" +
+                    "        </tr>\n" +
+                    "        <tr>\n" +
+                    "            <td class=\"first_column\">Mask Requirement</td>\n" +
+                    "            <td class=\"second_column\">Statsdbdgb</td>\n" +
+                    "        </tr>\n" +
+                    "        <tr>\n" +
+                    "            <td class=\"first_column\">Infection Map</td>\n" +
+                    "            <td class=\"second_column\"><a href=\"http://\">View</a></td>\n" +
+                    "        </tr>\n" +
+                    "    </table>\n" +
+                    "    <h4 class=\"subtitle\" id=\"transportation\" >\n" +
+                    "        <a class=\"subtitle\" href=\"http://\"> Transportation</a>\n" +
+                    "    </h4>\n" +
+                    "    <p style=\"margin-top: 0px\">\n" +
+                    "        (The Extremes of Good and Evil) by Cicero, written in 45 BC. This book is a treatise on the theory of ethics, very popular during the Renaissance. The first line of Lorem Ipsum, \"Lorem ipsum dolor sit amet.. \", comes from a line in section 1.10.32. The\n" +
+                    "        standard chunk of Lorem Ipsum used since the 1500s is reproduced below for those interested. Sections 1.10.32 and 1.10.33 from \"de Finibus Bonorum et Malorum \" by Cicero are also reproduced in their exact original form, accompanied by English\n" +
+                    "        versions from the 1914 translation by H. Rackham.\n" +
+                    "    </p>\n" +
+                    "    <h4 class=\"subtitle\">\n" +
+                    "        <a class=\"subtitle\" href=\"http://\">Entry</a>\n" +
+                    "    </h4>\n" +
+                    "    <p>\n" +
+                    "        (The Extremes of Good and Evil) by Cicero, written in 45 BC. This book is a treatise on the theory of ethics, very popular during the Renaissance. The first line of Lorem Ipsum, \"Lorem ipsum dolor sit amet.. \", comes from a line in section 1.10.32. The\n" +
+                    "        standard chunk of Lorem Ipsum used since the 1500s is reproduced below for those interested. Sections 1.10.32 and 1.10.33 from \"de Finibus Bonorum et Malorum \" by Cicero are also reproduced in their exact original form, accompanied by English\n" +
+                    "        versions from the 1914 translation by H. Rackham.\n" +
+                    "    </p>\n" +
+                    "    <h4 class=\"subtitle\">\n" +
+                    "        <a class=\"subtitle\" href=\"http://\">Carantine</a>\n" +
+                    "    </h4>\n" +
+                    "    <p style=\"margin-top: 0px\">\n" +
+                    "        (The Extremes of Good and Evil) by Cicero, written in 45 BC. This book is a treatise on the theory of ethics, very popular during the Renaissance. The first line of Lorem Ipsum, \"Lorem ipsum dolor sit amet.. \", comes from a line in section 1.10.32. The\n" +
+                    "        standard chunk of Lorem Ipsum used since the 1500s is reproduced below for those interested. Sections 1.10.32 and 1.10.33 from \"de Finibus Bonorum et Malorum \" by Cicero are also reproduced in their exact original form, accompanied by English\n" +
+                    "        versions from the 1914 translation by H. Rackham.\n" +
+                    "    </p>\n" +
+                    "    <h4 class=\"subtitle\">\n" +
+                    "        <a class=\"subtitle\" href=\"http://\">Mask Restrictions</a>\n" +
+                    "    </h4>\n" +
+                    "    <p>\n" +
+                    "        (The Extremes of Good and Evil) by Cicero, written in 45 BC. This book is a treatise on the theory of ethics, very popular during the Renaissance. The first line of Lorem Ipsum, \"Lorem ipsum dolor sit amet.. \", comes from a line in section 1.10.32. The\n" +
+                    "        standard chunk of Lorem Ipsum used since the 1500s is reproduced below for those interested. Sections 1.10.32 and 1.10.33 from \"de Finibus Bonorum et Malorum \" by Cicero are also reproduced in their exact original form, accompanied by English\n" +
+                    "        versions from the 1914 translation by H. Rackham.\n" +
+                    "    </p>\n" +
+                    "</body>\n" +
+                    "\n" +
+                    "</html>");
+
+            res[Recommendation_Present_Headers.BODY.index] = recommendation.toString();
+
+//        } catch (NoCovidRestrictionsExceptions e) {
+//            Control.mainLogger.warning("Retrieving covid restrictions failed: " + e.getCity());
+//        } catch (IOException e) {
+//            Control.mainLogger.warning("Retrieving covid restrictions failed: " + e.getMessage());
+//        }
+
+        return res;
     }
 
     /**

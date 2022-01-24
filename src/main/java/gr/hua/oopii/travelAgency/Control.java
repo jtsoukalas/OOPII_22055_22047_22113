@@ -58,6 +58,24 @@ public class Control {
      */
     public static Logger mainLogger;
 
+    public enum Sorting_Option {
+        RISK_LEVEL(0), TRANSPORTATION_TEXT(1),
+        TRANSPORTATION_BAN(2), ENTRY_TEXT(3),
+        ENTRY_BAN(4), ENTRY_LINK(5),
+        QUARANTINE_TEXT(6), QUARANTINE_DURATION(7),
+        QUARANTINE_LINK(8), MASK_TEXT(9), MASK_REQUIRED(10), BODY(11),;
+
+        private int index;
+
+        Sorting_Option(int index) {
+            this.index = index;
+        }
+
+        public int getIndex() {
+            return this.index;
+        }
+    }
+
     /**
      * @param userCity    user's city name
      * @param userCountry user's country name (ISO)

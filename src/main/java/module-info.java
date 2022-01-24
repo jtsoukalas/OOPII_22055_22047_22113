@@ -22,6 +22,7 @@ module gr.hua.oopii.travelAgency {
     requires  java.base;
     requires json.simple;
     requires java.annotation;
+//    requires javax.annotation;
     //requires javax.annotation;
 
 

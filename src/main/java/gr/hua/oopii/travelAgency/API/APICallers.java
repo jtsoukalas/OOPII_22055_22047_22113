@@ -33,6 +33,9 @@ import java.util.stream.Collectors;
 
 public class APICallers implements APICredentials {
 
+    enum covidLevel {
+        LOW, MEDIUM, HIGH, EXTREME
+    }
 
     public static void main(String[] args) throws Exception {
         City origin = new City("New York", "US");
@@ -189,22 +192,33 @@ public class APICallers implements APICredentials {
     }
 
     public static CovidRestrictions retrieveCovidRestrictions(City city) throws IOException, NoCovidRestrictionsExceptions {
+        boolean secondTry = false;
+
         URL url = new URL("https://test.api.amadeus.com/v1/duty-of-care/diseases/covid19-area-report?countryCode=" + city.getCountryName());
-        HttpURLConnection http = (HttpURLConnection) url.openConnection();
-        http.setRequestProperty("Accept", "application/json");
-        http.setRequestProperty("Authorization", "Bearer " + amadeusAPIToken);
-
+        HttpURLConnection http;
         byte[] response;
-        if (http.getResponseCode() == 200) {
-            response = http.getInputStream().readAllBytes();
-        } else {
-            throw new NoCovidRestrictionsExceptions(city.getName(),new InputStreamReader(http.getErrorStream()).toString());
-        }
+        while (true) {
 
+            http = (HttpURLConnection) url.openConnection();
+            http.setRequestProperty("Accept", "application/json");
+            http.setRequestProperty("Authorization", "Bearer " + amadeusAPIToken);
+
+
+            if (http.getResponseCode() == 200) {
+                response = http.getInputStream().readAllBytes();
+                break;
+            } else {
+                if (secondTry) {
+                    throw new NoCovidRestrictionsExceptions(city.getName(), new InputStreamReader(http.getErrorStream()).toString());
+                }
+                secondTry = true;
+            }
+        }
         ObjectMapper mapper = new ObjectMapper();
         CovidRestrictions covidRestrictions = mapper.readValue(response, CovidRestrictions.class);
         http.disconnect();
         return covidRestrictions;
+
     }
 
     //TODO

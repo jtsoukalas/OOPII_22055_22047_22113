@@ -31,6 +31,15 @@ public class NoCovidRestrictionsExceptions extends Exception {
         this.city = city;
         this.message = message;
     }
+
+    public String getCity() {
+        return city;
+    }
+
+    @Override
+    public String getMessage() {
+        return message;
+    }
 }
 
 

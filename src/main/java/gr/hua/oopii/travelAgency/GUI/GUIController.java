@@ -4,15 +4,20 @@ import gr.hua.oopii.travelAgency.City;
 import gr.hua.oopii.travelAgency.Control;
 import gr.hua.oopii.travelAgency.exception.*;
 import gr.hua.oopii.travelAgency.perceptrons.PerceptronTraveler;
+import javafx.event.Event;
 import javafx.fxml.FXML;
 import javafx.fxml.Initializable;
+import javafx.scene.Node;
+import javafx.scene.Scene;
 import javafx.scene.chart.CategoryAxis;
 import javafx.scene.chart.LineChart;
 import javafx.scene.chart.NumberAxis;
 import javafx.scene.chart.XYChart;
 import javafx.scene.control.*;
 import javafx.scene.layout.AnchorPane;
+import javafx.scene.layout.Border;
 import javafx.scene.paint.Color;
+import javafx.scene.paint.Paint;
 import javafx.scene.text.Text;
 import javafx.scene.web.WebView;
 import javafx.stage.FileChooser;
@@ -92,52 +97,45 @@ public class GUIController implements Initializable {
 
 
     @FXML
-    protected void gainRecommendationsButtonAction() throws StopRunningException, NoCovidRestrictionsExceptions, IOException {
+    protected void gainRecommendationsButtonAction(Event event) throws StopRunningException, IOException {
         Control.mainLogger.info("GUI selection");
-        System.out.println(personalRecommendationAccordion.getPanes());
+        recommendationsAccordion.getPanes().clear();
         try {
             ArrayList<City> recommendations = Control.runPerceptron(ageSpinner.getValue(), false);
 
-            ArrayList<Future<Void>> futures = new ArrayList<>();
             for (City recommendation : recommendations) {
-                /*futures.add(executorService.submit(new Callable<Void>() {
-                 *//**
-                 * Computes a result, or throws an exception if unable to do so.
-                 *
-                 * @return computed result
-                 * @throws Exception if unable to compute a result
-                 *//*
-                    @Override
-                    public Void call() throws NoCovidRestrictionsExceptions, IOException { */
                 WebView webView = new WebView();
-                webView.getEngine().loadContent(recommendation.presentRecommendation());
+                webView.setMaxSize(465, 280);
+
+                String[] covidRestrictions = recommendation.presentRecommendation();
+                webView.getEngine().loadContent(covidRestrictions[City.Recommendation_Present_Headers.BODY.getIndex()]);
 
                 AnchorPane anchorPane = new AnchorPane(webView);
-
                 TitledPane titledPane = new TitledPane(recommendation.getName(), anchorPane);
+                titledPane.setMaxSize(465, 250);
+
+                Paint paint = Paint.valueOf("#000000");
+                System.out.println(recommendation.getCountryName()+" "+covidRestrictions[City.Recommendation_Present_Headers.RISK_LEVEL.getIndex()]);
+//                if (covidRestrictions[City.Recommendation_Present_Headers.RISK_LEVEL.getIndex()].equalsIgnoreCase("low")) {
+//                    paint = Paint.valueOf("#61d942");
+//                } else {
+//                    if (covidRestrictions[City.Recommendation_Present_Headers.RISK_LEVEL.getIndex()].equalsIgnoreCase("medium")) {
+//                        paint = Paint.valueOf("#ecc00e");
+//                    } else {
+//                        if (covidRestrictions[City.Recommendation_Present_Headers.RISK_LEVEL.getIndex()].equalsIgnoreCase("high")) {
+//                            paint = Paint.valueOf("#ff7830");
+//                        } else if (covidRestrictions[City.Recommendation_Present_Headers.RISK_LEVEL.getIndex()].equalsIgnoreCase("extreme")) {
+//                            paint = Paint.valueOf("#cb2727");
+//                        }
+//                    }
+//                }
+
+                titledPane.setTextFill(paint);
 
                 recommendationsAccordion.getPanes().add(titledPane);
-                //return null;
-
-            //}
-
-               // }));
-
-
-           /*     for (Future<Void> future : futures) {
-                    try {
-                        future.get();
-                    } catch (InterruptedException | ExecutionException e) {
-                        Throwable cause = e.getCause();
-                        if (cause.getClass().isAssignableFrom(NoCovidRestrictionsExceptions.class)) {
-                            throw (NoCovidRestrictionsExceptions) cause;
-                        } else if (cause.getClass().isAssignableFrom(NoSuchCityException.class)) {
-                            throw (IOException) cause;
-                        }
-                    }
-                }*/
-                recommendationsAccordion.setVisible(true);
             }
+            recommendationsAccordion.setVisible(true);
+
         } catch (NoRecommendationException e) {
             noRecommendationExceptionHandling(e, RecommendationTab.AGE_RECOMMENDATION);
         }
@@ -219,12 +217,9 @@ public class GUIController implements Initializable {
 //        webView.setContextMenuEnabled(false);
 
         personalRecPaneTitle.setText(rec.getName());
-        try {
-            personalRecPanel.getEngine().loadContent(rec.presentRecommendation());
-        } catch (NoCovidRestrictionsExceptions | IOException e) {
-            personalRecPanel.getEngine().loadContent("Trouble loading covid restrictions");
-            Control.mainLogger.warning("Trouble loading covid restrictions. Info:" + e);
-        }
+
+        personalRecPanel.getEngine().loadContent(rec.presentRecommendation()[0]);
+
         personalRecPaneTitle.setVisible(true);
         personalRecommendationAccordion.setExpandedPane(personalRecPaneTitle);
     }
@@ -330,19 +325,19 @@ public class GUIController implements Initializable {
 
         //Logger init
         try {
-                Control.initLogger();
-            } catch (IOException e) {
-                e.printStackTrace();
-            }
+            Control.initLogger();
+        } catch (IOException e) {
+            e.printStackTrace();
+        }
 
         //Control obj init
         try {
-                Control.init("Athens", "GR");
-            } catch (StopRunningException e) {
-                stopRunningExceptionHandling(e);
-            } catch (NoSuchCityException e) {
-                Control.mainLogger.severe("GUI:" + e);
-            }
+            Control.init("Athens", "GR");
+        } catch (StopRunningException e) {
+            stopRunningExceptionHandling(e);
+        } catch (NoSuchCityException e) {
+            Control.mainLogger.severe("GUI:" + e);
+        }
 
         //Loading data from JSON. If get trouble, inform the user to choose another file or download data
         Future<Boolean> jsonLoadRes = executorService.submit(new Callable<Boolean>() {
@@ -397,46 +392,46 @@ public class GUIController implements Initializable {
 
         //Recommend destination tab inits
         executorService.submit(new Callable<Void>() {
-                                   /**
-                                    * Computes a result, or throws an exception if unable to do so.
-                                    *
-                                    * @return computed result
-                                    * @throws Exception if unable to compute a result
-                                    */
-                                   @Override
-                                   public Void call() {
-                                       SpinnerValueFactory<Integer> spinnerValueFactory = new SpinnerValueFactory.IntegerSpinnerValueFactory(16, 115);
-                                       spinnerValueFactory.setValue(16);
-                                       ageSpinner.setValueFactory(spinnerValueFactory);
+            /**
+             * Computes a result, or throws an exception if unable to do so.
+             *
+             * @return computed result
+             * @throws Exception if unable to compute a result
+             */
+            @Override
+            public Void call() {
+                SpinnerValueFactory<Integer> spinnerValueFactory = new SpinnerValueFactory.IntegerSpinnerValueFactory(16, 115);
+                spinnerValueFactory.setValue(16);
+                ageSpinner.setValueFactory(spinnerValueFactory);
 
-                                       sortChoiceBox.getItems().addAll(Control.retrieveSortingOptions());
-                                       sortChoiceBox.getSelectionModel().selectedIndexProperty().addListener((observable, oldValue, newValue) -> {
-                                           try {
-                                               recommendationsTextArea.setText(Control.sortRecommendation((int) newValue));
-                                           } catch (NoRecommendationException e) {
-                                               noRecommendationExceptionHandling(e, RecommendationTab.AGE_RECOMMENDATION);
-                                           }
+                sortChoiceBox.getItems().addAll(Control.retrieveSortingOptions());
+                sortChoiceBox.getSelectionModel().selectedIndexProperty().addListener((observable, oldValue, newValue) -> {
+                    try {
+                        recommendationsTextArea.setText(Control.sortRecommendation((int) newValue));
+                    } catch (NoRecommendationException e) {
+                        noRecommendationExceptionHandling(e, RecommendationTab.AGE_RECOMMENDATION);
+                    }
 
-                                       }); //TODO: For optimization reasons, we can modify it so it want listen the auto value change (when new ageSpinner added)
+                }); //TODO: For optimization reasons, we can modify it so it want listen the auto value change (when new ageSpinner added)
 
-                                       addCandidateCityTab.setOnSelectionChanged(event -> {
-                                           candidateCityName.clear();
-                                           candidateCityISO.clear();
-                                           addCandidateCityNotification.setVisible(false);
-                                           try {
-                                               updateCitiesLibraryTextArea();
-                                           } catch (CitiesLibraryEmptyException e) {
-                                               try {
-                                                   Control.initCitiesLibrary();
-                                               } catch (StopRunningException e2) {
-                                                   stopRunningExceptionHandling(e2);
-                                               }
-                                           }
-                                       });
+                addCandidateCityTab.setOnSelectionChanged(event -> {
+                    candidateCityName.clear();
+                    candidateCityISO.clear();
+                    addCandidateCityNotification.setVisible(false);
+                    try {
+                        updateCitiesLibraryTextArea();
+                    } catch (CitiesLibraryEmptyException e) {
+                        try {
+                            Control.initCitiesLibrary();
+                        } catch (StopRunningException e2) {
+                            stopRunningExceptionHandling(e2);
+                        }
+                    }
+                });
 
-                                       return null;
-                                   }
-                               });
+                return null;
+            }
+        });
 
         //Cities library tab inits
         executorService.submit(new Runnable() {
@@ -461,7 +456,7 @@ public class GUIController implements Initializable {
                     TreeMap<String, Integer> weekCityCatalogueStatistics;
                     weekCityCatalogueStatistics = Control.statisticsWeekCityCatalogue(weekCityCatalogue);
 
-                    for (Map.Entry<String, Integer> entry: weekCityCatalogueStatistics.entrySet() ) {
+                    for (Map.Entry<String, Integer> entry : weekCityCatalogueStatistics.entrySet()) {
                         series.getData().add(new XYChart.Data(entry.getKey().substring(0, 3), entry.getValue()));
                     }
                     lineChartCitiesLibrary.setLegendVisible(false);
@@ -509,7 +504,8 @@ public class GUIController implements Initializable {
         }
     }
 
-    private void noRecommendationExceptionHandling(NoRecommendationException e, RecommendationTab recommendationTab) {
+    private void noRecommendationExceptionHandling(NoRecommendationException e, RecommendationTab
+            recommendationTab) {
         Control.mainLogger.warning("No recommendation exception. INFO:" + e);
         Alert alert = new Alert(Alert.AlertType.INFORMATION);           //Code reference: https://code.makery.ch/blog/javafx-dialogs-official/
         alert.setTitle("No recommendations");

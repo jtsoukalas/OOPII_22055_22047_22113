@@ -30,7 +30,7 @@ public class GUIApplication extends Application {
         });
         stage.setResizable(false);
 
-        Image icon = new Image(getClass().getResourceAsStream("travel-icon.png"));
+        Image icon = new Image(getClass().getResourceAsStream("travel-agency-logo.png"));
         stage.getIcons().add(icon);
     }
 

@@ -1,0 +1,23 @@
+body {
+    background-color: brown;
+}
+
+.table {
+    width: 50%;
+    float: right;
+    border-collapse: collapse;
+    margin-left: 1%;
+    margin-bottom: 1%;
+    margin-top: 10%;
+}
+
+.first_column {
+    margin: 0px;
+    border: solid black;
+}
+
+.second_column {
+    margin: 0px;
+    border: solid black;
+    text-align: center;
+}
