@@ -60,11 +60,6 @@ public class Control {
     public static Logger mainLogger;
 
     /**
-     * Logger object
-     */
-    public static Logger mainLogger;
-
-    /**
      * @param userCity    user's city name
      * @param userCountry user's country name (ISO)
      * @throws NoSuchCityException  if there is no city with given parameters
