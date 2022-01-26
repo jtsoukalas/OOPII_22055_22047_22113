@@ -2,13 +2,10 @@ package gr.hua.oopii.travelAgency.GUI;
 
 import gr.hua.oopii.travelAgency.Control;
 import javafx.application.Application;
-import javafx.event.EventHandler;
 import javafx.fxml.FXMLLoader;
 import javafx.scene.Scene;
 import javafx.scene.image.Image;
-import javafx.scene.paint.Color;
 import javafx.stage.Stage;
-import javafx.stage.WindowEvent;
 
 import java.io.IOException;
 

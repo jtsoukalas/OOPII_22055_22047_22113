@@ -12,10 +12,7 @@ import java.util.Scanner;
  * @version 0
  * @since firstDeliverable
  */
-
-
 public abstract class Input {
-
 
     public static int readInt(String errorMessage) {
         int answer = -1;

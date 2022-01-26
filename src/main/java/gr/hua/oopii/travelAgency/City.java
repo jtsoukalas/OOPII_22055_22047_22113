@@ -434,6 +434,7 @@ public class City implements Comparable<City>, Cloneable {
     /**
      * <h1>Creates a {@link Runnable} object for downloading weather data</h1>
      * {@link Runnable#run()} method
+     * @deprecated
      *
      * @return
      */
@@ -490,6 +491,10 @@ public class City implements Comparable<City>, Cloneable {
         };
     }
 
+    /**
+     * <h1>Creates a callable object for downloading weather data</h1>
+     * @return a callable object for downloading weather data
+     */
     private Callable<Void> createCallableObjForWeatherDownload() {
         City city = this;
         int pid = WeatherProcessCount++;
@@ -563,20 +568,9 @@ public class City implements Comparable<City>, Cloneable {
         City city = this;
         int pid = WikiProcessCount++;
 
-        return new Callable<Void>() {
-            /**
-             * Computes a result, or throws an exception if unable to do so.
-             *
-             * @return computed result
-             * @throws Exception if unable to compute a result
-             */
-            @Override
-            public Void call() throws Exception {
-                System.out.println("Hello from: " + pid + " wiki download data process");
-                city.setWikiData();
-                System.out.println("Goodbye from: " + pid + " wiki download data process");
-                return null;
-            }
+        return () -> {
+            city.setWikiData();
+            return null;
         };
     }
 

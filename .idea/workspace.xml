@@ -5,17 +5,24 @@
   </component>
   <component name="ChangeListManager">
     <list default="true" id="5b42701a-cfbd-4be0-86b1-5044a616257d" name="Changes" comment="Logger addition">
-      <change beforePath="$PROJECT_DIR$/.idea/compiler.xml" beforeDir="false" afterPath="$PROJECT_DIR$/.idea/compiler.xml" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/.idea/shelf/Uncommitted_changes_before_Update_at_5_1_22,_10_45_PM_[Changes]/shelved.patch" beforeDir="false" />
-      <change beforePath="$PROJECT_DIR$/.idea/shelf/Uncommitted_changes_before_Update_at_5_1_22__10_45_PM__Changes_.xml" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/.gitignore" beforeDir="false" afterPath="$PROJECT_DIR$/.gitignore" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/.idea/libraries/Maven__org_openjfx_javafx_base_win_16.xml" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/.idea/libraries/Maven__org_openjfx_javafx_controls_win_16.xml" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/.idea/libraries/Maven__org_openjfx_javafx_fxml_win_16.xml" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/.idea/libraries/Maven__org_openjfx_javafx_graphics_win_16.xml" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/.idea/libraries/Maven__org_openjfx_javafx_media_win_16.xml" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/.idea/libraries/Maven__org_openjfx_javafx_web_win_16.xml" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/.idea/libraries/Maven__org_testng_testng_7_4_0.xml" beforeDir="false" />
       <change beforePath="$PROJECT_DIR$/.idea/workspace.xml" beforeDir="false" afterPath="$PROJECT_DIR$/.idea/workspace.xml" afterDir="false" />
       <change beforePath="$PROJECT_DIR$/OOPII_22055_22047_22113.iml" beforeDir="false" afterPath="$PROJECT_DIR$/OOPII_22055_22047_22113.iml" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/src/main/java/gr/hua/oopii/travelAgency/API/APICallers.java" beforeDir="false" afterPath="$PROJECT_DIR$/src/main/java/gr/hua/oopii/travelAgency/API/APICallers.java" afterDir="false" />
       <change beforePath="$PROJECT_DIR$/src/main/java/gr/hua/oopii/travelAgency/API/APICredentials.java" beforeDir="false" afterPath="$PROJECT_DIR$/src/main/java/gr/hua/oopii/travelAgency/API/APICredentials.java" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/src/main/java/gr/hua/oopii/travelAgency/GUI/GUIController.java" beforeDir="false" afterPath="$PROJECT_DIR$/src/main/java/gr/hua/oopii/travelAgency/GUI/GUIController.java" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/src/main/java/gr/hua/oopii/travelAgency/perceptrons/PerceptronElderTraveler.java" beforeDir="false" afterPath="$PROJECT_DIR$/src/main/java/gr/hua/oopii/travelAgency/perceptrons/PerceptronElderTraveler.java" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/src/main/java/gr/hua/oopii/travelAgency/perceptrons/PerceptronMiddleTraveler.java" beforeDir="false" afterPath="$PROJECT_DIR$/src/main/java/gr/hua/oopii/travelAgency/perceptrons/PerceptronMiddleTraveler.java" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/src/main/java/gr/hua/oopii/travelAgency/perceptrons/PerceptronYoungTraveler.java" beforeDir="false" afterPath="$PROJECT_DIR$/src/main/java/gr/hua/oopii/travelAgency/perceptrons/PerceptronYoungTraveler.java" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/target/classes/gr/hua/oopii/travelAgency/GUI/GUI.fxml" beforeDir="false" afterPath="$PROJECT_DIR$/target/classes/gr/hua/oopii/travelAgency/GUI/GUI.fxml" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/src/main/java/gr/hua/oopii/travelAgency/City.java" beforeDir="false" afterPath="$PROJECT_DIR$/src/main/java/gr/hua/oopii/travelAgency/City.java" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/src/main/java/gr/hua/oopii/travelAgency/Control.java" beforeDir="false" afterPath="$PROJECT_DIR$/src/main/java/gr/hua/oopii/travelAgency/Control.java" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/src/main/java/gr/hua/oopii/travelAgency/FlightOffersSearch.java" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/src/main/java/gr/hua/oopii/travelAgency/GUI/GUIApplication.java" beforeDir="false" afterPath="$PROJECT_DIR$/src/main/java/gr/hua/oopii/travelAgency/GUI/GUIApplication.java" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/src/main/java/gr/hua/oopii/travelAgency/Input.java" beforeDir="false" afterPath="$PROJECT_DIR$/src/main/java/gr/hua/oopii/travelAgency/Input.java" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/src/main/java/gr/hua/oopii/travelAgency/Main.java" beforeDir="false" afterPath="$PROJECT_DIR$/src/main/java/gr/hua/oopii/travelAgency/Main.java" afterDir="false" />
     </list>
     <option name="SHOW_DIALOG" value="false" />
     <option name="HIGHLIGHT_CONFLICTS" value="true" />
@@ -142,6 +149,7 @@
       <workItem from="1641415266713" duration="309000" />
       <workItem from="1641415729031" duration="334000" />
       <workItem from="1643230463831" duration="3929000" />
+      <workItem from="1643235109551" duration="793000" />
     </task>
     <task id="LOCAL-00001" summary="modules.xml update">
       <created>1640799763009</created>

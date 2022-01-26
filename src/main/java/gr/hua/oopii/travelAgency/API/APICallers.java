@@ -10,7 +10,6 @@ import gr.hua.oopii.travelAgency.exception.NoCovidRestrictionsException;
 import gr.hua.oopii.travelAgency.exception.NoFlightException;
 
 import java.io.IOException;
-import java.io.InputStreamReader;
 import java.net.HttpURLConnection;
 import java.net.URL;
 

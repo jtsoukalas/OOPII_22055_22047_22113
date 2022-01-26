@@ -1,7 +1,5 @@
 package gr.hua.oopii.travelAgency;
 
-//import com.fasterxml.jackson.core.type.TypeReference;
-
 import com.fasterxml.jackson.core.type.TypeReference;
 import com.fasterxml.jackson.databind.ObjectMapper;
 import gr.hua.oopii.travelAgency.API.APICallers;
@@ -223,7 +221,6 @@ public class Control {
             }
 
             if (!wikiDataDownloaded) {                              //Downloads wiki data once
-                System.out.println("-Downloading Wiki data, please wait-");
                 City.setWikiData(citiesLibrary);
                 wikiDataDownloaded = true;
                 newData = true;
