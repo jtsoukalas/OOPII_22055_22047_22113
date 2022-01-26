@@ -34,3 +34,4 @@ citiesLibraryFormGson.json.json
 OOPII_22055_22047_22113.iml
 target/
 .logs
+src/main/java/gr/hua/oopii/travelAgency/API/APICredentials.java
