@@ -2,6 +2,7 @@
 <project version="4">
   <component name="CompilerConfiguration">
     <annotationProcessing>
+      <profile default="true" name="Default" enabled="true" />
       <profile name="Maven default annotation processors profile" enabled="true">
         <sourceOutputDir name="target/generated-sources/annotations" />
         <sourceTestOutputDir name="target/generated-test-sources/test-annotations" />
@@ -10,12 +11,12 @@
       </profile>
     </annotationProcessing>
     <bytecodeTargetLevel>
-      <module name="OOPII_22055_22047_22113" target="16" />
+      <module name="OOPII_22055_22047_22113" target="17" />
     </bytecodeTargetLevel>
   </component>
   <component name="JavacSettings">
     <option name="ADDITIONAL_OPTIONS_OVERRIDE">
-      <module name="OOPII_22055_22047_22113" options="--add-exports jdk.internal.le/jdk.internal.org.jline.terminal=gr.hua.oopii.travelAgency" />
+      <module name="OOPII_22055_22047_22113" options="" />
     </option>
   </component>
 </project>

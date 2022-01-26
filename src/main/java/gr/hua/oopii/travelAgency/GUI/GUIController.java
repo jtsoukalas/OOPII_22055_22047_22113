@@ -77,7 +77,6 @@ public class GUIController implements Initializable {
     private ArrayList<Slider> relatedSliders;
 
 
-
     enum ObjectChanged {SLIDER, SPINNER}
 
     enum RecommendationTab {AGE_RECOMMENDATION, PERSONAL_RECOMMENDATION}
@@ -104,7 +103,7 @@ public class GUIController implements Initializable {
                 webView.getEngine().loadContent(covidRestrictions[City.Recommendation_Present_Headers.BODY.getIndex()]);
 
                 AnchorPane anchorPane = new AnchorPane(webView);
-                TitledPane titledPane = new TitledPane(uppercaseCheckBox.isSelected()? recommendation.getName().toUpperCase(): recommendation.getName(), anchorPane);
+                TitledPane titledPane = new TitledPane(uppercaseCheckBox.isSelected() ? recommendation.getName().toUpperCase() : recommendation.getName(), anchorPane);
                 titledPane.setMaxSize(465, 250);
 
                 Paint paint = Paint.valueOf("#000000");
@@ -365,7 +364,11 @@ public class GUIController implements Initializable {
                 });
 
             }); //TODO: For optimization reasons, we can modify it so it want listen the auto value change (when new ageSpinner added)
+            return null;
+        });
 
+        //Add Candidate City Tab Init
+        Future<Void> candidateCityInit = executorService.submit(() -> {
             addCandidateCityTab.setOnSelectionChanged(event -> {
                 candidateCityName.clear();
                 candidateCityISO.clear();
@@ -380,13 +383,13 @@ public class GUIController implements Initializable {
                     }
                 }
             });
-
             return null;
         });
 
+
         //Cities library tab inits
         executorService.submit(() -> citiesLibraryTab.setOnSelectionChanged(event -> {
-            XYChart.Series<String,Integer> series = new XYChart.Series<>();
+            XYChart.Series<String, Integer> series = new XYChart.Series<>();
             TreeMap<String, String> weekCityCatalogue = Control.makeWeekCityCatalogue();
             citiesLibraryByDays.setText(Control.presentWeekCityCatalogue(weekCityCatalogue));
 
@@ -404,38 +407,47 @@ public class GUIController implements Initializable {
 
         boolean JsonLoadNeedsAction = false;
         try {
-            JsonLoadNeedsAction=!jsonLoadRes.get();
+            JsonLoadNeedsAction = !jsonLoadRes.get();
         } catch (InterruptedException | ExecutionException e) {
-            JsonLoadNeedsAction= true;
+            JsonLoadNeedsAction = true;
         } finally {
-                if (JsonLoadNeedsAction){
-                    Alert alert = new Alert(Alert.AlertType.WARNING);           //Code reference: https://code.makery.ch/blog/javafx-dialogs-official/
-                    alert.setTitle("Data warning");
-                    alert.setHeaderText("Error retrieving data from default JSON file");
+            if (JsonLoadNeedsAction) {
+                Alert alert = new Alert(Alert.AlertType.WARNING);           //Code reference: https://code.makery.ch/blog/javafx-dialogs-official/
+                alert.setTitle("Data warning");
+                alert.setHeaderText("Error retrieving data from default JSON file");
 
-                    ButtonType downloadButton = new ButtonType("Download data from web");
-                    ButtonType loadDataButton = new ButtonType("Load data from JSON file");
-                    alert.getButtonTypes().setAll(downloadButton, loadDataButton);
+                ButtonType downloadButton = new ButtonType("Download data from web");
+                ButtonType loadDataButton = new ButtonType("Load data from JSON file");
+                alert.getButtonTypes().setAll(downloadButton, loadDataButton);
 
-                    Optional<ButtonType> result = alert.showAndWait();
+                Optional<ButtonType> result = alert.showAndWait();
 
-                    if (result.isPresent() && result.get() == downloadButton) {
-                        Alert downloadingDataInfo = new Alert(Alert.AlertType.INFORMATION, "Please press OK and wait for the data to get downloaded");
-                        downloadingDataInfo.setHeaderText("Data download");
-                        downloadingDataInfo.showAndWait();
+                if (result.isPresent() && result.get() == downloadButton) {
+                    Alert downloadingDataInfo = new Alert(Alert.AlertType.INFORMATION, "Please press OK and wait for the data to get downloaded");
+                    downloadingDataInfo.setHeaderText("Data download");
+                    downloadingDataInfo.showAndWait();
 
-                        try {
-                            Control.initCitiesLibrary();
-                        } catch (StopRunningException e) {
-                            stopRunningExceptionHandling(e);
-                        }
-                        Control.mainLogger.finest("GUI election: Download data from web");
-                    } else {
-                        loadAsButtonAction();
-                        Control.mainLogger.finest("GUI election: Load data from Json file");
+                    try {
+                        Control.initCitiesLibrary();
+                    } catch (StopRunningException e) {
+                        stopRunningExceptionHandling(e);
                     }
+                    Control.mainLogger.finest("GUI election: Download data from web");
+                } else {
+                    loadAsButtonAction();
+                    Control.mainLogger.finest("GUI election: Load data from Json file");
                 }
+            }
 
+        }
+
+        try {
+            candidateCityInit.get();
+        } catch (InterruptedException | ExecutionException e) {
+            Throwable cause = e.getCause();
+            if (cause.getClass().isAssignableFrom(StopRunningException.class)) {
+                stopRunningExceptionHandling((StopRunningException) cause);
+            }
         }
 
     }
