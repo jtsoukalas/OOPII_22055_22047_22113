@@ -1,14 +1,10 @@
 package gr.hua.oopii.travelAgency;
 
 import gr.hua.oopii.travelAgency.API.APICallers;
-import gr.hua.oopii.travelAgency.API.APICredentials;
-import gr.hua.oopii.travelAgency.API.covidRestrictions.AreaRestriction;
 import gr.hua.oopii.travelAgency.API.covidRestrictions.CovidRestrictions;
-import gr.hua.oopii.travelAgency.GUI.GUIApplication;
 import gr.hua.oopii.travelAgency.exception.*;
 import gr.hua.oopii.travelAgency.API.openData.CountWords;
 import gr.hua.oopii.travelAgency.API.openData.MediaWiki;
-import gr.hua.oopii.travelAgency.API.openData.OpenData;
 import gr.hua.oopii.travelAgency.API.openWeather.OpenWeatherMap;
 import gr.hua.oopii.travelAgency.perceptrons.PerceptronTraveler;
 import org.jetbrains.annotations.NotNull;
@@ -18,13 +14,11 @@ import java.io.IOException;
 import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.Date;
-import java.util.List;
 import java.util.concurrent.Callable;
 import java.util.concurrent.ExecutionException;
 import java.util.concurrent.ExecutorService;
 import java.util.concurrent.Future;
 
-import static gr.hua.oopii.travelAgency.API.APICallers.retrieveCovidRestrictions;
 import static java.util.concurrent.Executors.newCachedThreadPool;
 
 /**
@@ -235,12 +229,11 @@ public class City implements Comparable<City>, Cloneable {
      * @return a string with all the recommendations
      * @throws NoRecommendationException
      */
-    public String[] presentRecommendation() {
+    public String[] presentRecommendation() throws NoCovidRestrictionsException {
 
         String[] res = new String[Recommendation_Present_Headers.values().length];
         CovidRestrictions covidRestrictions = null;
         try {
-            StringBuilder recommendation = new StringBuilder();
             covidRestrictions = APICallers.retrieveCovidRestrictions(this);
 
 
@@ -267,7 +260,7 @@ public class City implements Comparable<City>, Cloneable {
             res[Recommendation_Present_Headers.ENTRY_LINK.index] = covidRestrictions.getData().getAreaAccessRestriction().getEntry().getRules();
             res[Recommendation_Present_Headers.INFECTION_MAP_LINK.index] = covidRestrictions.getData().getDiseaseInfection().getInfectionMapLink();
 
-            recommendation.append("<!DOCTYPE html>\n" +
+            res[Recommendation_Present_Headers.BODY.index] = "<!DOCTYPE html>\n" +
                     "<html lang=\"en\">\n" +
                     "\n" +
                     "<head>\n" +
@@ -387,14 +380,14 @@ public class City implements Comparable<City>, Cloneable {
                     "    </p>\n" +
                     "</body>\n" +
                     "\n" +
-                    "</html>");
+                    "</html>";
 
-            res[Recommendation_Present_Headers.BODY.index] = recommendation.toString();
-
-        } catch (NoCovidRestrictionsExceptions e) {
+        } catch (NoCovidRestrictionsException e) {
             Control.mainLogger.warning("Retrieving covid restrictions failed: " + e.getCity());
+            throw e;
         } catch (IOException e) {
             Control.mainLogger.warning("Retrieving covid restrictions failed: " + e.getMessage());
+            throw new NoCovidRestrictionsException();
         }
 
         return res;
@@ -501,20 +494,9 @@ public class City implements Comparable<City>, Cloneable {
         City city = this;
         int pid = WeatherProcessCount++;
 
-        return new Callable<Void>() {
-            /**
-             * Computes a result, or throws an exception if unable to do so.
-             *
-             * @return computed result
-             * @throws Exception if unable to compute a result
-             */
-            @Override
-            public Void call() throws Exception {
-                System.out.println("Hello from: " + pid + " openweather download data process");    //4 dubbing reasons
-                city.setWeatherData();
-                System.out.println("Goodbye from: " + pid + " openweather download data process");    //4 dubbing reasons
-                return null;
-            }
+        return () -> {
+            city.setWeatherData();
+            return null;
         };
     }
 
@@ -538,7 +520,6 @@ public class City implements Comparable<City>, Cloneable {
 
         //For each city, make a process and submit (add & execute) to the thread pool
         for (City city : citiesLibrary) {
-            //executorService.submit(city.createRunnableObjForWeatherDownload());
             futures.add(executorService.submit(city.createCallableObjForWeatherDownload()));
         }
 

@@ -1,7 +1,6 @@
 package gr.hua.oopii.travelAgency.API;
 
 import com.amadeus.Amadeus;
-import gr.hua.oopii.travelAgency.API.openWeather.OpenWeatherMap;
 
 public interface APICredentials {
      Amadeus amadeus = Amadeus.builder("AxfOt4SwYsfHvBKoZgCTbc7PLtTyucVm","jMV9i4ZxaKUuaAvO").build();
@@ -9,5 +8,6 @@ public interface APICredentials {
      String airLabsID = "6af5994d-091b-4231-b3e3-087fcc8745a1";
      String amadeusAPIKey = "AxfOt4SwYsfHvBKoZgCTbc7PLtTyucVm";
      String amadeusAPISecret = "jMV9i4ZxaKUuaAvO";
-     String amadeusAPIToken = "cY3qwsQSJedDbBzp1w6qyD0qFyN8";
+     String amadeusAPIToken = " ";
+
 }

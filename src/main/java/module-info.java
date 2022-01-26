@@ -14,16 +14,12 @@ module gr.hua.oopii.travelAgency {
     requires org.jetbrains.annotations;
     requires com.fasterxml.jackson.annotation;
     requires commons.lang;
-    //requires org.testng;
     requires junit;
     requires java.sql;
     requires amadeus.java;
-    //requires GMapsFX;  //for json deserialization
     requires  java.base;
     requires json.simple;
     requires java.annotation;
-//    requires javax.annotation;
-    //requires javax.annotation;
 
 
     opens gr.hua.oopii.travelAgency.GUI to javafx.fxml;

@@ -52,29 +52,12 @@ public class Control {
      * Coordination in order to find distance between user and candidate city
      */
     private static float userLon, userLat;
+    private static String userCity;
 
     /**
      * Logger object
      */
     public static Logger mainLogger;
-
-    public enum Sorting_Option {
-        RISK_LEVEL(0), TRANSPORTATION_TEXT(1),
-        TRANSPORTATION_BAN(2), ENTRY_TEXT(3),
-        ENTRY_BAN(4), ENTRY_LINK(5),
-        QUARANTINE_TEXT(6), QUARANTINE_DURATION(7),
-        QUARANTINE_LINK(8), MASK_TEXT(9), MASK_REQUIRED(10), BODY(11),;
-
-        private int index;
-
-        Sorting_Option(int index) {
-            this.index = index;
-        }
-
-        public int getIndex() {
-            return this.index;
-        }
-    }
 
     /**
      * @param userCity    user's city name
@@ -87,46 +70,13 @@ public class Control {
             OpenWeatherMap tempWeatherObj = APICallers.retrieveWeatherData(userCity, userCountry);
             userLat = (float) tempWeatherObj.getCoord().getLat();
             userLon = (float) tempWeatherObj.getCoord().getLon();
+            Control.userCity =  tempWeatherObj.getName();
         } catch (FileNotFoundException e) {
             throw new NoSuchCityException(userCity, "OpenWeather");
         } catch (IOException e) {
-            System.err.println("Error! Please check your internet connection and try again.");
             throw new StopRunningException(new NoInternetException("OpenWeather"));
         }
     }
-
-//    public Control() throws StopRunningException {
-//        String officeCity, officeCountry;
-//        Scanner input = new Scanner(System.in);
-//        boolean retry;
-//
-//        System.out.println("Welcome to the Travel Agency app!");
-//        do {
-//            retry = false;
-//            System.out.println("Please enter your current location (city):");
-//            officeCity = input.next();
-//            System.out.println("Please enter the country's ISO:");
-//            officeCountry = input.next();
-//            try {
-//                //this(officeCity,officeCountry);
-//                { //Temp code block -> No internet exception handling
-//                    try {
-//                        OpenWeatherMap tempWeatherObj = OpenData.retrieveWeatherData(officeCity, officeCountry);
-//                        this.userLat = (float) tempWeatherObj.getCoord().getLat();
-//                        this.userLon = (float) tempWeatherObj.getCoord().getLon();
-//                    } catch (FileNotFoundException e) {
-//                        throw new FileNotFoundException();
-//                    } catch (IOException e) {
-//                        System.err.println("Error! Please check your internet connection and try again.");
-//                        throw new StopRunningException(e);
-//                    }
-//                }
-//            } catch (IOException e) {
-//                System.err.println("Error! There is no such city at " + officeCountry + ". Please try again.");
-//                retry = true;
-//            }
-//        } while (retry);
-//    }
 
     /**
      * <h1>Initialization of Cities Library</h1>
@@ -182,8 +132,6 @@ public class Control {
             }
 
             citiesLibrary.add(userCityRecommendation);
-//            //Update Json
-//            saveCitiesLibraryJson();  //TODO Talk about it
             return null;
         }
     }
@@ -194,12 +142,12 @@ public class Control {
      * For each city name that initialized:sets random value to each feature.
      * Normalizes all the features that added randomly.
      * Adds the temp City to citiesLibrary.
-     *//*
+     * @deprecated real data will be added automatically at {@link #init(String, String)}
+     */
     public void makeDummyData() {
         int cityAmount = 15;
         Random rand = new Random();
 
-        initNameCitiesLibrary();
         City tempCity;
         for (int cityIndex = 0; cityIndex < cityAmount; cityIndex++) {
             tempCity = citiesLibrary.remove(cityIndex);
@@ -213,7 +161,7 @@ public class Control {
             tempCity.normaliseFeature();
             citiesLibrary.add(tempCity);
         }
-    }*/
+    }
 
 
     /**
@@ -221,13 +169,13 @@ public class Control {
      * Uses parameter age and creates the corresponding perceptron(young,middle or elder)
      * Asks for the recommendations to be sorted or not
      *
-     * @param age
+     * @param age in order to choose suitable age Perceptron
      * @return last recommendations sorted or not
      * @throws StopRunningException      if city Library is Empty
      * @throws IllegalArgumentException  if wrong inputs has been given from the user
      * @throws NoRecommendationException if there are no recommendations
      */
-    public static ArrayList<City> runPerceptron(int age, boolean uppercase) throws StopRunningException, IllegalArgumentException, NoRecommendationException {
+    public static ArrayList<City> runPerceptron(int age) throws StopRunningException, IllegalArgumentException, NoRecommendationException {
         updateDataIfNeeded();
 
         //Choose suitable perceptron
@@ -249,7 +197,7 @@ public class Control {
 
         //Run perceptron
         try {
-            casePerceptron.recommend(casePerceptron.retrieveCompatibleCities(citiesLibrary), citiesLibrary, uppercase);
+            casePerceptron.recommend(casePerceptron.retrieveCompatibleCities(citiesLibrary), citiesLibrary);
             return casePerceptron.sortRecommendation();
         } catch (CitiesLibraryEmptyException e) {
             System.err.println(e.getMessage());     //Debugging reasons
@@ -268,8 +216,6 @@ public class Control {
      * @throws StopRunningException
      */
     private static void updateDataIfNeeded() throws StopRunningException {
-        //System.out.println("Retrieve cities library from Json file res= " + retrieveCitiesLibraryJson());  //TODO: Talk about it
-
         boolean newData = false;
         try {
             if (weatherDownloadTimestamp == null) {
@@ -292,7 +238,6 @@ public class Control {
                 downloadWeatherData = true;
             } finally {
                 if (downloadWeatherData) {
-                    System.out.println("-Downloading Weather data, please wait-");
                     City.setWeatherData(Control.getCitiesLibrary());
                     weatherDownloadTimestamp = LocalDateTime.now();
                     newData = true;
@@ -304,23 +249,24 @@ public class Control {
         }
 
         //Update cities library Json file       //TODO Talk about where should we update the Json file
-        if (newData) {
-            //System.out.println("-Cities library Json file update res = " + saveCitiesLibraryJson() + "-");
-        }
+        /*if (newData) {
+            saveCitiesLibraryJson();
+        }*/
     }
 
+    /**
+     *
+     * @throws StopRunningException
+     */
     public static void updateData() throws StopRunningException {
-
         try {
             if (weatherDownloadTimestamp == null) {
                 initCitiesLibrary();
             }
 
-            System.out.println("-Downloading Wiki data, please wait-");
             City.setWikiData(citiesLibrary);
             wikiDataDownloaded = true;
 
-            System.out.println("-Downloading Weather data, please wait-");
             City.setWeatherData(Control.getCitiesLibrary());
             weatherDownloadTimestamp = LocalDateTime.now();
         } catch (CitiesLibraryEmptyException | NoSuchCityException | NoInternetException | StopRunningException e) {
@@ -569,5 +515,9 @@ public class Control {
 
     public static float getUserLat() {
         return userLat;
+    }
+
+    public static String getUserCity() {
+        return userCity;
     }
 }
