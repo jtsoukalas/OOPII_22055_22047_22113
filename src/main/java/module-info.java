@@ -14,17 +14,28 @@ module gr.hua.oopii.travelAgency {
     requires org.jetbrains.annotations;
     requires com.fasterxml.jackson.annotation;
     requires commons.lang;
-    requires org.testng;
     requires junit;
     requires java.sql;
-    requires jdk.internal.le;  //for json deserialization
+    requires amadeus.java;
+    requires  java.base;
+    requires json.simple;
+    requires java.annotation;
 
 
     opens gr.hua.oopii.travelAgency.GUI to javafx.fxml;
 
     exports gr.hua.oopii.travelAgency.GUI;
-    exports gr.hua.oopii.travelAgency.openData;
-    exports gr.hua.oopii.travelAgency.openWeather;
+    exports gr.hua.oopii.travelAgency.API.openData;
+    exports gr.hua.oopii.travelAgency.API.openWeather;
     opens gr.hua.oopii.travelAgency;
     exports gr.hua.oopii.travelAgency.exception;
+    exports gr.hua.oopii.travelAgency.API.iata;
+    exports gr.hua.oopii.travelAgency.API.covidRestrictions;
+
+    exports gr.hua.oopii.travelAgency.API.airportsRadar to com.fasterxml.jackson.databind;
+
+    //opens java.time to com.fasterxml.jackson.databind;
+
+//     java.base does not "opens java.time" com.fasterxml.jackson.databind
+
 }

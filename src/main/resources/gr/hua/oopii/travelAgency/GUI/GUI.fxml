@@ -4,6 +4,7 @@
 <?import javafx.scene.chart.CategoryAxis?>
 <?import javafx.scene.chart.LineChart?>
 <?import javafx.scene.chart.NumberAxis?>
+<?import javafx.scene.control.Accordion?>
 <?import javafx.scene.control.Button?>
 <?import javafx.scene.control.CheckBox?>
 <?import javafx.scene.control.ChoiceBox?>
@@ -12,17 +13,20 @@
 <?import javafx.scene.control.MenuBar?>
 <?import javafx.scene.control.MenuItem?>
 <?import javafx.scene.control.SeparatorMenuItem?>
+<?import javafx.scene.control.Slider?>
 <?import javafx.scene.control.Spinner?>
 <?import javafx.scene.control.Tab?>
 <?import javafx.scene.control.TabPane?>
 <?import javafx.scene.control.TextArea?>
 <?import javafx.scene.control.TextField?>
+<?import javafx.scene.control.TitledPane?>
 <?import javafx.scene.layout.AnchorPane?>
 <?import javafx.scene.layout.VBox?>
 <?import javafx.scene.text.Font?>
 <?import javafx.scene.text.Text?>
+<?import javafx.scene.web.WebView?>
 
-<VBox alignment="CENTER" prefHeight="606.0" prefWidth="511.0" spacing="20.0" style="-fx-alignment: CENTER;" xmlns="http://javafx.com/javafx/17" xmlns:fx="http://javafx.com/fxml/1" fx:controller="gr.hua.oopii.travelAgency.GUI.GUIController">
+<VBox alignment="CENTER" prefHeight="632.0" prefWidth="511.0" spacing="20.0" style="-fx-alignment: CENTER;" xmlns="http://javafx.com/javafx/17" xmlns:fx="http://javafx.com/fxml/1" fx:controller="gr.hua.oopii.travelAgency.GUI.GUIController">
     <padding>
         <Insets bottom="20.0" left="20.0" right="20.0" top="20.0" />
     </padding>
@@ -43,13 +47,10 @@
                <MenuItem mnemonicParsing="false" onAction="#clearButtonAction" text="Clear" />
          </items>
         </Menu>
-        <Menu mnemonicParsing="false" text="Help">
-            <MenuItem mnemonicParsing="false" text="About" />
-        </Menu>
     </MenuBar>
     <AnchorPane prefHeight="100.0" prefWidth="471.0" style="-fx-scale-shape: YES;">
         <Button layoutX="261.0" layoutY="39.0" mnemonicParsing="false" onAction="#gainRecommendationsButtonAction" text="Gain recommendations" />
-        <Label layoutX="208.0" layoutY="3.0" prefHeight="23.0" prefWidth="106.0" text="New traveller " textAlignment="CENTER">
+        <Label layoutX="193.0" layoutY="1.0" prefHeight="27.0" prefWidth="121.0" text="New traveller " textAlignment="JUSTIFY">
             <font>
                 <Font size="18.0" />
             </font>
@@ -57,13 +58,14 @@
         <Spinner id="age" fx:id="ageSpinner" editable="true" layoutX="149.0" layoutY="39.0" prefHeight="26.0" prefWidth="87.0" />
         <Label contentDisplay="CENTER" layoutX="118.0" layoutY="43.0" prefHeight="18.0" prefWidth="31.0" text="Age" />
     </AnchorPane>
-    <TabPane fx:id="tabs" prefHeight="440.0" prefWidth="471.0" tabClosingPolicy="UNAVAILABLE">
+    <TabPane fx:id="tabs" prefHeight="465.0" prefWidth="471.0" tabClosingPolicy="UNAVAILABLE">
         <Tab fx:id="recommendTab" text="Recommend destination">
             <AnchorPane minHeight="0.0" minWidth="0.0" prefHeight="180.0" prefWidth="200.0">
-                <TextArea fx:id="recommendationsTextArea" editable="false" layoutX="11.0" layoutY="46.0" prefHeight="330.0" prefWidth="442.0" promptText="Recommendations" />
                 <ChoiceBox fx:id="sortChoiceBox" layoutX="101.0" layoutY="14.0" prefWidth="150.0" />
                 <Label contentDisplay="CENTER" layoutX="53.0" layoutY="19.0" prefHeight="18.0" prefWidth="46.0" text="Sort by" />
                 <CheckBox fx:id="uppercaseCheckBox" layoutX="314.0" layoutY="18.0" mnemonicParsing="false" onAction="#gainRecommendationsButtonAction" text="Uppercase" />
+            <Accordion fx:id="recommendationsAccordion" layoutY="54.0" prefHeight="332.0" prefWidth="465.0" />
+            <Button fx:id="backToRecommendationButton" layoutX="212.0" layoutY="391.0" mnemonicParsing="false" onAction="#gainRecommendationsButtonAction" text="Back" textFill="#221d1d" />
             </AnchorPane>
         </Tab>
         <Tab fx:id="addCandidateCityTab" onSelectionChanged="#updateCitiesLibraryTextArea" text="Add city">
@@ -97,6 +99,49 @@
                       <NumberAxis fx:id="y" side="LEFT" />
                     </yAxis>
                   </LineChart>
+               </children>
+            </AnchorPane>
+        </content>
+      </Tab>
+      <Tab fx:id="personalRecommendationTab" text="Personal recommendation">
+        <content>
+          <AnchorPane minHeight="0.0" minWidth="0.0" prefHeight="408.0" prefWidth="471.0">
+               <children>
+                  <Slider fx:id="futureSlider0" layoutX="20.0" layoutY="63.0" orientation="VERTICAL" prefHeight="123.0" prefWidth="43.0" showTickLabels="true" showTickMarks="true" value="50.0" />
+                  <Spinner fx:id="futureSpinner0" editable="true" layoutX="14.0" layoutY="186.0" nodeOrientation="LEFT_TO_RIGHT" prefHeight="26.0" prefWidth="56.0" />
+                  <Slider fx:id="futureSlider1" layoutX="86.0" layoutY="63.0" orientation="VERTICAL" prefHeight="123.0" prefWidth="43.0" showTickLabels="true" showTickMarks="true" value="50.0" />
+                  <Spinner fx:id="futureSpinner1" editable="true" layoutX="80.0" layoutY="186.0" nodeOrientation="LEFT_TO_RIGHT" prefHeight="26.0" prefWidth="56.0" />
+                  <Slider fx:id="futureSlider2" layoutX="150.0" layoutY="63.0" orientation="VERTICAL" prefHeight="123.0" prefWidth="43.0" showTickLabels="true" showTickMarks="true" value="50.0" />
+                  <Spinner fx:id="futureSpinner2" editable="true" layoutX="144.0" layoutY="186.0" nodeOrientation="LEFT_TO_RIGHT" prefHeight="26.0" prefWidth="56.0" />
+                  <Slider fx:id="futureSlider3" layoutX="216.0" layoutY="63.0" orientation="VERTICAL" prefHeight="123.0" prefWidth="43.0" showTickLabels="true" showTickMarks="true" value="50.0" />
+                  <Spinner fx:id="futureSpinner3" editable="true" layoutX="210.0" layoutY="186.0" nodeOrientation="LEFT_TO_RIGHT" prefHeight="26.0" prefWidth="56.0" />
+                  <Slider fx:id="futureSlider4" layoutX="278.0" layoutY="63.0" orientation="VERTICAL" prefHeight="123.0" prefWidth="43.0" showTickLabels="true" showTickMarks="true" value="50.0" />
+                  <Spinner fx:id="futureSpinner4" editable="true" layoutX="272.0" layoutY="186.0" nodeOrientation="LEFT_TO_RIGHT" prefHeight="26.0" prefWidth="56.0" />
+                  <Slider fx:id="futureSlider5" layoutX="342.0" layoutY="63.0" orientation="VERTICAL" prefHeight="123.0" prefWidth="43.0" showTickLabels="true" showTickMarks="true" value="50.0" />
+                  <Spinner fx:id="futureSpinner5" editable="true" layoutX="336.0" layoutY="186.0" nodeOrientation="LEFT_TO_RIGHT" prefHeight="26.0" prefWidth="56.0" />
+                  <Slider fx:id="futureSlider6" layoutX="408.0" layoutY="63.0" orientation="VERTICAL" prefHeight="123.0" prefWidth="43.0" showTickLabels="true" showTickMarks="true" value="50.0" />
+                  <Spinner fx:id="futureSpinner6" editable="true" layoutX="402.0" layoutY="186.0" nodeOrientation="LEFT_TO_RIGHT" prefHeight="26.0" prefWidth="56.0" />
+                  <Label layoutX="20.0" layoutY="46.0" text="Cafe" />
+                  <Label layoutX="86.0" layoutY="46.0" text="Sea" />
+                  <Label layoutX="136.0" layoutY="45.0" text="Museums" />
+                  <Label layoutX="200.0" layoutY="45.0" text="Temples" />
+                  <Label layoutX="266.0" layoutY="45.0" text="Stadiums" />
+                  <Label layoutX="342.0" layoutY="45.0" text="Bars" />
+                  <Label layoutX="402.0" layoutY="45.0" text="Parks" />
+                  <Label layoutX="135.0" layoutY="14.0" text="Please adjust the filters to your liking  " />
+                  <Button layoutX="164.0" layoutY="361.0" mnemonicParsing="false" onAction="#gainPersonalRecommendation" text="Show recommendation" />
+                  <Accordion fx:id="personalRecommendationAccordion" layoutX="13.0" layoutY="225.0" prefHeight="128.0" prefWidth="446.0">
+                     <panes>
+                      <TitledPane fx:id="personalRecPaneTitle" animated="false" prefHeight="128.0" prefWidth="447.0" text="untitled 1">
+                        <content>
+                          <AnchorPane minHeight="0.0" minWidth="0.0" prefHeight="91.0" prefWidth="422.0">
+                                 <children>
+                                    <WebView fx:id="personalRecPanel" layoutX="-1.0" layoutY="-1.0" prefHeight="104.0" prefWidth="445.0" />
+                                 </children></AnchorPane>
+                        </content>
+                      </TitledPane>
+                     </panes>
+                  </Accordion>
                </children>
             </AnchorPane>
         </content>

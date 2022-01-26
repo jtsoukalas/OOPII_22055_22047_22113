@@ -17,14 +17,12 @@
 *.ear
 *.zip
 *.tar.gz
-*.rar
+.rar
 
 # virtual machine crash logs, see http://www.java.com/en/download/help/error_hotspot.xml
-hs_err_pid*
+hs_err_pid
 
-
-*.iml
-.idea/*
+.idea/
 untitled.iml
 out/production/.DS_Store
 out/production/untitled/firstDeliverable/.DS_Store
@@ -32,4 +30,8 @@ out/production/untitled/.DS_Store
 .DS_Store
 citiesLibrary.json
 citiesLibraryFormGson.json.json
+
+OOPII_22055_22047_22113.iml
 target/
+.logs
+src/main/java/gr/hua/oopii/travelAgency/API/APICredentials.java

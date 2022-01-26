@@ -16,7 +16,7 @@ public class Main {
                 System.out.println("Please enter traveler's age:");
                 int age = Input.readAge();
                 try {
-                    System.out.println("Recommendations: " + Control.recommendationToString(Control.runPerceptron(age,false)));
+                    System.out.println("Recommendations: " + Control.presentRecommendations(Control.runPerceptron(age)));
                 } catch (NoRecommendationException e) {
                     System.err.println(e.getMessage());
                 }

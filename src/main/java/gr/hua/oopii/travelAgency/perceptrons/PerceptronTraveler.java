@@ -8,6 +8,7 @@ import org.jetbrains.annotations.NotNull;
 
 import java.util.ArrayList;
 import java.util.Comparator;
+import java.util.NoSuchElementException;
 
 /**
  * <h1>PerceptronTraveler used to process {@link City} objects in order to produce recommendations</h1>
@@ -93,16 +94,8 @@ public abstract class PerceptronTraveler implements PerceptronTravelerInterface 
     public ArrayList<City> recommend(boolean @NotNull [] compatibleCities, @NotNull ArrayList<City> citiesLibrary, boolean uppercase) {
         ArrayList<City> recommendation = recommend(compatibleCities, citiesLibrary);
 
-//        if (uppercase) {
-//            for (int cityIndex = 0; cityIndex < compatibleCities.length; cityIndex++) {
-//                City tempCity = citiesLibrary.get(cityIndex);
-//                tempCity.setName(tempCity.getName().toUpperCase());
-//                recommendation.set(cityIndex, tempCity);
-//            }
-//        }
-
-        if (uppercase){
-            for (City city : recommendation){
+        if (uppercase) {
+            for (City city : recommendation) {
                 city.setName(city.getName().toUpperCase());
             }
         }
@@ -110,14 +103,52 @@ public abstract class PerceptronTraveler implements PerceptronTravelerInterface 
     }
 
     /**
+     * Personal Recommendation with custom weights
+     * Note: It doesn't return user's city as recommendation
+     * @param citiesLibrary
+     * @param customWeights at range of [0,1]
+     * @return the recommended city (with the maximum dot product)
+     * @throws CitiesLibraryEmptyException if there is no cities to examine
+     * @throws NoRecommendationException if there is no recommendation
+     */
+    public static City personalizedRecommend(ArrayList<City> citiesLibrary, float[] customWeights) throws CitiesLibraryEmptyException, NoRecommendationException {
+
+        if (citiesLibrary == null || citiesLibrary.isEmpty()) {
+            throw new CitiesLibraryEmptyException();
+        }
+
+        for (int i = 0; i < customWeights.length; i++) {
+            customWeights[i] = City.normaliseFeature(customWeights[i], 4);
+        }
+
+        try {
+            City userCity = new City(Control.getUserCity());
+            return citiesLibrary.stream().filter(city -> ! city.equals(userCity)).max((city1, city2) -> Float.compare(dotProduct(city1.getFeatures(), customWeights), dotProduct(city2.getFeatures(), customWeights))).orElseThrow();
+        } catch (NoSuchElementException e) {
+            throw new NoRecommendationException();
+        }
+    }
+
+    /**
+     * <h1> Calculates a sum of products for given arrays</h1>
+     * @param features array to take part at the calculations
+     * @param weights array to take part at the calculations
+     * @return the dotProduct (or rate) for given arrays
+     */
+    private static float dotProduct(float[] features, float[] weights) {
+        float sum = 0;
+        for (int i = 0; i < weights.length; i++)
+            sum += features[i] * weights[i];
+        return sum;
+    }
+
+    /**
      * {@inheritDoc}
      *
-     * @param citiesLibrary fixme
+     * @param citiesLibrary
      * @return parallel boolean[] with {@code citiesLibrary}, {@code true} if city passes the required rate else {@code false}.
      * @throws CitiesLibraryEmptyException if the parameter {@code citiesLibrary} is empty.
-     * @version
-     * @author
-     * @since
+     *
      */
     public boolean[] retrieveCompatibleCities(@NotNull ArrayList<City> citiesLibrary) throws CitiesLibraryEmptyException {
         if (citiesLibrary.isEmpty()) {
@@ -158,10 +189,10 @@ public abstract class PerceptronTraveler implements PerceptronTravelerInterface 
         return tempLastRec;
     }
 
-    public float[] getWeightsBias() {
-        return weightsBias;
-    }
-
+    /**
+     * Returns generated last recommendation
+     * @return generated last recommendation
+     */
     public ArrayList<City> getLastRecommendation() {
         return lastRecommendation;
     }

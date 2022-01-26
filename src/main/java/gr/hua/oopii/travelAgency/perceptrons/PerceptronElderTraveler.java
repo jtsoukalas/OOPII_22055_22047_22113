@@ -11,7 +11,7 @@ public class PerceptronElderTraveler extends PerceptronTraveler {
     //Custom weights for elder traveler
     public PerceptronElderTraveler() {
         super(0.5F, 0.1F, 0.7F, 1F, 0F,
-                -1F, 0.4F, 1F, 1F, -1F,-1.4F);
+                -1F, 0.4F, 1F, 1F, -1F,-1.2F);
     }
 
     /**
